@@ -2,15 +2,14 @@
 layout: about
 title: About
 permalink: /
-subtitle: <a href='#'>Affiliations</a>. Address. Contacts. Moto. Etc.
+subtitle: Prof. of Economics, Emory University
 
 profile:
   align: right
   image: prof_pic.png
   image_circular: true # crops the image to make it circular
-  address: >
-    <p>Prof. of Economics</p>
-    <p>Emory University</p>
+  address:
+    
 
 news: true  # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
