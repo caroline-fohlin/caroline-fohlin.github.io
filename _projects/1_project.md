@@ -11,14 +11,7 @@ On May 31st and June 1st, 1921, mobs of white residents in Tulsa, Oklahoma attac
 
 This project would likely include more technical tasks such as regression or events study analysis. This likely would use data from Fohlin's NYSE stock prices, but some data cleaning may still be required. Historical research would also be required, particularly, contemporary news sources discussing the event. 
 
-To give your project a background in the portfolio page, just add the img tag to the front matter like so:
 
-    ---
-    layout: page
-    title: project
-    description: a project with a background image
-    img: /assets/img/12.jpg
-    ---
 
 <div class="row">
     <div class="col-sm mt-3 mt-md-0">
