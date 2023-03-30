@@ -1,6 +1,6 @@
 ---
 layout: page
-title: Par Values
+title: Capital Structures
 description: WIP
 img: assets/img/7.jpg
 importance: 3
