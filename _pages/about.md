@@ -9,8 +9,6 @@ profile:
   image: prof_pic.png
   image_circular: true # crops the image to make it circular
   address: >
-    <p>404-727-6363</p>
-    <p>Rich 306D</p>
 
 news: true  # includes a list of news items
 selected_papers: true # includes a list of papers marked as "selected={true}"
