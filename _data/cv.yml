@@ -35,10 +35,10 @@
       description:
         # - Description 1.
         # - Description 2.
-        - title: Professor of Economics, September 2017-present.
+        - Professor of Economics, September 2017-present.
           # contents:
           #   - September 2017-present.
-        - title: Distinguished Visiting Professor of Economics, January 2012-September 2017.
+        - Distinguished Visiting Professor of Economics, January 2012-September 2017.
           # contents:
           #   - January 2012-September 2017.
 
@@ -52,7 +52,7 @@
           contents:
             - Associated Faculty, Center for Financial Economics.
             - Fellow, Institute for Applied Economics, Global Health, and the Study of Business Enterprise
-        - title: Associate Research Professor of Economics, 2004-2005.
+        - Associate Research Professor of Economics, 2004-2005.
           # contents:
           #   - January 2012-September 2017.
 
@@ -62,11 +62,11 @@
       description:
         # - Description 1.
         # - Description 2.
-        - title: Associate Professor of Economics, 2002-2004.
+        - Associate Professor of Economics, 2002-2004.
           # contents:
           #   - Associated Faculty, Center for Financial Economics.
           #   - Fellow, Institute for Applied Economics, Global Health, and the Study of Business Enterprise
-        - title: Assistant Professor of Economics, 1994-2002.
+        - Assistant Professor of Economics, 1994-2002.
           # contents:
           #   - January 2012-September 2017.
 
@@ -80,7 +80,7 @@
             - Leibniz Institute for Financial Research SAFE, University of Frankfurt, Germany, 2019-present.
         - title: Metzler and Rothschild Professor of Financial History
           contents:
-            - University of Frankfurt, Germany, 2015-16.
+            - University of Frankfurt, Germany, 2015-2016.
         - title: Fellow
           contents:
             - CESifo Network, University of Munich, Germany, 2014-present.
@@ -102,7 +102,87 @@
             - University of Münster, Germany, summers 1993 and 1994.
         - title: Economist
           contents: 
-            - U.S. Department of Agriculture, Washington, D.C., 1988-89.
+            - U.S. Department of Agriculture, Washington, D.C., 1988-1989.
+
+- title: Research Grants
+  type: time_table
+  contents:
+    - year: 2022-2023
+      items: 
+        - PERS (Program to Enhance Research and Scholarship), ECAS, Emory University, “The Berlin Stock Exchange in the Interwar Crisis (1920-1939) New Insights from Big Data”
+        - $10,000
+    - year: 2018-2021
+      items: 
+        - University of Frankfurt SAFE (joint with Stephanie Collet), “The Berlin Stock Exchange in the Great Disorder”
+        - €80,000
+    - year: 2015-2018
+      items: 
+        - URC (University Research Committee), Emory University, 2015-18, “New York Stock Exchange Historical Database” 
+        - $30,000
+    - year: 2015-2017
+      items: 
+        - PERS (Program to Enhance Research and Scholarship), ECAS, Emory University, “Lessons from Financial History” 
+        - $10,000
+    - year: 2009-2015
+      items: 
+        - National Science Foundation, “The Development of the NYSE before the SEC”
+        - $337,000
+    - year: 2007-2011
+      items: 
+        - National Science Foundation, “Innovation and Organizational Change in Venture Capital since World War II”
+        - $270,000
+    - year: 2003-2006
+      items: 
+        - National Science Foundation, 2003-2006, “Studies in Financial Institutions and Markets” ADVANCE"
+        - $500,000
+    - year: 2000-2002
+      items: 
+        - National Science Foundation, “The Impact of Financial System Design International Patterns in Historical Perspective” 
+        - $21,500
+    - year: 2001-2002
+      items: 
+        - Humboldt Foundation, Transcoop Grant, with Thomas Gehrig
+        - DM 75,000
+    - year: 1997-2001
+      items: 
+        - National Science Foundation, “Does Financial Structure Matter?”
+        - $165,000
+    - year: 1995
+      items: 
+        - Arthur H. Cole Grant, Economic History Association.
+
+- title: Fellowships
+  type: time_table
+  contents:
+    - year: 2006
+      items: 
+        - Merck & Co. Foundation Fellowship
+        - $50,000
+    - year: 2002
+      items: 
+        - German Marshall Fund of the United States, Advanced Research Fellowship
+        - $40,000
+    - year: 2001
+      items: 
+        - American Academy in Berlin, Berlin Prize Fellowship
+        - $20,000
+    - year: 1997-1998
+      items: 
+        - Fulbright Research Fellowship, Germany
+        - $30,000
+    - year: 1993-1994
+      items: 
+        - Social Science Research Council Fellowship
+    - year: 1992-1993
+      items:
+        - Mellon Foundation Fellowship
+    - year: 1992
+      items:
+        - Center for German and European Studies Predissertation Fellowship, UC Berkeley
+    - year: 1989-1990
+      items:
+        - Flood Fellowship, UC Berkeley.
+
 
 - title: Open Source Projects
   type: time_table
