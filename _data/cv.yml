@@ -13,20 +13,20 @@
       institution: University of California, Berkeley, California, the United States
       year: 1994
       description:
-        - Description 1.
-        - Description 2.
-        - title: Description 3.
-          contents:
-            - Sub-description 1.
-            - Sub-description 2.
+        - Ph.D. in Economics.
+        # - Description 2.
+        # - title: Description 3.
+        #   contents:
+        #     - Sub-description 1.
+        #     - Sub-description 2.
     - title: B.S.
       institution: Tufts University, Massachusetts, the United States
       year: 1988
       description:
-        - Description 1.
-        - Description 2.
+        - B.S. in Mathematics and Quantitative Economics.
+        - Magna cum Laude.
 
-- title: Experience
+- title: Appointments
   type: time_table
   contents:
     - title: Professor of Theoretical Physics
