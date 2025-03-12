@@ -22,7 +22,7 @@ scholar:
   bibliography: papers.bib  # Your bibliography filename
   bibliography_template: bib
   sort_by: year
-  order: ascending
+  order: descending
 
 
 lang: en # the language of your site (for example: en, fr, cn, ru, etc.)
