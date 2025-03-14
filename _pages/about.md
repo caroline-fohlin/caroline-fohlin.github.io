@@ -2,7 +2,7 @@
 layout: about
 title: About
 permalink: /
-subtitle: Prof. of Economics, Emory University
+subtitle: Professor of Economics, Emory University
 
 profile:
   align: right
