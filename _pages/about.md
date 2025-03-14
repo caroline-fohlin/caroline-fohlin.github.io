@@ -16,6 +16,6 @@ selected_papers: false # includes a list of papers marked as "selected={true}"
 social: true  # includes social icons at the bottom of the page
 ---
 
-I am a Professor of Economics at Emory University working on financial economic history. My research interests include long-run patterns of economic development, focusing on the political economy of financial system
+I am a Professor of Economics at Emory University working on finance and economic history. My research interests include long-run patterns of financial and economic development, focusing on the political economy of banking and financial system
 structure, capital markets, and industrial growth.
 
