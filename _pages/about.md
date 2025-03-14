@@ -6,7 +6,7 @@ subtitle: Prof. of Economics, Emory University
 
 profile:
   align: right
-  image: prof_pic.png
+  image: cf_headshot.png
   image_circular: true # crops the image to make it circular
   address:
     
