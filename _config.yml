@@ -19,7 +19,7 @@ scholar:
   style: apa  # Change to your preferred citation style
   locale: en
   source: ./_bibliography  # Directory where your .bib file is stored
-  bibliography: papers.bib  # Your bibliography filename
+  bibliography: [papers.bib books.bib bookchapters.bib]  # Your bibliography filename
   bibliography_template: bib
   sort_by: year
   order: descending
