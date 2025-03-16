@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Working Papers
-permalink: /projects/
+permalink: /Working Papers/
 description: 
 nav: true
 nav_order: 2 
