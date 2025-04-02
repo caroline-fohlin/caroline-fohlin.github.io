@@ -7,8 +7,6 @@ nav: true
 nav_order: 4
 ---
 
-# __Emory University__
-
 ## Research in Economics (499r)
 
 ### Economics of Public Infrastructure Investments
