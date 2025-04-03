@@ -211,23 +211,6 @@
               {% else %}
                 data-id="{{ entry.dimensions }}"
               {% endif %}
-              {% if entry.url %}
-                <a href="{{ entry.url }}" target="_blank">{{ entry.url }}</a>
-              {% elsif entry.doi %}
-                <a href="https://doi.org/{{ entry.doi }}" target="_blank">https://doi.org/{{ entry.doi }}</a>
-              {% endif %}
-              {% if entry.doi %}
-              <div class="periodical">
-                <a href="https://doi.org/{{ entry.doi }}" target="_blank">{{ entry.doi }}</a>
-              </div>
-              {% endif %}
-
-              {% if entry.url %}
-              <div class="periodical">
-                <a href="{{ entry.url }}" target="_blank">{{ entry.url }}</a>
-              </div>
-              {% endif %}
-
               data-hide-zero-citations="true" data-style="small_rectangle" data-legend="hover-right" style="margin-bottom: 6px;"></span>
             {%- endif %}
           </div>
