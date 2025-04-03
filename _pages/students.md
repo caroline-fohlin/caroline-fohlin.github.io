@@ -7,4 +7,10 @@ nav: true
 nav_order: 6
 ---
 
-__Emory University__
+## Emory University
+
+### Graduate Students
+- [Justin Eloriaga](https://justineloriaga.com)
+- [Alessia Scudiero](https://www.alessiascudiero.info)
+- [Sarah Smyly](https://sarahsmyly.com)
+- [Niall Peat](https://niallpeat.com)
