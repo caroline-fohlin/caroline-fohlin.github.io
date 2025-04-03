@@ -8,8 +8,6 @@ nav_order: 2
 horizontal: false
 ---
 
-## Working Papers  
-
 Fohlin, C. (2024). **Rethinking the Lender of Last Resort: New Evidence on the Stabilization of Money Markets Before the Federal Reserve.**  
 *Presented at*: Sveriges Riksbank (November 2024), Federal Reserve Workshop on Monetary and Financial History, CEBRA Annual Conference (2021, online), CEPR Economic History Workshop, Barcelona (2019), World Cliometric Conference (2017).  
 
