@@ -1,7 +1,7 @@
 ---
 layout: page
 permalink: /students/
-title: Students
+title: 
 description: 
 nav: true
 nav_order: 6
