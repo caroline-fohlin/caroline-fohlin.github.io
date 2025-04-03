@@ -211,6 +211,11 @@
               {% else %}
                 data-id="{{ entry.dimensions }}"
               {% endif %}
+              {% if entry.url %}
+                <a href="{{ entry.url }}" target="_blank">{{ entry.url }}</a>
+              {% elsif entry.doi %}
+                <a href="https://doi.org/{{ entry.doi }}" target="_blank">https://doi.org/{{ entry.doi }}</a>
+              {% endif %}
               {% if entry.doi %}
               <div class="periodical">
                 <a href="https://doi.org/{{ entry.doi }}" target="_blank">{{ entry.doi }}</a>
