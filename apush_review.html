@@ -1,0 +1,1144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AP US History Review — Flashcards & Practice Quiz</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body { background: #0e0e0f; }
+    #root { height: 100vh; display: flex; flex-direction: column; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useCallback } = React;
+
+// ─────────────────────────────────────────────
+//  FLASHCARD DATA
+// ─────────────────────────────────────────────
+const allCards = [
+  { id: 1, category: "Period 1 (1491–1607)", term: "Columbian Exchange", definition: "The transfer of plants, animals, diseases, people, and ideas between the Americas and the Old World following Columbus's 1492 voyage. Devastated Native populations via smallpox; transformed European diets with maize and potatoes." },
+  { id: 2, category: "Period 1 (1491–1607)", term: "Encomienda system", definition: "Spanish labor system granting conquistadors the right to demand tribute and forced labor from Native peoples in exchange for supposed protection and Christian instruction. Led to mass exploitation and depopulation." },
+  { id: 3, category: "Period 1 (1491–1607)", term: "Bartolomé de las Casas", definition: "Spanish priest who became a fierce critic of the encomienda system and advocated for Native rights. His writings (Brevísima relación) influenced the New Laws of 1542, which tried to limit Native enslavement." },
+  { id: 4, category: "Period 1 (1491–1607)", term: "Pueblo peoples", definition: "Indigenous agricultural societies of the Southwest (Hopi, Zuni, Acoma) who built multi-story stone and adobe communities and developed sophisticated irrigation. Later resisted Spanish colonization in the Pueblo Revolt (1680)." },
+  { id: 5, category: "Period 1 (1491–1607)", term: "Iroquois Confederacy (Haudenosaunee)", definition: "Alliance of five (later six) nations—Mohawk, Onondaga, Cayuga, Oneida, Seneca, and later Tuscarora—with a democratic Great Law of Peace that some historians argue influenced the U.S. Constitution." },
+  { id: 6, category: "Period 1 (1491–1607)", term: "Spanish mission system", definition: "Network of Catholic missions used to convert and control Native peoples in Spanish borderlands (Florida, New Mexico, California). Missions disrupted Native cultures and economies while creating a mixed colonial society." },
+  { id: 7, category: "Period 1 (1491–1607)", term: "Treaty of Tordesillas (1494)", definition: "Agreement between Spain and Portugal dividing the non-European world along a meridian west of the Cape Verde Islands, granting Spain rights to most of the Americas and Portugal to Africa and Asia." },
+  { id: 8, category: "Period 1 (1491–1607)", term: "Protestant Reformation", definition: "16th-century religious reform movement challenging Catholic Church authority, sparked by Martin Luther (1517). Created religious diversity in Europe and motivated some migration to the Americas—particularly Puritans to New England." },
+  { id: 9, category: "Period 2 (1607–1754)", term: "Headright system", definition: "Virginia land-grant policy giving 50 acres to anyone who paid for another person's Atlantic passage. Incentivized importation of indentured servants and, later, enslaved Africans; concentrated land in wealthy planters' hands." },
+  { id: 10, category: "Period 2 (1607–1754)", term: "Indentured servitude", definition: "Labor system in which workers contracted to serve a master for 4–7 years in exchange for passage to the colonies. Declined after Bacon's Rebellion (1676) as planters shifted to African slave labor." },
+  { id: 11, category: "Period 2 (1607–1754)", term: "Bacon's Rebellion (1676)", definition: "Uprising led by Nathaniel Bacon against Virginia's Governor Berkeley. Frontier settlers (including freed servants) attacked Native peoples and then the colonial government. Alarmed planters then shifted to African slavery as a more controllable labor force." },
+  { id: 12, category: "Period 2 (1607–1754)", term: "Salutary neglect", definition: "Informal British policy (early 1700s) of loosely enforcing trade laws in the colonies, allowing colonial assemblies to develop significant autonomy. Its end after 1763 triggered colonial protests." },
+  { id: 13, category: "Period 2 (1607–1754)", term: "Mayflower Compact (1620)", definition: "First self-governing agreement in the colonies, signed by Pilgrim men before landing at Plymouth. Established the principle of majority rule and governance by consent—a precedent for American democratic practice." },
+  { id: 14, category: "Period 2 (1607–1754)", term: "Puritan 'City upon a Hill'", definition: "John Winthrop's 1630 vision of Massachusetts Bay Colony as a model godly society watched by the world. Expressed the idea of American exceptionalism and moral mission that recurs throughout U.S. history." },
+  { id: 15, category: "Period 2 (1607–1754)", term: "Half-Way Covenant (1662)", definition: "Puritan compromise allowing partial church membership (but not full communion) for the unconverted children of members. Reflected declining religious zeal and debates over who belonged to the Puritan community." },
+  { id: 16, category: "Period 2 (1607–1754)", term: "Navigation Acts (1651–1673)", definition: "English mercantilist laws requiring colonial trade to flow through England in English ships, benefiting British merchants and the crown. Widely evaded; their enforcement after 1763 angered colonists." },
+  { id: 17, category: "Period 2 (1607–1754)", term: "Middle Passage", definition: "The brutal Atlantic crossing of slave ships from Africa to the Americas. Enslaved Africans were packed in horrific conditions; an estimated 15–20% died during the voyage. Central to the transatlantic slave trade system." },
+  { id: 18, category: "Period 2 (1607–1754)", term: "First Great Awakening", definition: "Religious revival of the 1730s–40s (Jonathan Edwards, George Whitefield) emphasizing emotional conversion and individual relationship with God. Challenged church hierarchies and created democratic religious culture; increased colonial unity." },
+  { id: 19, category: "Period 2 (1607–1754)", term: "Triangular trade", definition: "Transatlantic trade network exchanging manufactured goods (Europe) → enslaved people (Africa) → raw materials like tobacco and sugar (Americas) → back to Europe. Enriched European merchants while exploiting African and colonial labor." },
+  { id: 20, category: "Period 2 (1607–1754)", term: "Stono Rebellion (1739)", definition: "Largest slave uprising in colonial America, near Charleston, SC. Enslaved people marched toward Spanish Florida, killing ~20 whites. Led to South Carolina's harsher Negro Act (1740) restricting slave gatherings and literacy." },
+  { id: 21, category: "Period 3 (1754–1800)", term: "French and Indian War (1754–1763)", definition: "North American theater of the Seven Years' War; Britain and colonists vs. France and Native allies. Britain won Canada and territory east of the Mississippi but accumulated massive debt, prompting new taxation of colonists." },
+  { id: 22, category: "Period 3 (1754–1800)", term: "Proclamation of 1763", definition: "Royal decree forbidding colonial settlement west of the Appalachian Mountains to prevent conflict with Native peoples. Outraged land-hungry colonists who saw it as British tyranny over their westward ambitions." },
+  { id: 23, category: "Period 3 (1754–1800)", term: "Virtual vs. actual representation", definition: "British argument that Parliament virtually represented all subjects (including colonists) vs. colonial argument that they could only be taxed by assemblies they actually elected. Core constitutional dispute behind 'no taxation without representation.'" },
+  { id: 24, category: "Period 3 (1754–1800)", term: "Common Sense (1776)", definition: "Thomas Paine's pamphlet arguing in plain language for American independence and republican government. Sold 500,000 copies; shifted public opinion decisively toward independence by framing monarchy as irrational tyranny." },
+  { id: 25, category: "Period 3 (1754–1800)", term: "Articles of Confederation (1781)", definition: "First U.S. constitution creating a weak central government with no power to tax, regulate commerce, or enforce laws. Failures (Shays' Rebellion, economic chaos) demonstrated the need for the Constitution." },
+  { id: 26, category: "Period 3 (1754–1800)", term: "Shays' Rebellion (1786–87)", definition: "Armed uprising by Massachusetts farmers protesting debt foreclosures under the weak Confederation government. Alarmed elites and provided key impetus for the Constitutional Convention in 1787." },
+  { id: 27, category: "Period 3 (1754–1800)", term: "3/5 Compromise", definition: "Constitutional agreement counting enslaved persons as 3/5 of a person for apportionment of representation and direct taxes. Gave slave states disproportionate political power in Congress and the Electoral College." },
+  { id: 28, category: "Period 3 (1754–1800)", term: "Federalist No. 10 (Madison)", definition: "Essay arguing a large republic would control factions better than small democracies by making it harder for any single faction to dominate. Key defense of the Constitution and theory of pluralist republican government." },
+  { id: 29, category: "Period 3 (1754–1800)", term: "Bill of Rights (1791)", definition: "First ten amendments to the Constitution guaranteeing individual liberties (speech, religion, press, assembly, due process, etc.). Added to secure ratification by Anti-Federalists who feared a powerful central government." },
+  { id: 30, category: "Period 3 (1754–1800)", term: "Hamilton's financial program", definition: "Treasury Secretary Hamilton's plan: assume state debts, create a national bank, tariffs to protect industry, excise taxes. Strengthened federal government but sparked opposition from Jefferson/Madison who founded the Democratic-Republican Party." },
+  { id: 31, category: "Period 3 (1754–1800)", term: "Alien and Sedition Acts (1798)", definition: "Federalist laws extending the residency requirement for citizenship and criminalizing criticism of the government. Jefferson and Madison responded with the Virginia and Kentucky Resolutions asserting states' rights to nullify federal law." },
+  { id: 32, category: "Period 4 (1800–1848)", term: "Revolution of 1800", definition: "Jefferson's peaceful transfer of power from Federalists to Democratic-Republicans—first peaceful transfer between opposing parties in U.S. history. Jefferson called it a revolution restoring republican principles against Federalist 'monarchism.'" },
+  { id: 33, category: "Period 4 (1800–1848)", term: "Marbury v. Madison (1803)", definition: "Chief Justice Marshall's ruling establishing judicial review—the Supreme Court's power to strike down unconstitutional laws. Cornerstone of American constitutional law and a dramatic assertion of judicial power." },
+  { id: 34, category: "Period 4 (1800–1848)", term: "Louisiana Purchase (1803)", definition: "Jefferson bought 828,000 sq. miles from Napoleon for $15 million, doubling the U.S. Jefferson struggled with this constitutionally (no explicit power to purchase territory) but proceeded; Lewis & Clark followed." },
+  { id: 35, category: "Period 4 (1800–1848)", term: "Market revolution", definition: "1820s–1840s transformation of the U.S. economy through manufacturing, transportation (canals, railroads), and commercial agriculture. Created a national market, middle class, and wage-labor system; reshaped family and gender roles." },
+  { id: 36, category: "Period 4 (1800–1848)", term: "Missouri Compromise (1820)", definition: "Admitted Missouri (slave) and Maine (free); banned slavery north of 36°30' in the Louisiana Territory. Temporarily resolved the sectional crisis over slavery's expansion; called by Jefferson 'a fire bell in the night.'" },
+  { id: 37, category: "Period 4 (1800–1848)", term: "Monroe Doctrine (1823)", definition: "Declared the Western Hemisphere closed to further European colonization and U.S. non-interference in European affairs. Asserted U.S. dominance in the Americas; became cornerstone of American foreign policy." },
+  { id: 38, category: "Period 4 (1800–1848)", term: "Second Great Awakening", definition: "Religious revival (c. 1800–1840s) emphasizing free will and perfectibility of humanity. Fueled reform movements—abolitionism, temperance, women's rights, public education—by inspiring moral responsibility to improve society." },
+  { id: 39, category: "Period 4 (1800–1848)", term: "Nullification Crisis (1832–33)", definition: "South Carolina declared federal tariffs (1828, 1832) null and void within the state. Jackson threatened force; the crisis was resolved by a compromise tariff. Intensified sectional tensions over states' rights." },
+  { id: 40, category: "Period 4 (1800–1848)", term: "Indian Removal Act (1830)", definition: "Law authorizing forced relocation of Native peoples east of the Mississippi to 'Indian Territory.' Led to the Trail of Tears (1838–39), in which thousands of Cherokee died during forced migration." },
+  { id: 41, category: "Period 4 (1800–1848)", term: "Manifest Destiny", definition: "Belief that U.S. expansion across the continent was divinely ordained and inevitable. Justified westward expansion, displacement of Native peoples, war with Mexico (1846–48), and acquisition of Texas, Oregon, California." },
+  { id: 42, category: "Period 4 (1800–1848)", term: "Seneca Falls Convention (1848)", definition: "First women's rights convention; issued Declaration of Sentiments modeled on the Declaration of Independence, declaring 'all men and women are created equal' and demanding voting rights and legal equality." },
+  { id: 43, category: "Period 4 (1800–1848)", term: "Cult of Domesticity", definition: "Ideology defining middle-class women's sphere as the home—piety, purity, domesticity, and submissiveness. Excluded women from public life but also gave women moral authority and enabled women's reform activism." },
+  { id: 44, category: "Period 5 (1844–1877)", term: "Wilmot Proviso (1846)", definition: "Congressional proposal to ban slavery from any territory acquired from Mexico. Passed the House but failed in the Senate; intensified sectional conflict by forcing a vote that realigned political parties along North/South lines." },
+  { id: 45, category: "Period 5 (1844–1877)", term: "Compromise of 1850", definition: "Henry Clay's five-part deal: admitted California as free, organized New Mexico/Utah by popular sovereignty, banned DC slave trade, strengthened Fugitive Slave Act, settled TX boundary. Postponed, but didn't prevent, secession." },
+  { id: 46, category: "Period 5 (1844–1877)", term: "Kansas-Nebraska Act (1854)", definition: "Created Kansas and Nebraska territories with popular sovereignty on slavery—repealing the Missouri Compromise. 'Bleeding Kansas' violence, collapse of Whigs, and rise of the Republican Party followed." },
+  { id: 47, category: "Period 5 (1844–1877)", term: "Dred Scott v. Sandford (1857)", definition: "Supreme Court ruled enslaved people were not citizens and had no right to sue; Congress had no power to ban slavery in territories (Missouri Compromise unconstitutional). Outraged the North and boosted Republican Party." },
+  { id: 48, category: "Period 5 (1844–1877)", term: "Emancipation Proclamation (1863)", definition: "Executive order freeing enslaved people in Confederate states still in rebellion. Did not free slaves in border states; reframed the war as a moral crusade against slavery and prevented European recognition of the Confederacy." },
+  { id: 49, category: "Period 5 (1844–1877)", term: "13th, 14th, 15th Amendments", definition: "Reconstruction amendments: 13th abolished slavery (1865); 14th granted citizenship and equal protection (1868); 15th guaranteed Black men's voting rights (1870). Together transformed constitutional law but were undermined by Jim Crow." },
+  { id: 50, category: "Period 5 (1844–1877)", term: "Radical Reconstruction", definition: "Congressional Reconstruction program (1867–77) placing Southern states under military rule, requiring Black male suffrage, and ratification of 14th Amendment for readmission. Created biracial governments and freedmen's political participation." },
+  { id: 51, category: "Period 5 (1844–1877)", term: "Freedmen's Bureau (1865)", definition: "Federal agency providing food, shelter, medical care, and education to freed people and poor whites in the postwar South. Established hundreds of schools; undermined by Johnson's vetoes and lack of land redistribution." },
+  { id: 52, category: "Period 5 (1844–1877)", term: "Sharecropping", definition: "Post-Civil War labor system where freedpeople and poor whites farmed land in exchange for a share of the crop. Debt peonage kept sharecroppers in a cycle of poverty economically similar to slavery." },
+  { id: 53, category: "Period 5 (1844–1877)", term: "Compromise of 1877", definition: "Informal deal ending the disputed 1876 presidential election: Hayes became president in exchange for withdrawing federal troops from the South. Effectively ended Reconstruction and enabled the rise of Jim Crow." },
+  { id: 54, category: "Period 5 (1844–1877)", term: "King Cotton diplomacy", definition: "Confederate strategy of withholding cotton exports to force Britain and France to recognize the Confederacy. Failed because European nations found alternative cotton sources and opposed slavery after the Emancipation Proclamation." },
+  { id: 55, category: "Period 6 (1865–1898)", term: "Gilded Age", definition: "Mark Twain's term for the late 1800s era of rapid industrialization, extreme wealth inequality, political corruption, and laissez-faire capitalism. Period of massive corporate growth (Rockefeller, Carnegie, Vanderbilt) alongside poverty." },
+  { id: 56, category: "Period 6 (1865–1898)", term: "Social Darwinism", definition: "Application of Darwin's 'survival of the fittest' to human society; used to justify wealth inequality, oppose social welfare programs, and support imperialism. Associated with Herbert Spencer and Andrew Carnegie's 'Gospel of Wealth.'" },
+  { id: 57, category: "Period 6 (1865–1898)", term: "Vertical vs. horizontal integration", definition: "Vertical integration: controlling all stages of production (Carnegie's steel). Horizontal integration: merging competing firms into a monopoly (Rockefeller's Standard Oil trust). Both concentrated economic power and crushed competition." },
+  { id: 58, category: "Period 6 (1865–1898)", term: "Homestead Act (1862)", definition: "Granted 160 acres of public land to settlers who farmed it for 5 years. Encouraged westward migration of 400,000+ families but benefited land speculators more than small farmers; accelerated displacement of Native peoples." },
+  { id: 59, category: "Period 6 (1865–1898)", term: "Dawes Act (1887)", definition: "Divided tribal lands into individual allotments (160 acres/family) to assimilate Native Americans into yeoman farming. Destroyed tribal sovereignty; Native peoples lost ~90 million acres by 1934 as 'surplus' land was sold to whites." },
+  { id: 60, category: "Period 6 (1865–1898)", term: "New Immigration (1880s–1920s)", definition: "Large wave of immigrants from Southern and Eastern Europe (Italians, Poles, Russians, Jews) and Asia. Differed culturally and religiously from earlier Northwestern European immigrants; faced nativist hostility and discrimination." },
+  { id: 61, category: "Period 6 (1865–1898)", term: "Chinese Exclusion Act (1882)", definition: "First federal law to restrict immigration based on race/nationality; barred Chinese laborers from entering the U.S. Reflected nativist fears of labor competition and racial prejudice; not repealed until 1943." },
+  { id: 62, category: "Period 6 (1865–1898)", term: "Populist (People's) Party", definition: "1890s agrarian reform party representing indebted farmers. Platform: graduated income tax, government ownership of railroads, direct election of senators, silver coinage (inflation). Bryan's 1896 defeat ended Populism as a party." },
+  { id: 63, category: "Period 6 (1865–1898)", term: "Jim Crow laws", definition: "State and local laws in the post-Reconstruction South mandating racial segregation in public facilities, transportation, schools. Enforced by violence and upheld by Plessy v. Ferguson (1896)'s 'separate but equal' doctrine." },
+  { id: 64, category: "Period 6 (1865–1898)", term: "Plessy v. Ferguson (1896)", definition: "Supreme Court upheld racial segregation under 'separate but equal' doctrine. Provided constitutional cover for Jim Crow for 58 years until Brown v. Board of Education (1954)." },
+  { id: 65, category: "Period 6 (1865–1898)", term: "Frontier Thesis (Frederick Jackson Turner, 1893)", definition: "Argument that the frontier experience forged unique American democratic character and individualism. Presented with concern since the 1890 census declared the frontier 'closed'—implying a crisis for American identity." },
+  { id: 66, category: "Period 7 (1898–1945)", term: "Yellow journalism", definition: "Sensationalist newspaper reporting (Hearst's NY Journal, Pulitzer's NY World) that exaggerated Spanish atrocities in Cuba, inflaming public opinion and helping push the U.S. into the Spanish-American War (1898)." },
+  { id: 67, category: "Period 7 (1898–1945)", term: "Roosevelt Corollary (1904)", definition: "Extension of Monroe Doctrine asserting U.S. right to intervene in Latin American nations unable to maintain 'order' or pay debts. Justified numerous U.S. military interventions in the Caribbean ('Big Stick' diplomacy)." },
+  { id: 68, category: "Period 7 (1898–1945)", term: "Progressive Era reforms", definition: "Early 1900s movement addressing industrial capitalism's abuses: antitrust legislation (Sherman Act enforcement), women's suffrage, Prohibition, direct democracy (initiative, referendum, recall), direct election of senators (17th Amendment)." },
+  { id: 69, category: "Period 7 (1898–1945)", term: "Muckrakers", definition: "Progressive Era investigative journalists exposing corruption and social problems. Upton Sinclair (The Jungle—meatpacking), Ida Tarbell (Standard Oil monopoly), Jacob Riis (urban poverty) prompted public outrage and reform legislation." },
+  { id: 70, category: "Period 7 (1898–1945)", term: "19th Amendment (1920)", definition: "Granted women the right to vote, culminating a 72-year suffrage campaign. Result of activism by NAWSA (Carrie Chapman Catt) and more militant tactics of the National Woman's Party (Alice Paul)." },
+  { id: 71, category: "Period 7 (1898–1945)", term: "Great Migration (1910–1970)", definition: "Movement of ~6 million Black Americans from the rural South to Northern and Western cities seeking industrial jobs and escape from Jim Crow. Transformed Black political power, culture (Harlem Renaissance), and Northern urban demographics." },
+  { id: 72, category: "Period 7 (1898–1945)", term: "Red Scare (1919–1920)", definition: "First Red Scare: fears of communist revolution following WWI and Russian Revolution. Palmer Raids arrested thousands of suspected radicals, many deported. Reflected nativist fears and anti-labor hostility." },
+  { id: 73, category: "Period 7 (1898–1945)", term: "Harlem Renaissance", definition: "Cultural flowering of African American literature, art, and music in 1920s Harlem. Langston Hughes, Zora Neale Hurston, Duke Ellington. Expressed Black identity and pride; challenged racial stereotypes but didn't end discrimination." },
+  { id: 74, category: "Period 7 (1898–1945)", term: "Scopes Trial (1925)", definition: "Tennessee teacher John Scopes tried for teaching evolution; prosecution by William Jennings Bryan, defense by Clarence Darrow. Symbolized 1920s cultural conflict between modernism and religious fundamentalism." },
+  { id: 75, category: "Period 7 (1898–1945)", term: "New Deal (1933–1938)", definition: "FDR's response to the Great Depression: relief (FERA), recovery (AAA, NRA), and reform (FDIC, SEC, Social Security, Wagner Act). Expanded federal government's role in the economy but did not fully end the Depression." },
+  { id: 76, category: "Period 7 (1898–1945)", term: "Social Security Act (1935)", definition: "Created federal old-age pension, unemployment insurance, and aid to dependent children. Cornerstone of the modern welfare state; initially excluded agricultural and domestic workers (disproportionately Black)." },
+  { id: 77, category: "Period 7 (1898–1945)", term: "Wagner Act (1935)", definition: "National Labor Relations Act guaranteeing workers' rights to unionize and bargain collectively; created NLRB. Led to explosive growth of CIO industrial unions and established framework of modern labor-management relations." },
+  { id: 78, category: "Period 7 (1898–1945)", term: "Internment of Japanese Americans (1942)", definition: "Executive Order 9066 sent 120,000 Japanese Americans (2/3 were citizens) to internment camps during WWII out of wartime hysteria and racial prejudice. Upheld by Korematsu v. U.S. (1944); U.S. formally apologized in 1988." },
+  { id: 79, category: "Period 7 (1898–1945)", term: "Neutrality Acts (1935–37)", definition: "Laws reflecting American isolationism: banned arms sales and loans to belligerents, barred Americans from traveling on belligerent ships. Gradually weakened as FDR moved toward aiding Britain (Lend-Lease, 1941)." },
+  { id: 80, category: "Period 7 (1898–1945)", term: "Isolationism", definition: "U.S. foreign policy tradition of avoiding permanent alliances and European conflicts. Strong in the 1930s (America First movement); ended by Pearl Harbor (1941). Associated with fear of the 'merchants of death' and WWI disillusionment." },
+  { id: 81, category: "Period 8 (1945–1980)", term: "Containment (Truman Doctrine)", definition: "George Kennan's strategy of preventing Soviet communism from spreading beyond its existing boundaries. Truman Doctrine (1947) extended aid to Greece/Turkey; became the framework for U.S. Cold War policy for 40 years." },
+  { id: 82, category: "Period 8 (1945–1980)", term: "Marshall Plan (1948)", definition: "$13 billion U.S. aid program to rebuild Western European economies after WWII. Aimed to prevent communism from exploiting poverty; succeeded in stabilizing Western democracies and creating postwar economic boom." },
+  { id: 83, category: "Period 8 (1945–1980)", term: "McCarthyism", definition: "Senator Joseph McCarthy's anti-communist campaign (1950–54) using reckless accusations, guilt by association, and blacklisting. Senate Army hearings (1954) exposed his tactics; he was censured. Symbol of anti-communist hysteria." },
+  { id: 84, category: "Period 8 (1945–1980)", term: "Korean War (1950–53)", definition: "First 'hot' war of the Cold War era. U.S. led UN forces defended South Korea from North Korean/Chinese invasion; ended in armistice restoring pre-war border. Called the 'Forgotten War'; set precedent for limited war." },
+  { id: 85, category: "Period 8 (1945–1980)", term: "Brown v. Board of Education (1954)", definition: "Unanimous Supreme Court decision overturning Plessy v. Ferguson, declaring racial segregation in public schools unconstitutional. Warren Court ruled 'separate but equal' inherently unequal; sparked the civil rights movement." },
+  { id: 86, category: "Period 8 (1945–1980)", term: "Massive Retaliation / Eisenhower Doctrine", definition: "Eisenhower's 'New Look' defense policy threatening nuclear retaliation against Soviet aggression; cheaper than conventional forces ('more bang for the buck'). Eisenhower also warned of the 'military-industrial complex' in his farewell address." },
+  { id: 87, category: "Period 8 (1945–1980)", term: "Montgomery Bus Boycott (1955–56)", definition: "381-day boycott by Black residents of Montgomery, AL, after Rosa Parks's arrest. Led by Martin Luther King Jr.; ended with Supreme Court ruling bus segregation unconstitutional. Launched the nonviolent direct action civil rights movement." },
+  { id: 88, category: "Period 8 (1945–1980)", term: "Civil Rights Act of 1964", definition: "Banned discrimination based on race, color, religion, sex, or national origin in employment and public accommodations. Created EEOC to enforce anti-discrimination law. LBJ's signature achievement after JFK's assassination." },
+  { id: 89, category: "Period 8 (1945–1980)", term: "Voting Rights Act of 1965", definition: "Outlawed discriminatory voting practices (literacy tests, poll taxes) that had disenfranchised Black voters. Followed Bloody Sunday (Selma march). Dramatically increased Black voter registration across the South." },
+  { id: 90, category: "Period 8 (1945–1980)", term: "Great Society", definition: "LBJ's ambitious domestic program: Medicare/Medicaid, Elementary and Secondary Education Act, Voting Rights Act, Immigration Act (1965), War on Poverty. Expanded the federal government's role more than any program since the New Deal." },
+  { id: 91, category: "Period 8 (1945–1980)", term: "Gulf of Tonkin Resolution (1964)", definition: "Congressional authorization (based on disputed attack on U.S. ships) giving LBJ broad authority to escalate U.S. military involvement in Vietnam without a formal declaration of war. Used to justify massive troop deployments." },
+  { id: 92, category: "Period 8 (1945–1980)", term: "Tet Offensive (1968)", definition: "Massive coordinated Viet Cong/NVA assault on South Vietnamese cities during Tet holiday. Military setback for North Vietnam but propaganda victory; shattered American public confidence in the war and led LBJ not to seek reelection." },
+  { id: 93, category: "Period 8 (1945–1980)", term: "Nixon's détente and opening to China", definition: "Nixon/Kissinger's realpolitik: relaxed Cold War tensions through strategic arms limitation (SALT I, 1972), Nixon's historic visit to China (1972), and diplomatic recognition of communist China. Triangular diplomacy against USSR." },
+  { id: 94, category: "Period 8 (1945–1980)", term: "Watergate (1972–74)", definition: "Break-in at Democratic headquarters, Nixon's cover-up and obstruction, Saturday Night Massacre. Nixon resigned in August 1974—only president to do so. Produced deep public distrust of government; War Powers Act (1973) followed." },
+  { id: 95, category: "Period 8 (1945–1980)", term: "Second-wave feminism", definition: "1960s–70s women's movement expanding beyond suffrage to tackle workplace discrimination, reproductive rights, domestic violence, and sexual harassment. NOW founded (1966); ERA failed; but Title IX (1972) and Roe v. Wade (1973) passed." },
+  { id: 96, category: "Period 8 (1945–1980)", term: "Warren Court & judicial activism", definition: "Earl Warren's Supreme Court (1953–69) expanded civil liberties and civil rights: Brown (1954), Mapp v. Ohio, Gideon v. Wainwright, Miranda v. Arizona. Sparked conservative backlash and debate over judicial interpretation." },
+  { id: 97, category: "Period 9 (1980–Present)", term: "Reagan Revolution / Reaganomics", definition: "Reagan's supply-side economics ('trickle-down'): massive tax cuts (top rate 70%→28%), deregulation, reduced social spending, anti-union stance (firing PATCO strikers). Increased defense spending; tripled national debt; widened inequality." },
+  { id: 98, category: "Period 9 (1980–Present)", term: "End of the Cold War (1989–91)", definition: "Collapse of communist regimes in Eastern Europe (1989), fall of the Berlin Wall, dissolution of the USSR (1991). Reagan's military buildup, Gorbachev's reforms, and internal Soviet contradictions all contributed." },
+  { id: 99, category: "Period 9 (1980–Present)", term: "Conservative coalition / New Right", definition: "Reagan's coalition of economic conservatives (low taxes, deregulation), social conservatives (anti-abortion, school prayer, traditional family), and national security hawks. United by opposition to 1960s liberal programs and cultural change." },
+  { id: 100, category: "Period 9 (1980–Present)", term: "Persian Gulf War (1991)", definition: "U.S.-led coalition expelled Iraq from Kuwait after Saddam Hussein's invasion. Authorized by Congress and UN; rapid military victory but left Saddam in power. Established U.S. post-Cold War military dominance." },
+  { id: 101, category: "Period 9 (1980–Present)", term: "Contract with America (1994)", definition: "Newt Gingrich's Republican platform for the 1994 midterms promising welfare reform, balanced budget, crime bills. Republicans won Congress for the first time in 40 years; represented the rightward shift of American politics." },
+  { id: 102, category: "Period 9 (1980–Present)", term: "9/11 and the War on Terror", definition: "September 11, 2001 Al-Qaeda attacks killed ~3,000. Led to PATRIOT Act, creation of DHS, invasion of Afghanistan (2001), and Iraq War (2003). Transformed U.S. foreign policy, civil liberties debates, and domestic security apparatus." },
+  { id: 103, category: "Period 9 (1980–Present)", term: "USA PATRIOT Act (2001)", definition: "Expanded government surveillance powers (wiretapping, monitoring financial records) to combat terrorism. Critics argued it violated 4th Amendment protections; debate over national security vs. civil liberties became central to post-9/11 politics." },
+  { id: 104, category: "Period 9 (1980–Present)", term: "Economic globalization", definition: "Post-Cold War acceleration of international trade, investment, and production. NAFTA (1994), WTO membership. Benefited consumers and multinational corporations; accelerated deindustrialization of American manufacturing heartland." },
+  { id: 105, category: "Period 9 (1980–Present)", term: "Culture wars", definition: "Intense social/political conflicts over abortion, LGBTQ rights, immigration, affirmative action, prayer in schools, flag burning, and the meaning of American identity that defined late 20th–early 21st century politics." },
+  { id: 106, category: "Period 9 (1980–Present)", term: "Demographic change & immigration", definition: "Immigration Reform Act (1965) opened immigration to Asia/Latin America; by 2000, the U.S. was becoming majority-minority. Debates over immigration drove politics from IRCA (1986) through DACA, border crises, and sanctuary cities." },
+  { id: 107, category: "Key Themes & Concepts", term: "Federalism", definition: "Division of power between national and state governments. A central tension throughout U.S. history: from Federalists vs. Anti-Federalists to nullification crisis, Civil War, New Deal, and civil rights to contemporary debates over healthcare and marijuana." },
+  { id: 108, category: "Key Themes & Concepts", term: "Sectionalism", definition: "Prioritizing regional interests over national unity. Most acute in the antebellum period as Northern industrialism and Southern plantation slavery developed incompatible economic and social systems, ultimately leading to Civil War." },
+  { id: 109, category: "Key Themes & Concepts", term: "Laissez-faire capitalism", definition: "Economic doctrine opposing government intervention in markets. Dominant ideology in the Gilded Age; challenged by Progressivism and the New Deal; revived by Reagan. Central to debates about the proper role of government in the economy." },
+  { id: 110, category: "Key Themes & Concepts", term: "Exceptionalism", definition: "Belief that the U.S. has a unique mission and character—rooted in Puritan 'city on a hill,' democratic founding, and frontier experience. Used to justify both isolationism and interventionism." },
+  { id: 111, category: "Key Themes & Concepts", term: "Reform movements", definition: "Recurring pattern: Second Great Awakening → abolitionism/temperance/women's rights; Progressive Era → labor, political reform; New Deal → economic security; Great Society → civil rights, poverty. Each expanded government's role in protecting individuals." },
+  { id: 112, category: "Key Themes & Concepts", term: "Nativism", definition: "Hostility toward immigrants and foreign-born people in favor of 'native' Americans. Recurred from anti-Irish Know-Nothings (1840s–50s), to Chinese Exclusion (1882), to 1920s immigration restriction, to late 20th-century anti-Latino sentiment." },
+  { id: 113, category: "Key Themes & Concepts", term: "Continuity and change in race relations", definition: "From slavery → Black codes → Reconstruction → Jim Crow → Great Migration → Civil Rights Act. Each moment of progress was followed by backlash. Systemic racism persisted despite legal reforms." },
+  { id: 114, category: "Key Themes & Concepts", term: "American foreign policy spectrum", definition: "Isolationism vs. interventionism. Shifts: pre-WWI isolationism → WWI intervention → interwar isolation → WWII/Cold War interventionism → Vietnam-era questioning → post–Cold War." },
+  { id: 115, category: "Key Themes & Concepts", term: "Popular sovereignty", definition: "The principle that government authority derives from the people. In antebellum debates, referred specifically to allowing settlers of a territory to vote on whether to allow slavery." },
+  { id: 116, category: "Key Themes & Concepts", term: "Checks and balances / separation of powers", definition: "Constitutional system dividing authority among three branches. Tested by Lincoln's wartime orders, FDR's court-packing scheme, Nixon's executive privilege claims, and the War Powers Act." },
+  { id: 117, category: "Key Documents & Speeches", term: "Declaration of Independence (1776)", definition: "Jefferson's statement of natural rights philosophy (Locke), colonial grievances, and independence. 'All men are created equal' became the moral foundation for later movements—abolitionism, women's rights, civil rights." },
+  { id: 118, category: "Key Documents & Speeches", term: "The Federalist Papers (1787–88)", definition: "85 essays by Hamilton, Madison, and Jay defending the Constitution during ratification debates. Key arguments: Federalist #10 (factions), #51 (separation of powers), #70 (executive energy)." },
+  { id: 119, category: "Key Documents & Speeches", term: "Washington's Farewell Address (1796)", definition: "Warned against permanent alliances with foreign nations, political parties, and sectionalism. Shaped American isolationism; cited for 150 years by those opposing foreign entanglements." },
+  { id: 120, category: "Key Documents & Speeches", term: "Lincoln's Second Inaugural Address (1865)", definition: "'With malice toward none, with charity for all.' Framed the war as divine punishment for slavery; called for national reconciliation. Set a conciliatory tone Radical Republicans would reject." },
+  { id: 121, category: "Key Documents & Speeches", term: "MLK's 'Letter from Birmingham Jail' (1963)", definition: "Response to white clergymen urging patience; defended nonviolent direct action and the urgency of justice. Distinguished just from unjust laws. One of the great moral documents of American history." },
+  { id: 122, category: "Key Documents & Speeches", term: "FDR's Four Freedoms (1941)", definition: "State of the Union articulating freedom of speech, freedom of worship, freedom from want, freedom from fear as universal values. Provided moral framework for WWII and influenced the UN Declaration of Human Rights (1948)." },
+];
+
+// ─────────────────────────────────────────────
+//  QUIZ DATA — AP-style stimulus + MC questions
+// ─────────────────────────────────────────────
+const quizSets = [
+  {
+    id: "q1",
+    period: "Period 1 (1491–1607)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "Bartolomé de las Casas, A Short Account of the Destruction of the Indies, 1542 (paraphrased)",
+    stimulus: `The indigenous peoples of these islands had no weapons beyond bows and arrows and the occasional wooden lance—they were the most simple, guileless, and gentle of all the peoples God created. Their lords commanded no more than three hundred subjects. It was upon these meek and peaceable people that the Spanish fell like ravenous wolves, tigers, and lions, starved for many days. For forty years I have witnessed these tyrannies and cruelties that no age can parallel. They laid waste to whole kingdoms with the sword, the fire-brand, and the dog. They killed indiscriminately—the elderly, women, children—to terrorize any who might resist, and to satisfy the blood-lust of their masters.`,
+    questions: [
+      {
+        id: "q1a",
+        text: "Las Casas's account was most directly a response to which Spanish colonial practice?",
+        choices: [
+          "The Treaty of Tordesillas, which divided the Americas between Spain and Portugal",
+          "The encomienda system, which compelled Native peoples to provide labor and tribute to Spanish colonizers",
+          "The Columbian Exchange, which introduced European diseases to the Americas",
+          "The Reconquista, which shaped Spanish attitudes toward religious minorities"
+        ],
+        correct: 1,
+        explanation: "Las Casas was reacting specifically to the encomienda system and the brutal labor extraction it imposed on Native peoples. His writings were a direct moral attack on that institution, eventually influencing the New Laws of 1542 that tried (incompletely) to restrict it."
+      },
+      {
+        id: "q1b",
+        text: "Which of the following best describes a historian's limitation when using this source?",
+        choices: [
+          "Las Casas was not a Spanish colonist and therefore had no direct knowledge of colonial conditions",
+          "Las Casas was an advocate with a clear moral agenda, which may have caused him to exaggerate conditions to sway the Spanish crown",
+          "The account was written in Latin and therefore inaccessible to most Spanish colonists",
+          "Las Casas only witnessed conditions in North America, not the Caribbean where abuses were worst"
+        ],
+        correct: 1,
+        explanation: "While Las Casas was a genuine eyewitness who later renounced his own encomienda, historians must account for his explicit advocacy purpose: he wrote to persuade the Spanish crown to reform colonial policy. This makes the source valuable as evidence of abuses but requires critical reading."
+      },
+      {
+        id: "q1c",
+        text: "Las Casas's critique contributed most directly to which longer-term development?",
+        choices: [
+          "The complete abolition of forced labor in Spanish colonies by 1600",
+          "Ongoing debates about the morality of conquest that influenced later colonial justifications",
+          "The transfer of Spanish colonial authority to the Catholic Church",
+          "The immediate independence of indigenous peoples across New Spain"
+        ],
+        correct: 1,
+        explanation: "Las Casas's writings became part of the 'Black Legend' about Spanish brutality and fed enduring European debates about the legitimacy of conquest and empire. His arguments did not end forced labor but created a moral vocabulary that later reform movements and independence advocates would draw upon."
+      }
+    ]
+  },
+  {
+    id: "q2",
+    period: "Period 2 (1607–1754)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "John Winthrop, 'A Model of Christian Charity,' sermon aboard the Arbella, 1630 (paraphrased)",
+    stimulus: `We must consider that we shall be as a city upon a hill. The eyes of all people are upon us. So that if we shall deal falsely with our God in this work we have undertaken, and so cause Him to withdraw His present help from us, we shall be made a story and a byword through the world. We must be knit together in this work as one man. We must delight in each other, make one another's conditions our own, rejoice together, mourn together, labor and suffer together—always having before our eyes our commission and community in the work, our community as members of the same body.`,
+    questions: [
+      {
+        id: "q2a",
+        text: "Winthrop's sermon most directly reflects which Puritan belief about the New England colonies?",
+        choices: [
+          "Individual spiritual salvation was more important than community obligations",
+          "The Massachusetts Bay Colony had a special covenant with God to serve as a moral example to the world",
+          "The Church of England was a legitimate institution that simply needed moderate reform",
+          "Economic prosperity was the primary purpose of the colonial enterprise"
+        ],
+        correct: 1,
+        explanation: "Winthrop's 'city upon a hill' metaphor captures the Puritan conviction that their colony was in a special covenant with God—a divinely commissioned model community. This idea of collective mission and divine accountability is central to early Puritan theology and governance."
+      },
+      {
+        id: "q2b",
+        text: "How did Winthrop's vision most directly shape early Massachusetts governance?",
+        choices: [
+          "It established complete religious toleration as a founding principle",
+          "It justified a close relationship between church membership and political participation",
+          "It encouraged Massachusetts to adopt the headright system used in Virginia",
+          "It promoted individual rights against government interference"
+        ],
+        correct: 1,
+        explanation: "Winthrop's vision of a unified godly community justified restricting political rights (such as voting in colony-wide elections) to church members. The community's covenant with God meant religious and civil authority were deeply intertwined—as dissidents like Anne Hutchinson and Roger Williams discovered."
+      },
+      {
+        id: "q2c",
+        text: "Which 20th-century development most directly echoes the theme expressed in Winthrop's sermon?",
+        choices: [
+          "The internment of Japanese Americans during World War II",
+          "Cold War-era rhetoric portraying the United States as a beacon of democracy against communist tyranny",
+          "The emergence of the New Deal's focus on economic equality",
+          "Nixon's policy of détente, which sought accommodation with adversaries"
+        ],
+        correct: 1,
+        explanation: "Winthrop's 'city upon a hill' became a recurring touchstone in American political rhetoric. Cold War leaders—especially JFK and Reagan—explicitly invoked this image to frame the United States as a model of free, democratic governance that the world was watching."
+      }
+    ]
+  },
+  {
+    id: "q3",
+    period: "Period 3 (1754–1800)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "James Madison, Federalist No. 10, 1787 (paraphrased)",
+    stimulus: `The instability, injustice, and confusion which have been the downfall of popular governments everywhere are the diseases under which popular governments have everywhere perished. The friend of popular government never finds himself so much alarmed for their character and fate as when he contemplates their tendency to the dangerous vice of faction. A faction I understand to be a number of citizens, whether amounting to a majority or a minority of the whole, who are united by some common impulse of passion, or interest, adverse to the rights of other citizens, or to the permanent and aggregate interests of the community. The only remedy for faction is either to remove its causes—which would require destroying liberty itself—or to control its effects. A republic—by which I mean a government in which the scheme of representation takes place—opens a different prospect. Extend the sphere, and you take in a greater variety of parties and interests; you make it less probable that a majority of the whole will have a common motive to invade the rights of other citizens.`,
+    questions: [
+      {
+        id: "q3a",
+        text: "Madison's central argument in this passage is that a large republic would",
+        choices: [
+          "Eliminate factions entirely by requiring all citizens to share common economic interests",
+          "Control the damage factions cause by making it harder for any single faction to dominate",
+          "Replace elected representatives with direct democracy to better reflect the people's will",
+          "Strengthen state governments relative to the national government to prevent tyranny"
+        ],
+        correct: 1,
+        explanation: "Madison argues that a large republic with many competing factions is safer than a small democracy where one faction can easily take control. Size and diversity make majority tyranny less likely—the multiplicity of interests acts as a check. This is his key argument for ratifying the Constitution."
+      },
+      {
+        id: "q3b",
+        text: "Which group would most likely have used Madison's argument to oppose the Federalist position?",
+        choices: [
+          "Anti-Federalists, who believed large republics were historically unstable and that liberty required small, local government",
+          "Radical Republicans, who wanted to expand suffrage to all adult males immediately",
+          "Democratic-Republicans, who supported a strong national bank and protective tariffs",
+          "Loyalists, who favored continued British rule as more stable than self-government"
+        ],
+        correct: 0,
+        explanation: "Anti-Federalists like 'Brutus' disagreed with Madison, arguing that republics could only function well at a small scale where citizens shared common values—the traditional view from Montesquieu. They feared a large national government would be too distant, unaccountable, and likely to become tyrannical."
+      },
+      {
+        id: "q3c",
+        text: "Madison's theory of faction most directly addresses which ongoing tension in American politics?",
+        choices: [
+          "The debate over whether the U.S. should pursue an isolationist or interventionist foreign policy",
+          "The conflict between majority rule and the protection of minority rights",
+          "The question of whether federal or state governments should control taxation",
+          "The disagreement over how to deal with western expansion and Native American land"
+        ],
+        correct: 1,
+        explanation: "Madison's concern is fundamentally about whether democratic majorities can be trusted not to oppress minorities. This tension—majority rule vs. minority rights—runs throughout American history, from the oppression of enslaved people, to civil rights battles, to contemporary debates about political polarization."
+      }
+    ]
+  },
+  {
+    id: "q4",
+    period: "Period 4 (1800–1848)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "John L. O'Sullivan, 'Annexation,' United States Magazine and Democratic Review, 1845 (paraphrased)",
+    stimulus: `It is now time for the opposition to the annexation of Texas to cease. Texas is now ours. Other nations have intruded and have presumed to discuss the question with us. This is most unwarrantable. Away with all this foreign intervention! Texas has been absorbed into the Union in the inevitable fulfillment of the general law which is rolling our population westward. The Anglo-Saxon foot is already on its borders. Already the advance guard of the irresistible army of Anglo-Saxon emigration has begun to pour down upon it. And that claim is by the right of our manifest destiny to overspread and to possess the whole of the continent which Providence has given us for the development of the great experiment of liberty and federated self-government entrusted to us.`,
+    questions: [
+      {
+        id: "q4a",
+        text: "O'Sullivan's argument most directly drew upon which broader belief in American culture?",
+        choices: [
+          "The Puritan covenant theology that America had a special mission ordained by God",
+          "Enlightenment rationalism that justified expansion on grounds of economic efficiency",
+          "Social Darwinist theory that stronger civilizations had a scientific obligation to displace weaker ones",
+          "Federalist arguments that a large republic required large territory to function properly"
+        ],
+        correct: 0,
+        explanation: "O'Sullivan explicitly frames expansion as providential—divinely ordained. This directly echoes the Puritan idea of a special American mission (Winthrop's 'city on a hill'), now secularized and applied to continental expansion. The language of 'Providence' and national destiny links Manifest Destiny to a long tradition of American exceptionalism."
+      },
+      {
+        id: "q4b",
+        text: "Which group would have been most likely to challenge O'Sullivan's framing of expansion as 'manifest destiny'?",
+        choices: [
+          "Northern Whigs who opposed the Mexican War on the grounds that it would expand the territory available for slavery",
+          "Southern Democrats who believed the Constitution prohibited the annexation of foreign territory",
+          "Nativists who opposed immigration but supported territorial expansion",
+          "Anti-Federalists who wanted states to control westward expansion independently"
+        ],
+        correct: 0,
+        explanation: "Northern Whigs like Henry Clay and Abraham Lincoln opposed the Mexican War (and its aftermath) precisely because they saw expansion as a vehicle for spreading slavery. The Wilmot Proviso, which sought to ban slavery in any territory acquired from Mexico, reflected this concern. To these critics, 'Manifest Destiny' masked the expansion of an immoral institution."
+      },
+      {
+        id: "q4c",
+        text: "O'Sullivan's phrase 'manifest destiny' most directly caused which of the following?",
+        choices: [
+          "The Missouri Compromise, which established a geographic line limiting slavery's spread",
+          "A renewed debate over slavery's expansion that ultimately contributed to the sectional crisis leading to the Civil War",
+          "The Monroe Doctrine, which warned European powers against interfering in the Western Hemisphere",
+          "The Indian Removal Act, which relocated Native peoples to make way for white settlement"
+        ],
+        correct: 1,
+        explanation: "The territorial acquisitions justified by Manifest Destiny—Texas, Oregon, California, the Southwest—reignited the debate over whether slavery would spread to new territories. This debate drove the Wilmot Proviso, Compromise of 1850, Kansas-Nebraska Act, and ultimately the breakdown of the political system that led to the Civil War."
+      }
+    ]
+  },
+  {
+    id: "q5",
+    period: "Period 5 (1844–1877)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "Abraham Lincoln, Second Inaugural Address, March 4, 1865 (paraphrased)",
+    stimulus: `On the occasion corresponding to this four years ago, all thoughts were anxiously directed to an impending civil war. Neither party expected for the war the magnitude or the duration which it has already attained. Neither anticipated that the cause of the conflict might cease with, or even before, the conflict itself should cease. Both read the same Bible and pray to the same God, and each invokes His aid against the other. It may seem strange that any men should dare to ask a just God's assistance in wringing their bread from the sweat of other men's faces; but let us judge not, that we be not judged. The Almighty has His own purposes. If God wills that this war continue until all the wealth piled by the bondsman's two hundred and fifty years of unrequited toil shall be sunk—so shall it be. With malice toward none, with charity for all, with firmness in the right as God gives us to see the right, let us strive to finish the work we are in—to bind up the nation's wounds.`,
+    questions: [
+      {
+        id: "q5a",
+        text: "Lincoln's address most directly frames the Civil War as",
+        choices: [
+          "A constitutional dispute over states' rights that had been unnecessarily escalated",
+          "Divine punishment for the national sin of slavery, shared by both North and South",
+          "A necessary war to preserve the industrial economy of the free North",
+          "A conflict caused primarily by Southern aggression against a peaceful Union"
+        ],
+        correct: 1,
+        explanation: "Lincoln explicitly frames the war as God's judgment on the nation as a whole for the sin of slavery—not just on the South. The passage about 'bondsman's two hundred and fifty years of unrequited toil' shows Lincoln understood slavery as the fundamental cause, and framed the war's suffering as shared national penance."
+      },
+      {
+        id: "q5b",
+        text: "Lincoln's call for 'malice toward none, charity for all' most directly conflicted with which subsequent development?",
+        choices: [
+          "The Thirteenth Amendment, which abolished slavery throughout the United States",
+          "Radical Reconstruction, in which Congress imposed punitive conditions on Southern readmission and demanded Black suffrage",
+          "The Freedmen's Bureau, which provided aid to formerly enslaved people",
+          "The Compromise of 1877, which ended federal military presence in the South"
+        ],
+        correct: 1,
+        explanation: "Lincoln's conciliatory tone directly clashed with the Radical Republican approach after Lincoln's assassination. Radicals like Thaddeus Stevens and Charles Sumner insisted on more punitive terms for Southern readmission, military reconstruction, and guaranteed rights for freedpeople—a much harsher policy than Lincoln's 'with malice toward none.'"
+      },
+      {
+        id: "q5c",
+        text: "Which historical thinking skill does a historian most need to apply when comparing Lincoln's Second Inaugural to the outcomes of Reconstruction?",
+        choices: [
+          "Causation — identifying the economic factors that caused the Civil War",
+          "Continuity and Change Over Time — analyzing how Lincoln's vision of reconciliation was or was not realized in the decades after the war",
+          "Comparison — contrasting Lincoln's views with those of Confederate President Jefferson Davis",
+          "Contextualization — explaining how industrialization in the North shaped Lincoln's wartime policies"
+        ],
+        correct: 1,
+        explanation: "Comparing Lincoln's aspirational vision of reconciliation and justice with the actual outcomes of Reconstruction (and its subsequent collapse) requires analyzing continuity and change over time: how much of Lincoln's vision was realized? How quickly did Reconstruction's gains erode, and why?"
+      }
+    ]
+  },
+  {
+    id: "q6",
+    period: "Period 6 (1865–1898)",
+    stimulusType: "Secondary Source",
+    stimulusLabel: "Historian on the Gilded Age, adapted from a scholarly overview, c. 2005",
+    stimulus: `The Gilded Age presents a paradox at the heart of American democratic culture. On one hand, the era produced unprecedented economic growth, technological transformation, and the emergence of a mass consumer society. Industrialists like Carnegie and Rockefeller created enormous wealth and, through philanthropy, reshaped American education and culture. On the other hand, this same period saw the systematic exploitation of immigrant and child labor, the violent suppression of union organizing, the near-extermination of the American bison, and the final military destruction of Native American sovereignty. Mark Twain chose his term carefully: the age was 'gilded'—bright on the surface, concealing corruption and suffering underneath. The political institutions of the period proved largely incapable of checking corporate power, as senators were widely understood to represent the interests of railroad companies and trusts rather than ordinary voters.`,
+    questions: [
+      {
+        id: "q6a",
+        text: "The historian's argument is best described as",
+        choices: [
+          "The Gilded Age was a period of unambiguous economic progress that raised living standards for all Americans",
+          "Economic growth in the Gilded Age came alongside serious social, political, and environmental costs",
+          "Corporate leaders of the Gilded Age were primarily motivated by philanthropic goals rather than profit",
+          "The political corruption of the Gilded Age was primarily caused by immigrant voting blocs"
+        ],
+        correct: 1,
+        explanation: "The historian presents a balanced but critical interpretation: the era was economically dynamic but deeply problematic in its treatment of workers, Native peoples, and political integrity. The 'paradox' framing acknowledges both the growth and its hidden costs."
+      },
+      {
+        id: "q6b",
+        text: "Which of the following most directly supports the historian's claim about political institutions failing to check corporate power?",
+        choices: [
+          "The passage of the Sherman Antitrust Act in 1890, which immediately broke up major monopolies",
+          "The Senate's initial failure to enforce the Sherman Act effectively, allowing trusts to continue operating",
+          "The Supreme Court's ruling in Plessy v. Ferguson upholding racial segregation",
+          "The passage of the Homestead Act, which distributed land to ordinary settlers"
+        ],
+        correct: 1,
+        explanation: "The Sherman Antitrust Act (1890) was passed but largely unenforced for years. Courts interpreted it so narrowly that it was sometimes applied to labor unions rather than corporations. This reflects the historian's point that political institutions were inadequate to curb corporate power in this era."
+      },
+      {
+        id: "q6c",
+        text: "The Populist Party's platform of the 1890s most directly challenged which aspect of the Gilded Age described in the passage?",
+        choices: [
+          "The philanthropic activities of industrial leaders like Carnegie and Rockefeller",
+          "The dominance of corporate and railroad interests over democratic political processes",
+          "The technological transformation that displaced skilled craft workers",
+          "The cultural influence of mass immigration on American identity"
+        ],
+        correct: 1,
+        explanation: "Populists specifically targeted the railroads, banks, and the political corruption that served wealthy interests over farmers. Their platform calling for government ownership of railroads, silver coinage, and direct election of senators was a direct challenge to the corporate capture of politics the historian describes."
+      }
+    ]
+  },
+  {
+    id: "q7",
+    period: "Period 7 (1898–1945)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "Upton Sinclair, The Jungle, 1906 (paraphrased)",
+    stimulus: `There was never the least attention paid to what was cut up for sausage; there would come all the way back from Europe old sausage that had been rejected, and that was moldy and white—it would be dosed with borax and glycerin, and dumped into the hoppers, and made over again for home consumption. There would be meat that had tumbled out on the floor, in the dirt and sawdust, where the workers had tramped and spit uncounted billions of germs. There would be meat stored in great piles in rooms, and the water from leaky roofs would drip over it; thousands of rats would race about on it. It was too dark in these storage places to see well, but a man could run his hand over these piles of meat and sweep off handfuls of the dried dung of rats.`,
+    questions: [
+      {
+        id: "q7a",
+        text: "The publication of The Jungle most directly contributed to which legislative outcome?",
+        choices: [
+          "The passage of the Sherman Antitrust Act targeting meatpacking monopolies",
+          "The Federal Meat Inspection Act and Pure Food and Drug Act (1906), expanding federal regulatory authority",
+          "The Clayton Antitrust Act, which strengthened labor unions' right to organize",
+          "The 17th Amendment, requiring direct election of senators"
+        ],
+        correct: 1,
+        explanation: "Public outrage over Sinclair's descriptions of unsanitary meatpacking conditions directly pressured Congress to pass the Federal Meat Inspection Act and the Pure Food and Drug Act in 1906—both signed by Theodore Roosevelt. These were landmark expansions of federal regulatory power over industry."
+      },
+      {
+        id: "q7b",
+        text: "Sinclair later remarked, 'I aimed at the public's heart and by accident I hit it in the stomach.' This statement best illustrates that",
+        choices: [
+          "Sinclair was a poor writer whose literary skills were inadequate to convey his message",
+          "The public and policymakers responded to food safety concerns rather than to Sinclair's intended message about the exploitation of immigrant workers",
+          "Sinclair's goal was always food safety reform rather than labor reform",
+          "The novel failed to generate any significant political response"
+        ],
+        correct: 1,
+        explanation: "Sinclair wrote The Jungle to expose the brutal exploitation of immigrant meatpacking workers and the capitalist system—a socialist critique. Instead, readers (and TR) focused on the unsanitary food conditions. The resulting legislation improved food safety but did little to address the workers' wages, hours, or conditions Sinclair actually cared about."
+      },
+      {
+        id: "q7c",
+        text: "The broader Progressive Era movement, of which Sinclair was a part, most directly differed from the Populist movement of the 1890s in that Progressivism",
+        choices: [
+          "Focused primarily on rural agricultural communities rather than urban industrial workers",
+          "Was centered in urban middle-class reform efforts targeting corporate power and government corruption",
+          "Sought the complete elimination of capitalism and private property",
+          "Was exclusively concerned with racial equality and civil rights for Black Americans"
+        ],
+        correct: 1,
+        explanation: "Populism was primarily a movement of indebted farmers seeking economic relief. Progressivism was broader, urban, and middle-class—journalists, social workers, professionals—who targeted corporate abuses, political corruption, and social inequality through regulation and democratic reform, not agrarian economic relief."
+      }
+    ]
+  },
+  {
+    id: "q8",
+    period: "Period 7 (1898–1945)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "Franklin D. Roosevelt, First Inaugural Address, March 4, 1933 (paraphrased)",
+    stimulus: `I am certain that my fellow Americans expect that on my induction into the Presidency I will address them with a candor and a decision which the present situation of our nation demands. This is preeminently the time to speak the truth, the whole truth, frankly and boldly. So, first of all, let me assert my firm belief that the only thing we have to fear is fear itself—nameless, unreasoning, unjustified terror which paralyzes needed efforts to convert retreat into advance. The money changers have fled from their high seats in the temple of our civilization. We may now restore that temple to the ancient truths. The measure of the restoration lies in the extent to which we apply social values more noble than mere monetary profit. Happiness lies not in the mere possession of money; it lies in the joy of achievement, in the thrill of creative effort. In this dark hour, the nation asks for action, and action now.`,
+    questions: [
+      {
+        id: "q8a",
+        text: "Roosevelt's rhetoric in this address most directly reflects a challenge to which dominant economic ideology of the preceding era?",
+        choices: [
+          "Keynesian economics, which advocated government deficit spending to stimulate the economy",
+          "Laissez-faire capitalism and Social Darwinism, which had justified minimal government intervention in the economy",
+          "Socialism, which called for collective ownership of the means of production",
+          "Mercantilism, which prioritized trade surpluses and colonial resource extraction"
+        ],
+        correct: 1,
+        explanation: "Roosevelt's attack on the 'money changers' and his call for 'social values more noble than mere monetary profit' directly challenged the Gilded Age/1920s ideology that markets should operate without government interference and that wealth accumulation was a social good. His New Deal programs represented a fundamental break from laissez-faire."
+      },
+      {
+        id: "q8b",
+        text: "Critics of the New Deal from the political right most often argued that Roosevelt's programs",
+        choices: [
+          "Did not go far enough in redistributing wealth and should have included nationalization of banks",
+          "Unconstitutionally expanded federal power, threatened individual liberty, and would prevent economic recovery",
+          "Were too focused on helping industrial workers and ignored the needs of farmers",
+          "Were insufficiently aggressive in addressing racial segregation and inequality"
+        ],
+        correct: 1,
+        explanation: "Conservative critics (the American Liberty League, many Republicans, and some Supreme Court justices) argued the New Deal represented an unconstitutional expansion of federal power that threatened free enterprise and individual liberty. The Supreme Court struck down the NRA and AAA on these grounds before FDR's court-packing threat shifted its direction."
+      },
+      {
+        id: "q8c",
+        text: "Which New Deal program most directly addressed the banking crisis referenced in Roosevelt's 'money changers' passage?",
+        choices: [
+          "The Civilian Conservation Corps (CCC), which put unemployed young men to work on conservation projects",
+          "The Federal Deposit Insurance Corporation (FDIC), which insured bank deposits to restore public confidence",
+          "The Agricultural Adjustment Act (AAA), which paid farmers to reduce crop production",
+          "The Works Progress Administration (WPA), which funded public works and arts projects"
+        ],
+        correct: 1,
+        explanation: "The FDIC (created by the Banking Act of 1933) directly addressed the bank run crisis by insuring individual deposits, thus removing the incentive for panicked withdrawal. Roosevelt's 'bank holiday' and subsequent banking reforms were the most immediate response to the financial sector failures he referenced."
+      }
+    ]
+  },
+  {
+    id: "q9",
+    period: "Period 8 (1945–1980)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "George Kennan ('X'), 'The Sources of Soviet Conduct,' Foreign Affairs, July 1947 (paraphrased)",
+    stimulus: `Soviet pressure against the free institutions of the Western world is something that can be contained by the adroit and vigilant application of counterforce at a series of constantly shifting geographical and political points, corresponding to the shifts and maneuvers of Soviet policy. The issue of Soviet-American relations is in essence a test of the overall worth of the United States as a nation among nations. In the long run, there can be no real security for any democratic civilization in a world dominated by the Soviet concept of power. But if the United States can meet its own moral and civic responsibilities—if it can demonstrate that the capitalist system functions, that the free society can solve its social problems—then Soviet power will be contained, and the long-term tendencies working against Soviet tyranny will do their work.`,
+    questions: [
+      {
+        id: "q9a",
+        text: "Kennan's argument about containment most directly shaped which U.S. foreign policy development?",
+        choices: [
+          "The Marshall Plan and the Truman Doctrine, which provided economic and military aid to resist Soviet expansion",
+          "The détente policy of the Nixon administration, which sought accommodation with the USSR",
+          "The Reagan Doctrine, which actively supported anti-communist insurgencies worldwide",
+          "The Gulf War coalition, which used multilateral military force to reverse Iraqi aggression"
+        ],
+        correct: 0,
+        explanation: "Kennan's containment theory directly provided the intellectual framework for Truman's policies in 1947–48: the Truman Doctrine (military aid to Greece and Turkey) and the Marshall Plan (economic aid to Western Europe) were both designed to prevent Soviet expansion by strengthening free societies—exactly what Kennan advocated."
+      },
+      {
+        id: "q9b",
+        text: "Kennan later expressed regret that his containment argument was interpreted primarily in military rather than political and economic terms. This tension is best illustrated by",
+        choices: [
+          "The Korean War's reliance on conventional military forces rather than economic reconstruction",
+          "The Marshall Plan's emphasis on economic recovery rather than military alliances",
+          "Eisenhower's 'New Look' policy of emphasizing nuclear deterrence over conventional forces",
+          "The Civil Rights movement's challenge to racial inequality at home"
+        ],
+        correct: 0,
+        explanation: "Kennan had in mind primarily political and economic containment—strengthening free societies from within. But NSC-68 (1950) and the Korean War militarized containment. Kennan opposed this, believing that military confrontation would be counterproductive. The Korean War—relying on conventional military force rather than economic tools—exemplified the militarized containment he criticized."
+      },
+      {
+        id: "q9c",
+        text: "Kennan's claim that the U.S. must demonstrate 'that the capitalist system functions' most directly connects to which domestic tension?",
+        choices: [
+          "Cold War civil rights activism, in which Black leaders argued that racial inequality undermined U.S. credibility in the struggle against communism",
+          "The debate over whether to extend Social Security to agricultural and domestic workers",
+          "McCarthyism's campaign to identify communist infiltrators in the U.S. government",
+          "The GI Bill's expansion of higher education access to returning veterans"
+        ],
+        correct: 0,
+        explanation: "Kennan's point that the U.S. must solve its social problems to win the Cold War was frequently invoked by civil rights leaders. They argued that racial segregation gave Soviet propagandists evidence that American democracy was hypocritical. This argument influenced Truman's desegregation of the military and was part of the legal brief in Brown v. Board."
+      }
+    ]
+  },
+  {
+    id: "q10",
+    period: "Period 8 (1945–1980)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "Martin Luther King Jr., 'Letter from Birmingham Jail,' April 1963 (paraphrased)",
+    stimulus: `You express a great deal of anxiety over our willingness to break laws. This is certainly a legitimate concern. One may well ask, 'How can you advocate breaking some laws and obeying others?' The answer lies in the fact that there are two types of laws: just and unjust. One has not only a legal but a moral responsibility to obey just laws. Conversely, one has a moral responsibility to disobey unjust laws. An unjust law is a code that a numerical or power majority group compels a minority group to obey but does not make binding on itself. A just law is a code that a majority compels a minority to follow and that it is willing to follow itself. Any law that uplifts human personality is just. Any law that degrades human personality is unjust. All segregation statutes are unjust because segregation distorts the soul and damages the personality.`,
+    questions: [
+      {
+        id: "q10a",
+        text: "King's argument about just and unjust laws most directly draws upon which intellectual tradition?",
+        choices: [
+          "Marxist theory, which holds that law is an instrument of class oppression",
+          "Natural law philosophy (Aquinas, Thoreau) holding that moral law supersedes human law",
+          "Social contract theory, which holds that citizens may revolt when government breaks its contract",
+          "Legal positivism, which holds that laws derive authority from proper legislative procedure"
+        ],
+        correct: 1,
+        explanation: "King explicitly cites St. Augustine and St. Thomas Aquinas on natural and unjust law, as well as Thoreau's civil disobedience. This natural law tradition—that human laws must conform to moral law—provides the philosophical foundation for his defense of nonviolent lawbreaking in response to segregation."
+      },
+      {
+        id: "q10b",
+        text: "King wrote this letter in response to white Alabama clergymen who had called his demonstrations 'unwise and untimely.' His argument most directly challenges which criticism?",
+        choices: [
+          "That the civil rights movement was secretly led by communist organizers",
+          "That Black Americans should wait patiently for gradual change through the courts and legislation",
+          "That economic inequality, not legal segregation, was the fundamental problem facing Black Americans",
+          "That the movement's nonviolent tactics were ineffective against a violent opposition"
+        ],
+        correct: 1,
+        explanation: "The clergymen urged patience—that change would come through proper legal channels in due time. King's letter is fundamentally a rejection of 'wait': 'Justice too long delayed is justice denied.' He argues that the urgency of justice cannot be subordinated to white moderates' preference for comfort and gradual change."
+      },
+      {
+        id: "q10c",
+        text: "King's 'Letter from Birmingham Jail' contributed most directly to which outcome?",
+        choices: [
+          "The Supreme Court's Brown v. Board of Education decision declaring school segregation unconstitutional",
+          "Building national moral pressure that helped secure passage of the Civil Rights Act of 1964",
+          "The founding of the Student Nonviolent Coordinating Committee (SNCC)",
+          "The passage of the Voting Rights Act of 1965 outlawing literacy tests"
+        ],
+        correct: 1,
+        explanation: "The Letter, along with the Birmingham campaign's images of fire hoses and police dogs used against peaceful demonstrators, galvanized national and international public opinion. This moral momentum pressured Congress and the Kennedy administration and directly contributed to the political environment that produced the Civil Rights Act of 1964."
+      }
+    ]
+  },
+  {
+    id: "q11",
+    period: "Period 9 (1980–Present)",
+    stimulusType: "Primary Source",
+    stimulusLabel: "Ronald Reagan, First Inaugural Address, January 20, 1981 (paraphrased)",
+    stimulus: `These United States are confronted with an economic affliction of great proportions. We suffer from the longest and one of the worst sustained inflations in our national history. It distorts our economic decisions, penalizes thrift, and crushes the struggling young and the fixed-income elderly alike. In this present crisis, government is not the solution to our problem; government is the problem. From time to time we have been tempted to believe that society has become too complex to be managed by self-rule, that government by an elite group is superior to government for, by, and of the people. But if no one among us is capable of governing himself, then who among us has the capacity to govern someone else? It is time to check and reverse the growth of government which has shown the tendency to become government for the government.`,
+    questions: [
+      {
+        id: "q11a",
+        text: "Reagan's argument in this address most directly challenged which 20th-century political consensus?",
+        choices: [
+          "Wilsonian internationalism, which held that the U.S. should promote democracy globally through international institutions",
+          "The New Deal–Great Society liberal consensus that an active federal government was necessary to address economic and social problems",
+          "Keynesian fiscal policy of running budget deficits during recessions",
+          "The civil rights consensus that federal enforcement of equal protection was constitutionally required"
+        ],
+        correct: 1,
+        explanation: "Reagan's 'government is the problem' directly repudiated the New Deal–Great Society consensus that had shaped American domestic policy since the 1930s. By arguing that government expansion itself was the source of economic dysfunction, he provided the ideological foundation for cutting taxes, deregulating industry, and reducing social spending."
+      },
+      {
+        id: "q11b",
+        text: "Which of the following best represents a continuity between Reagan's conservative ideology and earlier strands of American political thought?",
+        choices: [
+          "Reagan's emphasis on limited government echoed Jeffersonian suspicion of centralized power and Hamilton's fear of popular democracy",
+          "Reagan's supply-side economics drew directly on the Populist Party's demand for federal regulation of railroads",
+          "Reagan's foreign policy continued the détente and accommodation with the Soviet Union established by Nixon and Kissinger",
+          "Reagan's social conservatism represented a rejection of all the values expressed in the Second Great Awakening"
+        ],
+        correct: 0,
+        explanation: "Reagan's rhetoric of limited government, individual liberty, and skepticism of centralized authority directly echoes Jeffersonian and laissez-faire traditions that opposed federal power—from Jacksonian Democrats through Gilded Age conservatives. This provides the historical continuity linking 19th-century liberalism (in the classical sense) to 20th-century conservatism."
+      },
+      {
+        id: "q11c",
+        text: "A historian arguing that Reaganomics primarily benefited wealthy Americans would most likely cite which evidence?",
+        choices: [
+          "The significant reduction in the top marginal income tax rate from 70% to 28% and the widening of income inequality during the 1980s",
+          "The expansion of Social Security benefits to more workers during the Reagan administration",
+          "The creation of new federal regulatory agencies to protect consumers during the 1980s",
+          "Reagan's decision to increase the minimum wage multiple times during his presidency"
+        ],
+        correct: 0,
+        explanation: "The reduction of the top marginal rate from 70% to 28% disproportionately benefited high earners. Income inequality (as measured by the Gini coefficient) widened significantly during the 1980s. These data points would be central to a historian arguing that 'trickle-down' economics transferred wealth upward rather than broadly benefiting the population."
+      }
+    ]
+  },
+  {
+    id: "q12",
+    period: "Key Themes & Concepts",
+    stimulusType: "Secondary Source",
+    stimulusLabel: "Historian on reform movements in American history, adapted from a scholarly article, c. 2010",
+    stimulus: `Scholars have long observed a recurring pattern in American political history: periods of reform—characterized by expanding federal power, activist government, and broadened definitions of citizenship—tend to alternate with periods of retrenchment, in which earlier gains are partially or fully reversed. The Second Great Awakening generated abolitionism and women's rights activism, but these movements met fierce resistance. Reconstruction extended citizenship and voting rights to Black men, then was dismantled within a generation. The Progressive Era curbed the worst excesses of corporate power, but the 1920s saw a return to laissez-faire conservatism. The New Deal and Great Society created the modern welfare state, but the Reagan Revolution attacked its foundations. This cycle suggests that reform in America is rarely permanent—it is always contested, always subject to backlash, and always dependent on the mobilization of new coalitions.`,
+    questions: [
+      {
+        id: "q12a",
+        text: "The historian's argument is best characterized as",
+        choices: [
+          "American history is a steady march of progressive reform toward greater equality and democracy",
+          "Reform gains in American history are consistently followed by conservative backlash that partially reverses them",
+          "Political change in America has been driven primarily by economic forces rather than social movements",
+          "The federal government has consistently expanded its power without any significant resistance"
+        ],
+        correct: 1,
+        explanation: "The historian argues for a cyclical pattern: reform → backlash → partial reversal. This framework challenges both a purely progressive narrative (steady march of reform) and a purely conservative one (government always expands). Instead, it sees American political history as a contested struggle in which neither side achieves permanent victory."
+      },
+      {
+        id: "q12b",
+        text: "Which of the following best supports the historian's argument about post-Reconstruction backlash?",
+        choices: [
+          "The passage of the 13th, 14th, and 15th Amendments transformed American constitutional law",
+          "The Compromise of 1877 ended Reconstruction, and subsequent Jim Crow laws and Supreme Court decisions like Plessy v. Ferguson reversed many of its gains",
+          "The Freedmen's Bureau successfully integrated formerly enslaved people into Southern economic life",
+          "Congressional Republicans maintained military occupation of the South until the early 20th century"
+        ],
+        correct: 1,
+        explanation: "The Compromise of 1877, the withdrawal of federal troops, and the rise of Jim Crow directly illustrate the historian's backlash thesis. Gains codified in constitutional amendments were systematically undermined through state law, Supreme Court decisions, and terrorism—an almost textbook example of the reform-and-retrenchment cycle."
+      },
+      {
+        id: "q12c",
+        text: "A historian challenging the backlash thesis might most effectively argue that",
+        choices: [
+          "The Civil War completely and permanently resolved the question of slavery in America",
+          "Despite periods of retrenchment, reform movements leave lasting institutional and legal legacies that are never fully reversed, creating a long-term trajectory of expanded rights",
+          "Conservative movements in American history have always sought to eliminate all reform legislation from previous eras",
+          "Economic forces, not political movements, are the primary drivers of inequality in American society"
+        ],
+        correct: 1,
+        explanation: "A counterargument would be that even in periods of 'backlash,' the underlying institutional changes persist—the New Deal programs were never fully dismantled; the Civil Rights Act remained on the books even during conservative governance. This suggests a ratchet effect: full reversal rarely happens, and each reform cycle leaves enduring residue."
+      }
+    ]
+  }
+];
+
+// ─────────────────────────────────────────────
+//  CONSTANTS
+// ─────────────────────────────────────────────
+const FLASHCARD_CATEGORIES = ["All", ...Array.from(new Set(allCards.map(c => c.category)))];
+const PERIOD_COLORS = {
+  "Period 1 (1491–1607)": "#c97a3a", "Period 2 (1607–1754)": "#b87040",
+  "Period 3 (1754–1800)": "#4a7c59", "Period 4 (1800–1848)": "#3a6b8a",
+  "Period 5 (1844–1877)": "#8a3a3a", "Period 6 (1865–1898)": "#7a4a8a",
+  "Period 7 (1898–1945)": "#4a6a8a", "Period 8 (1945–1980)": "#3a7a6a",
+  "Period 9 (1980–Present)": "#7a6a3a", "Key Themes & Concepts": "#5a5a7a",
+  "Key Documents & Speeches": "#7a5a3a",
+};
+const getPeriodColor = (cat) => PERIOD_COLORS[cat] || "#7a6040";
+
+const QUIZ_PERIOD_COLORS = {
+  "Period 1 (1491–1607)": "#c97a3a", "Period 2 (1607–1754)": "#b87040",
+  "Period 3 (1754–1800)": "#4a7c59", "Period 4 (1800–1848)": "#3a6b8a",
+  "Period 5 (1844–1877)": "#8a3a3a", "Period 6 (1865–1898)": "#7a4a8a",
+  "Period 7 (1898–1945)": "#4a6a8a", "Period 8 (1945–1980)": "#3a7a6a",
+  "Period 9 (1980–Present)": "#7a6a3a", "Key Themes & Concepts": "#5a5a7a",
+};
+
+// ─────────────────────────────────────────────
+//  FLASHCARD MODE
+// ─────────────────────────────────────────────
+function FlashcardMode() {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [deck, setDeck] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [direction, setDirection] = useState("term");
+  const [progress, setProgress] = useState({});
+  const [shuffled, setShuffled] = useState(true);
+
+  const buildDeck = useCallback(() => {
+    let cards = selectedCategory === "All" ? [...allCards] : allCards.filter(c => c.category === selectedCategory);
+    if (shuffled) for (let i = cards.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [cards[i], cards[j]] = [cards[j], cards[i]]; }
+    setDeck(cards); setCurrentIndex(0); setFlipped(false);
+  }, [selectedCategory, shuffled]);
+
+  useEffect(() => { buildDeck(); }, [buildDeck]);
+
+  const current = deck[currentIndex];
+  const accentColor = current ? getPeriodColor(current.category) : "#8a7040";
+
+  const navigate = (dir) => {
+    setFlipped(false);
+    setTimeout(() => { if (dir === "next") setCurrentIndex(i => Math.min(i + 1, deck.length - 1)); else setCurrentIndex(i => Math.max(i - 1, 0)); }, 80);
+  };
+  const markCard = (status) => { if (current) setProgress(p => ({ ...p, [current.id]: status })); };
+
+  useEffect(() => {
+    const h = (e) => {
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); setFlipped(f => !f); }
+      if (e.key === "ArrowRight") navigate("next");
+      if (e.key === "ArrowLeft") navigate("prev");
+      if (e.key === "1") markCard("known");
+      if (e.key === "2") markCard("learning");
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [deck, currentIndex]);
+
+  const known = Object.values(progress).filter(v => v === "known").length;
+  const learning = Object.values(progress).filter(v => v === "learning").length;
+  const total = allCards.length;
+  const pct = Math.round((known / total) * 100);
+
+  return (
+    <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
+      {/* SIDEBAR */}
+      <div style={{ width: 220, flexShrink: 0, borderRight: "1px solid rgba(255,255,255,0.05)", background: "#0a0a0b", display: "flex", flexDirection: "column", overflowY: "auto" }}>
+        <div style={{ padding: "14px 12px 8px" }}>
+          <div style={{ padding: "12px", background: "rgba(255,255,255,0.03)", borderRadius: 8, marginBottom: 12, border: "1px solid rgba(255,255,255,0.05)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: "#5a5040" }}>MASTERY</span>
+              <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 16, color: "#e8c060", letterSpacing: "0.05em" }}>{pct}%</span>
+            </div>
+            <div className="progress-track" style={{ marginBottom: 6 }}>
+              <div className="progress-fill" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #8a6020, #e8c060)" }} />
+            </div>
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: "#4a4030", display: "flex", gap: 10 }}>
+              <span style={{ color: "#5a9a5a" }}>✓ {known}</span>
+              <span style={{ color: "#9a6a30" }}>⟳ {learning}</span>
+              <span>/ {total}</span>
+            </div>
+          </div>
+        </div>
+        <div style={{ padding: "0 6px 12px", flex: 1 }}>
+          <button className={`sidebar-btn ${selectedCategory === "All" ? "active" : ""}`} onClick={() => setSelectedCategory("All")}>
+            <span>All Categories</span><span style={{ fontSize: 10, opacity: 0.5 }}>{allCards.length}</span>
+          </button>
+          {["Period 1 (1491–1607)","Period 2 (1607–1754)","Period 3 (1754–1800)","Period 4 (1800–1848)","Period 5 (1844–1877)","Period 6 (1865–1898)","Period 7 (1898–1945)","Period 8 (1945–1980)","Period 9 (1980–Present)"].map(cat => (
+            <button key={cat} className={`sidebar-btn ${selectedCategory === cat ? "active" : ""}`} onClick={() => setSelectedCategory(cat)}>
+              <span style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ width: 8, height: 8, borderRadius: 2, background: getPeriodColor(cat), flexShrink: 0 }} />
+                <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cat}</span>
+              </span>
+              <span style={{ fontSize: 10, opacity: 0.5, flexShrink: 0 }}>{allCards.filter(c => c.category === cat).length}</span>
+            </button>
+          ))}
+          <div style={{ height: 1, background: "rgba(255,255,255,0.05)", margin: "6px 6px" }} />
+          {["Key Themes & Concepts","Key Documents & Speeches"].map(cat => (
+            <button key={cat} className={`sidebar-btn ${selectedCategory === cat ? "active" : ""}`} onClick={() => setSelectedCategory(cat)}>
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cat}</span>
+              <span style={{ fontSize: 10, opacity: 0.5, flexShrink: 0 }}>{allCards.filter(c => c.category === cat).length}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* FLASHCARD MAIN */}
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px 48px", gap: 18, overflow: "hidden" }}>
+        {/* top controls */}
+        <div style={{ display: "flex", alignItems: "center", gap: 16, width: "100%", maxWidth: 700 }}>
+          <label className="radio-label"><input type="radio" name="fcdir" value="term" checked={direction === "term"} onChange={() => setDirection("term")} />Term → Def</label>
+          <label className="radio-label"><input type="radio" name="fcdir" value="def" checked={direction === "def"} onChange={() => setDirection("def")} />Def → Term</label>
+          <label style={{ display: "flex", alignItems: "center", gap: 5, fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#7a7060", cursor: "pointer" }}>
+            <input type="checkbox" checked={shuffled} onChange={e => setShuffled(e.target.checked)} style={{ accentColor: "#c8a050" }} />Shuffle
+          </label>
+          <button onClick={buildDeck} style={{ all: "unset", cursor: "pointer", padding: "5px 14px", borderRadius: 6, background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#8a8070" }}>↺ Restart</button>
+        </div>
+
+        {current ? (
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", maxWidth: 700 }}>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#4a4838" }}>
+                <span style={{ color: "#c8b060", fontWeight: 500 }}>{currentIndex + 1}</span><span> / {deck.length}</span>
+              </div>
+              <div style={{ flex: 1 }}>
+                <div className="progress-track">
+                  <div className="progress-fill" style={{ width: `${((currentIndex + 1) / deck.length) * 100}%`, background: `linear-gradient(90deg, ${accentColor}88, ${accentColor})` }} />
+                </div>
+              </div>
+              {progress[current.id] && (
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, padding: "3px 10px", borderRadius: 100, background: progress[current.id] === "known" ? "rgba(60,130,60,0.15)" : "rgba(180,110,20,0.15)", color: progress[current.id] === "known" ? "#6ab86a" : "#c08030", border: `1px solid ${progress[current.id] === "known" ? "rgba(60,130,60,0.3)" : "rgba(180,110,20,0.3)"}` }}>
+                  {progress[current.id] === "known" ? "✓ Known" : "⟳ Learning"}
+                </div>
+              )}
+            </div>
+
+            <div className="card-scene" onClick={() => setFlipped(f => !f)}>
+              <div className={`card-body ${flipped ? "flipped" : ""}`}>
+                <div className="card-side card-front-face" style={{ borderTop: `3px solid ${accentColor}50` }}>
+                  <span className="cat-chip" style={{ background: `${accentColor}22`, color: accentColor, border: `1px solid ${accentColor}44`, marginBottom: 20 }}>{current.category}</span>
+                  <div style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: direction === "term" ? 30 : 16, fontWeight: direction === "term" ? 700 : 400, fontStyle: direction === "term" ? "normal" : "italic", color: "#f0e8c8", lineHeight: 1.4, maxWidth: 540 }}>
+                    {direction === "term" ? current.term : current.definition}
+                  </div>
+                  <div style={{ marginTop: 22, fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: "#3a3830", letterSpacing: "0.08em", textTransform: "uppercase" }}>Space · Enter to flip</div>
+                </div>
+                <div className="card-side card-back-face" style={{ borderTop: `3px solid ${accentColor}30` }}>
+                  <div style={{ fontFamily: direction === "def" ? "'Libre Baskerville', Georgia, serif" : "'DM Sans', sans-serif", fontSize: direction === "def" ? 26 : 15, fontWeight: direction === "def" ? 700 : 400, color: "#c8d8c0", lineHeight: 1.6, maxWidth: 560, textAlign: "center" }}>
+                    {direction === "term" ? current.definition : current.term}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <button className="nav-btn" onClick={() => navigate("prev")} disabled={currentIndex === 0}>‹</button>
+              <button className="ctrl-btn" onClick={() => markCard("learning")} style={{ background: "rgba(180,110,20,0.12)", border: "1px solid rgba(180,110,20,0.25)", color: "#c08030" }}>⟳ Still Learning</button>
+              <button className="ctrl-btn" onClick={() => markCard("known")} style={{ background: "rgba(60,130,60,0.12)", border: "1px solid rgba(60,130,60,0.25)", color: "#6ab86a" }}>✓ I Know This</button>
+              <button className="nav-btn" onClick={() => navigate("next")} disabled={currentIndex === deck.length - 1}>›</button>
+            </div>
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: "#2e2c28", letterSpacing: "0.07em", textTransform: "uppercase" }}>← → Navigate · 1 = Known · 2 = Learning</div>
+          </>
+        ) : <div style={{ color: "#4a4030", fontFamily: "'DM Sans', sans-serif" }}>No cards found.</div>}
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+//  QUIZ MODE
+// ─────────────────────────────────────────────
+function QuizMode() {
+  const [setIndex, setSetIndex] = useState(0);
+  const [qIndex, setQIndex] = useState(0);
+  const [answers, setAnswers] = useState({}); // key: qId → chosen index
+  const [revealed, setRevealed] = useState({}); // key: qId → bool
+  const [quizComplete, setQuizComplete] = useState(false);
+
+  const currentSet = quizSets[setIndex];
+  const currentQ = currentSet.questions[qIndex];
+  const accentColor = QUIZ_PERIOD_COLORS[currentSet.period] || "#8a7040";
+
+  const totalQs = quizSets.reduce((a, s) => a + s.questions.length, 0);
+  const answeredCount = Object.keys(answers).length;
+  const correctCount = quizSets.reduce((acc, s) => acc + s.questions.filter(q => answers[q.id] === q.correct).length, 0);
+
+  const chooseAnswer = (idx) => {
+    if (answers[currentQ.id] !== undefined) return; // already answered
+    setAnswers(a => ({ ...a, [currentQ.id]: idx }));
+    setRevealed(r => ({ ...r, [currentQ.id]: true }));
+  };
+
+  const goNext = () => {
+    if (qIndex < currentSet.questions.length - 1) {
+      setQIndex(i => i + 1);
+    } else if (setIndex < quizSets.length - 1) {
+      setSetIndex(i => i + 1);
+      setQIndex(0);
+    } else {
+      setQuizComplete(true);
+    }
+  };
+
+  const goPrev = () => {
+    if (qIndex > 0) setQIndex(i => i - 1);
+    else if (setIndex > 0) { setSetIndex(i => i - 1); setQIndex(quizSets[setIndex - 1].questions.length - 1); }
+  };
+
+  const resetQuiz = () => { setSetIndex(0); setQIndex(0); setAnswers({}); setRevealed({}); setQuizComplete(false); };
+
+  const answered = answers[currentQ?.id] !== undefined;
+  const isCorrect = answered && answers[currentQ.id] === currentQ.correct;
+  const pct = totalQs > 0 ? Math.round((correctCount / totalQs) * 100) : 0;
+
+  // flat question list progress
+  let absoluteQIndex = 0;
+  for (let s = 0; s < setIndex; s++) absoluteQIndex += quizSets[s].questions.length;
+  absoluteQIndex += qIndex;
+
+  if (quizComplete) {
+    const grade = pct >= 80 ? { label: "Excellent", color: "#6ab86a" } : pct >= 65 ? { label: "Solid", color: "#c8a050" } : { label: "Keep Studying", color: "#c07050" };
+    return (
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 48, gap: 24 }}>
+        <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 14, letterSpacing: "0.2em", color: "#4a4838" }}>QUIZ COMPLETE</div>
+        <div style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 72, fontWeight: 700, color: grade.color, lineHeight: 1 }}>{pct}%</div>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 20, color: grade.color }}>{grade.label}</div>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "#5a5040" }}>{correctCount} correct out of {totalQs} questions</div>
+        <div style={{ display: "flex", gap: 24, marginTop: 8 }}>
+          {quizSets.map((s, si) => {
+            const sc = s.questions.filter(q => answers[q.id] === q.correct).length;
+            const sColor = QUIZ_PERIOD_COLORS[s.period] || "#8a7040";
+            return (
+              <div key={s.id} style={{ textAlign: "center", padding: "10px 14px", background: "rgba(255,255,255,0.03)", borderRadius: 8, border: `1px solid ${sColor}30`, minWidth: 70 }}>
+                <div style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 20, color: sColor, letterSpacing: "0.05em" }}>{sc}/{s.questions.length}</div>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 9, color: "#3a3830", marginTop: 2, letterSpacing: "0.06em" }}>{s.period.replace(" (", "\n(")}</div>
+              </div>
+            );
+          })}
+        </div>
+        <button onClick={resetQuiz} style={{ all: "unset", cursor: "pointer", marginTop: 16, padding: "12px 32px", borderRadius: 8, background: "rgba(200,160,80,0.15)", border: "1px solid rgba(200,160,80,0.35)", fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: "#c8a050", letterSpacing: "0.04em" }}>
+          ↺ Retake Quiz
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+      {/* SET SIDEBAR */}
+      <div style={{ width: 220, flexShrink: 0, borderRight: "1px solid rgba(255,255,255,0.05)", background: "#0a0a0b", overflowY: "auto", padding: "14px 8px" }}>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: "#4a4030", letterSpacing: "0.1em", textTransform: "uppercase", padding: "0 6px 10px" }}>Question Sets</div>
+        <div style={{ padding: "8px 10px", background: "rgba(255,255,255,0.03)", borderRadius: 8, marginBottom: 12, border: "1px solid rgba(255,255,255,0.05)" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+            <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: "#5a5040" }}>SCORE</span>
+            <span style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: 15, color: "#e8c060", letterSpacing: "0.04em" }}>{correctCount}/{answeredCount || "–"}</span>
+          </div>
+          <div className="progress-track">
+            <div className="progress-fill" style={{ width: `${answeredCount > 0 ? (correctCount / answeredCount) * 100 : 0}%`, background: "linear-gradient(90deg, #5a9060, #6ab86a)" }} />
+          </div>
+        </div>
+        {quizSets.map((s, si) => {
+          const sc = s.questions.filter(q => answers[q.id] !== undefined).length;
+          const cc = s.questions.filter(q => answers[q.id] === q.correct).length;
+          const sColor = QUIZ_PERIOD_COLORS[s.period] || "#8a7040";
+          const isActive = si === setIndex;
+          return (
+            <button key={s.id} onClick={() => { setSetIndex(si); setQIndex(0); }}
+              style={{ all: "unset", cursor: "pointer", display: "flex", alignItems: "flex-start", gap: 8, padding: "8px 10px", borderRadius: 7, width: "100%", boxSizing: "border-box", background: isActive ? `${sColor}18` : "transparent", borderLeft: isActive ? `2px solid ${sColor}` : "2px solid transparent", marginBottom: 2, transition: "all 0.15s" }}>
+              <div style={{ display: "flex", flexDirection: "column", flex: 1, gap: 2 }}>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: isActive ? "#e8d8a0" : "#7a6848", fontWeight: isActive ? 500 : 400, lineHeight: 1.3 }}>{s.period}</div>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: "#4a4030", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.stimulusLabel.split(",")[0]}</div>
+              </div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: sc === s.questions.length ? "#6ab86a" : "#4a4030", flexShrink: 0, marginTop: 2 }}>
+                {sc === 0 ? `${s.questions.length}q` : `${cc}/${sc}`}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* QUIZ MAIN */}
+      <div style={{ flex: 1, overflowY: "auto", padding: "28px 40px" }}>
+        <div style={{ maxWidth: 760, margin: "0 auto", display: "flex", flexDirection: "column", gap: 20 }}>
+          {/* progress bar */}
+          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#4a4838" }}>
+              <span style={{ color: "#c8b060", fontWeight: 500 }}>Q {absoluteQIndex + 1}</span><span> / {totalQs}</span>
+            </div>
+            <div style={{ flex: 1 }}>
+              <div className="progress-track">
+                <div className="progress-fill" style={{ width: `${((absoluteQIndex + 1) / totalQs) * 100}%`, background: `linear-gradient(90deg, ${accentColor}88, ${accentColor})` }} />
+              </div>
+            </div>
+            <span className="cat-chip" style={{ background: `${accentColor}20`, color: accentColor, border: `1px solid ${accentColor}40`, padding: "3px 10px" }}>{currentSet.period}</span>
+          </div>
+
+          {/* STIMULUS */}
+          <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 10, border: `1px solid rgba(255,255,255,0.07)`, borderLeft: `3px solid ${accentColor}60`, overflow: "hidden" }}>
+            <div style={{ padding: "10px 20px", borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", gap: 10 }}>
+              <div style={{ padding: "3px 10px", borderRadius: 4, background: `${accentColor}20`, border: `1px solid ${accentColor}40`, fontFamily: "'DM Sans', sans-serif", fontSize: 10, color: accentColor, letterSpacing: "0.08em", textTransform: "uppercase" }}>{currentSet.stimulusType}</div>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: "#4a4838", fontStyle: "italic" }}>{currentSet.stimulusLabel}</div>
+            </div>
+            <div style={{ padding: "18px 20px", fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 14, color: "#c8c0a8", lineHeight: 1.75, fontStyle: "italic" }}>
+              "{currentSet.stimulus}"
+            </div>
+          </div>
+
+          {/* QUESTION + CHOICES */}
+          <div style={{ background: "rgba(255,255,255,0.02)", borderRadius: 10, border: "1px solid rgba(255,255,255,0.07)", overflow: "hidden" }}>
+            <div style={{ padding: "18px 22px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: "#4a4030", letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: 10 }}>
+                Question {qIndex + 1} of {currentSet.questions.length}
+              </div>
+              <div style={{ fontFamily: "'Libre Baskerville', Georgia, serif", fontSize: 16, color: "#e8dcc8", lineHeight: 1.55 }}>{currentQ.text}</div>
+            </div>
+            <div style={{ padding: "14px 22px 18px", display: "flex", flexDirection: "column", gap: 8 }}>
+              {currentQ.choices.map((choice, ci) => {
+                const chosen = answers[currentQ.id] === ci;
+                const isRight = ci === currentQ.correct;
+                const show = revealed[currentQ.id];
+
+                let bg = "rgba(255,255,255,0.03)";
+                let borderColor = "rgba(255,255,255,0.08)";
+                let textColor = "#9a9080";
+                let indicator = null;
+
+                if (show) {
+                  if (isRight) { bg = "rgba(60,130,60,0.12)"; borderColor = "rgba(60,130,60,0.4)"; textColor = "#a8d8a8"; indicator = "✓"; }
+                  else if (chosen) { bg = "rgba(160,50,50,0.12)"; borderColor = "rgba(160,50,50,0.4)"; textColor = "#d89090"; indicator = "✗"; }
+                  else { bg = "rgba(255,255,255,0.01)"; textColor = "#5a5040"; }
+                } else if (!answered) {
+                  bg = "rgba(255,255,255,0.03)";
+                }
+
+                return (
+                  <button key={ci} onClick={() => chooseAnswer(ci)}
+                    style={{ all: "unset", cursor: answered ? "default" : "pointer", display: "flex", alignItems: "flex-start", gap: 12, padding: "12px 16px", borderRadius: 8, background: bg, border: `1px solid ${borderColor}`, transition: "all 0.2s", boxSizing: "border-box" }}
+                    onMouseEnter={e => { if (!answered) e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
+                    onMouseLeave={e => { if (!answered) e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}>
+                    <div style={{ flexShrink: 0, width: 22, height: 22, borderRadius: 6, background: show && isRight ? "rgba(60,130,60,0.25)" : show && chosen ? "rgba(160,50,50,0.25)" : "rgba(255,255,255,0.06)", border: `1px solid ${show && isRight ? "rgba(60,130,60,0.5)" : show && chosen ? "rgba(160,50,50,0.5)" : "rgba(255,255,255,0.12)"}`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: show && isRight ? "#6ab86a" : show && chosen ? "#c07070" : "#5a5040", fontWeight: 600 }}>
+                      {indicator || String.fromCharCode(65 + ci)}
+                    </div>
+                    <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: textColor, lineHeight: 1.5, paddingTop: 2 }}>{choice}</div>
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* EXPLANATION */}
+            {revealed[currentQ.id] && (
+              <div style={{ margin: "0 22px 18px", padding: "14px 16px", background: isCorrect ? "rgba(60,130,60,0.08)" : "rgba(160,80,40,0.08)", borderRadius: 8, border: `1px solid ${isCorrect ? "rgba(60,130,60,0.25)" : "rgba(160,80,40,0.25)"}` }}>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, fontWeight: 600, letterSpacing: "0.07em", textTransform: "uppercase", color: isCorrect ? "#6ab86a" : "#c08060", marginBottom: 6 }}>
+                  {isCorrect ? "✓ Correct" : `✗ Incorrect · Correct answer: ${String.fromCharCode(65 + currentQ.correct)}`}
+                </div>
+                <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#a8a090", lineHeight: 1.6 }}>{currentQ.explanation}</div>
+              </div>
+            )}
+          </div>
+
+          {/* NAV BUTTONS */}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <button onClick={goPrev} disabled={setIndex === 0 && qIndex === 0}
+              style={{ all: "unset", cursor: "pointer", padding: "9px 20px", borderRadius: 8, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)", fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: "#7a7060", opacity: (setIndex === 0 && qIndex === 0) ? 0.3 : 1 }}>
+              ← Previous
+            </button>
+            {answered ? (
+              <button onClick={goNext}
+                style={{ all: "unset", cursor: "pointer", padding: "9px 24px", borderRadius: 8, background: `${accentColor}22`, border: `1px solid ${accentColor}50`, fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: accentColor, fontWeight: 500 }}>
+                {setIndex === quizSets.length - 1 && qIndex === currentSet.questions.length - 1 ? "See Results →" : "Next Question →"}
+              </button>
+            ) : (
+              <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#3a3830", fontStyle: "italic" }}>Select an answer to continue</div>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─────────────────────────────────────────────
+//  ROOT APP
+// ─────────────────────────────────────────────
+function APUSHApp() {
+  const [mode, setMode] = useState("flashcards");
+
+  return (
+    <div style={{ minHeight: "100vh", maxHeight: "100vh", overflow: "hidden", background: "#0e0e0f", fontFamily: "'Libre Baskerville', Georgia, serif", color: "#ddd4c0", display: "flex", flexDirection: "column" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        .card-scene { perspective: 1400px; width: 100%; max-width: 700px; }
+        .card-body { width: 100%; height: 320px; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); cursor: pointer; position: relative; }
+        .card-body.flipped { transform: rotateY(180deg); }
+        .card-side { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; border-radius: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 40px; text-align: center; border: 1px solid rgba(255,255,255,0.07); }
+        .card-front-face { background: linear-gradient(160deg, #1a1a1e 0%, #16161a 100%); box-shadow: 0 20px 80px rgba(0,0,0,0.6); }
+        .card-back-face { background: linear-gradient(160deg, #131318 0%, #111116 100%); box-shadow: 0 20px 80px rgba(0,0,0,0.7); transform: rotateY(180deg); }
+        .cat-chip { display: inline-block; padding: 3px 12px; border-radius: 4px; font-size: 10px; font-family: 'DM Sans', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 500; }
+        .sidebar-btn { all: unset; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 7px 12px; border-radius: 6px; font-size: 12px; font-family: 'DM Sans', sans-serif; color: #7a7060; transition: all 0.15s; width: 100%; box-sizing: border-box; }
+        .sidebar-btn:hover { background: rgba(255,255,255,0.04); color: #c0b090; }
+        .sidebar-btn.active { background: rgba(255,255,255,0.07); color: #e8d8a0; }
+        .ctrl-btn { all: unset; cursor: pointer; padding: 8px 20px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; transition: all 0.15s; letter-spacing: 0.02em; }
+        .nav-btn { all: unset; cursor: pointer; padding: 8px 20px; border-radius: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.08); color: #8a8070; font-size: 22px; line-height: 1; transition: all 0.15s; }
+        .nav-btn:hover { background: rgba(255,255,255,0.09); color: #c0b090; }
+        .nav-btn:disabled { opacity: 0.2; cursor: default; }
+        .progress-track { background: rgba(255,255,255,0.05); border-radius: 3px; height: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 3px; transition: width 0.5s ease; }
+        .radio-label { display: flex; align-items: center; gap: 5px; font-family: 'DM Sans', sans-serif; font-size: 12px; color: #7a7060; cursor: pointer; }
+        .radio-label input { accent-color: #c8a050; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+      `}</style>
+
+      {/* TOP BAR */}
+      <div style={{ height: 54, flexShrink: 0, borderBottom: "1px solid rgba(255,255,255,0.06)", display: "flex", alignItems: "center", padding: "0 24px", gap: 20, background: "#0a0a0b" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          <div style={{ fontFamily: "'Bebas Neue', Impact, sans-serif", fontSize: 22, letterSpacing: "0.12em", color: "#e8c060" }}>AP US HISTORY</div>
+          <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.1)" }} />
+          <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: "#5a5040" }}>{allCards.length} terms · {quizSets.reduce((a,s)=>a+s.questions.length,0)} practice questions</div>
+        </div>
+        {/* MODE TABS */}
+        <div style={{ marginLeft: "auto", display: "flex", gap: 4, background: "rgba(255,255,255,0.04)", borderRadius: 8, padding: 3 }}>
+          {[["flashcards", "📇 Flashcards"], ["quiz", "📝 Practice Quiz"]].map(([m, label]) => (
+            <button key={m} onClick={() => setMode(m)}
+              style={{ all: "unset", cursor: "pointer", padding: "6px 18px", borderRadius: 6, fontFamily: "'DM Sans', sans-serif", fontSize: 13, fontWeight: 500, transition: "all 0.2s", background: mode === m ? "rgba(200,160,60,0.15)" : "transparent", color: mode === m ? "#e8c060" : "#6a6050", border: mode === m ? "1px solid rgba(200,160,60,0.3)" : "1px solid transparent" }}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      {mode === "flashcards" ? <FlashcardMode /> : <QuizMode />}
+    </div>
+  );
+}
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(APUSHApp));
+  </script>
+</body>
+</html>
