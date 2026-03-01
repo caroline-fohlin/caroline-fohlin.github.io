@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>National Latin Exam Level III — Complete Review</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body { background: #080506; }
+    #root { height: 100vh; display: flex; flex-direction: column; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+
+const { useState, useEffect, useCallback } = React;
+
+// ═══════════════════════════════════════════════
+//  DECK 1 — VOCABULARY (230 cards)
+//  Format: { id, category, latin, english }
+// ═══════════════════════════════════════════════
+const vocabCards = [
+  { id: 1, category: "Nouns: Gods & Religion", latin: "deus, deī, m.", english: "god" },
+  { id: 2, category: "Nouns: Gods & Religion", latin: "dea, deae, f.", english: "goddess" },
+  { id: 3, category: "Nouns: Gods & Religion", latin: "nūmen, nūminis, n.", english: "divine power; deity" },
+  { id: 4, category: "Nouns: Gods & Religion", latin: "fātum, fātī, n.", english: "fate, destiny" },
+  { id: 5, category: "Nouns: Gods & Religion", latin: "templum, templī, n.", english: "temple, sacred precinct" },
+  { id: 6, category: "Nouns: Gods & Religion", latin: "āra, ārae, f.", english: "altar" },
+  { id: 7, category: "Nouns: Gods & Religion", latin: "religiō, religiōnis, f.", english: "religion; scruples; reverence" },
+  { id: 8, category: "Nouns: Gods & Religion", latin: "vōtum, vōtī, n.", english: "vow; wish; votive offering" },
+  { id: 9, category: "Nouns: Gods & Religion", latin: "vātēs, vātis, mf.", english: "prophet; bard; seer" },
+  { id: 10, category: "Nouns: Gods & Religion", latin: "fortūna, fortūnae, f.", english: "fortune, luck, chance" },
+  { id: 11, category: "Nouns: Nature", latin: "caelum, caelī, n.", english: "sky, heaven" },
+  { id: 12, category: "Nouns: Nature", latin: "terra, terrae, f.", english: "land, earth, ground" },
+  { id: 13, category: "Nouns: Nature", latin: "mare, maris, n.", english: "sea" },
+  { id: 14, category: "Nouns: Nature", latin: "sōl, sōlis, m.", english: "sun" },
+  { id: 15, category: "Nouns: Nature", latin: "nox, noctis, f.", english: "night" },
+  { id: 16, category: "Nouns: Nature", latin: "ignis, ignis, m.", english: "fire" },
+  { id: 17, category: "Nouns: Nature", latin: "aqua, aquae, f.", english: "water" },
+  { id: 18, category: "Nouns: Nature", latin: "ventus, ventī, m.", english: "wind" },
+  { id: 19, category: "Nouns: Nature", latin: "silva, silvae, f.", english: "forest, wood" },
+  { id: 20, category: "Nouns: Nature", latin: "flamma, flammae, f.", english: "flame, fire" },
+  { id: 21, category: "Nouns: Nature", latin: "mons, montis, m.", english: "mountain" },
+  { id: 22, category: "Nouns: Nature", latin: "ager, agrī, m.", english: "field, land; territory" },
+  { id: 23, category: "Nouns: Nature", latin: "flūmen, flūminis, n.", english: "river, stream" },
+  { id: 24, category: "Nouns: Nature", latin: "unda, undae, f.", english: "wave; sea" },
+  { id: 25, category: "Nouns: Nature", latin: "tempestās, tempestātis, f.", english: "storm; weather; season" },
+  { id: 26, category: "Nouns: People & Family", latin: "homō, hominis, m.", english: "human being, person, man" },
+  { id: 27, category: "Nouns: People & Family", latin: "vir, virī, m.", english: "man; hero; husband" },
+  { id: 28, category: "Nouns: People & Family", latin: "mulier, mulieris, f.", english: "woman; wife" },
+  { id: 29, category: "Nouns: People & Family", latin: "puer, puerī, m.", english: "boy; child; slave" },
+  { id: 30, category: "Nouns: People & Family", latin: "puella, puellae, f.", english: "girl, maiden" },
+  { id: 31, category: "Nouns: People & Family", latin: "pater, patris, m.", english: "father; ancestor" },
+  { id: 32, category: "Nouns: People & Family", latin: "māter, mātris, f.", english: "mother" },
+  { id: 33, category: "Nouns: People & Family", latin: "frāter, frātris, m.", english: "brother" },
+  { id: 34, category: "Nouns: People & Family", latin: "soror, sorōris, f.", english: "sister" },
+  { id: 35, category: "Nouns: People & Family", latin: "fīlius, fīliī, m.", english: "son" },
+  { id: 36, category: "Nouns: People & Family", latin: "fīlia, fīliae, f.", english: "daughter" },
+  { id: 37, category: "Nouns: People & Family", latin: "virgō, virginis, f.", english: "maiden, virgin, girl" },
+  { id: 38, category: "Nouns: People & Family", latin: "senex, senis, m.", english: "old man; elder" },
+  { id: 39, category: "Nouns: People & Family", latin: "dominus, dominī, m.", english: "master; lord; owner" },
+  { id: 40, category: "Nouns: People & Family", latin: "comes, comitis, mf.", english: "companion, comrade; attendant" },
+  { id: 41, category: "Nouns: People & Family", latin: "hospes, hospitis, m.", english: "guest; host; stranger" },
+  { id: 42, category: "Nouns: People & Family", latin: "gēns, gentis, f.", english: "clan, tribe, nation; family" },
+  { id: 43, category: "Nouns: People & Family", latin: "populus, populī, m.", english: "people; nation; crowd" },
+  { id: 44, category: "Nouns: People & Family", latin: "prīnceps, prīncipis, m.", english: "first man; chief; leader; emperor" },
+  { id: 45, category: "Nouns: Body & Mind", latin: "corpus, corporis, n.", english: "body" },
+  { id: 46, category: "Nouns: Body & Mind", latin: "caput, capitis, n.", english: "head; life; person" },
+  { id: 47, category: "Nouns: Body & Mind", latin: "oculus, oculī, m.", english: "eye" },
+  { id: 48, category: "Nouns: Body & Mind", latin: "manus, manūs, f.", english: "hand; band of men; force" },
+  { id: 49, category: "Nouns: Body & Mind", latin: "pēs, pedis, m.", english: "foot" },
+  { id: 50, category: "Nouns: Body & Mind", latin: "pectus, pectoris, n.", english: "breast, chest; heart, soul" },
+  { id: 51, category: "Nouns: Body & Mind", latin: "cor, cordis, n.", english: "heart" },
+  { id: 52, category: "Nouns: Body & Mind", latin: "sanguis, sanguinis, m.", english: "blood" },
+  { id: 53, category: "Nouns: Body & Mind", latin: "animus, animī, m.", english: "spirit; mind; courage; feeling" },
+  { id: 54, category: "Nouns: Body & Mind", latin: "anima, animae, f.", english: "breath; soul; life" },
+  { id: 55, category: "Nouns: Body & Mind", latin: "mēns, mentis, f.", english: "mind (rational faculty)" },
+  { id: 56, category: "Nouns: Body & Mind", latin: "memoria, memoriae, f.", english: "memory; recollection; tradition" },
+  { id: 57, category: "Nouns: Body & Mind", latin: "vultus, vultūs, m.", english: "face; expression; look" },
+  { id: 58, category: "Nouns: Body & Mind", latin: "faciēs, faciēī, f.", english: "face; appearance; form" },
+  { id: 59, category: "Nouns: Emotions & Virtues", latin: "fidēs, fideī, f.", english: "faith, trust; pledge; loyalty" },
+  { id: 60, category: "Nouns: Emotions & Virtues", latin: "spēs, speī, f.", english: "hope" },
+  { id: 61, category: "Nouns: Emotions & Virtues", latin: "īra, īrae, f.", english: "anger, wrath" },
+  { id: 62, category: "Nouns: Emotions & Virtues", latin: "amor, amōris, m.", english: "love" },
+  { id: 63, category: "Nouns: Emotions & Virtues", latin: "odium, odiī, n.", english: "hatred" },
+  { id: 64, category: "Nouns: Emotions & Virtues", latin: "furor, furōris, m.", english: "rage; madness; fury" },
+  { id: 65, category: "Nouns: Emotions & Virtues", latin: "virtūs, virtūtis, f.", english: "valor; virtue; manliness; excellence" },
+  { id: 66, category: "Nouns: Emotions & Virtues", latin: "glōria, glōriae, f.", english: "glory, fame, renown" },
+  { id: 67, category: "Nouns: Emotions & Virtues", latin: "laus, laudis, f.", english: "praise, glory, fame" },
+  { id: 68, category: "Nouns: Emotions & Virtues", latin: "timor, timōris, m.", english: "fear, dread" },
+  { id: 69, category: "Nouns: Emotions & Virtues", latin: "dolor, dolōris, m.", english: "pain; grief; anguish" },
+  { id: 70, category: "Nouns: Emotions & Virtues", latin: "lūctus, lūctūs, m.", english: "grief; mourning" },
+  { id: 71, category: "Nouns: Emotions & Virtues", latin: "clēmentia, clēmentiae, f.", english: "gentleness, mercy, mildness" },
+  { id: 72, category: "Nouns: Military & War", latin: "bellum, bellī, n.", english: "war" },
+  { id: 73, category: "Nouns: Military & War", latin: "pāx, pācis, f.", english: "peace" },
+  { id: 74, category: "Nouns: Military & War", latin: "mīles, mīlitis, m.", english: "soldier" },
+  { id: 75, category: "Nouns: Military & War", latin: "hostis, hostis, mf.", english: "enemy (public); foreigner" },
+  { id: 76, category: "Nouns: Military & War", latin: "arma, armōrum, n. pl.", english: "arms, weapons; warfare" },
+  { id: 77, category: "Nouns: Military & War", latin: "gladius, gladiī, m.", english: "sword" },
+  { id: 78, category: "Nouns: Military & War", latin: "castra, castrōrum, n. pl.", english: "camp (military)" },
+  { id: 79, category: "Nouns: Military & War", latin: "imperātor, imperātōris, m.", english: "general; commander; emperor" },
+  { id: 80, category: "Nouns: Military & War", latin: "victoria, victoriae, f.", english: "victory" },
+  { id: 81, category: "Nouns: Military & War", latin: "perīculum, perīculī, n.", english: "danger, peril" },
+  { id: 82, category: "Nouns: Military & War", latin: "cōpiae, cōpiārum, f. pl.", english: "forces, troops; supplies; abundance" },
+  { id: 83, category: "Nouns: Military & War", latin: "legiō, legiōnis, f.", english: "legion" },
+  { id: 84, category: "Nouns: Military & War", latin: "dux, ducis, m.", english: "leader, general, guide" },
+  { id: 85, category: "Nouns: Military & War", latin: "proelium, proeliī, n.", english: "battle, fight" },
+  { id: 86, category: "Nouns: Military & War", latin: "impetus, impetūs, m.", english: "attack, charge, onslaught" },
+  { id: 87, category: "Nouns: Government & Law", latin: "cīvis, cīvis, mf.", english: "citizen" },
+  { id: 88, category: "Nouns: Government & Law", latin: "cīvitās, cīvitātis, f.", english: "state; community; citizenship" },
+  { id: 89, category: "Nouns: Government & Law", latin: "rēs pūblica, reī pūblicae, f.", english: "the republic; the state; public affairs" },
+  { id: 90, category: "Nouns: Government & Law", latin: "lēx, lēgis, f.", english: "law, statute" },
+  { id: 91, category: "Nouns: Government & Law", latin: "iūs, iūris, n.", english: "right, law, justice" },
+  { id: 92, category: "Nouns: Government & Law", latin: "senātus, senātūs, m.", english: "senate; council of elders" },
+  { id: 93, category: "Nouns: Government & Law", latin: "rēx, rēgis, m.", english: "king" },
+  { id: 94, category: "Nouns: Government & Law", latin: "imperium, imperiī, n.", english: "command; power; empire" },
+  { id: 95, category: "Nouns: Government & Law", latin: "patria, patriae, f.", english: "fatherland; homeland" },
+  { id: 96, category: "Nouns: Government & Law", latin: "mōs, mōris, m.", english: "custom, habit; (pl.) character, morals" },
+  { id: 97, category: "Nouns: Abstract & General", latin: "ratiō, ratiōnis, f.", english: "reason; method; plan; account" },
+  { id: 98, category: "Nouns: Abstract & General", latin: "labor, labōris, m.", english: "labor, toil, effort" },
+  { id: 99, category: "Nouns: Abstract & General", latin: "mora, morae, f.", english: "delay, hindrance" },
+  { id: 100, category: "Nouns: Abstract & General", latin: "cōnsilium, cōnsiliī, n.", english: "plan; advice; counsel; judgment" },
+  { id: 101, category: "Nouns: Abstract & General", latin: "opus, operis, n.", english: "work; effort; need" },
+  { id: 102, category: "Nouns: Abstract & General", latin: "cōpia, cōpiae, f.", english: "abundance; (pl.) troops, resources" },
+  { id: 103, category: "Nouns: Abstract & General", latin: "fāma, fāmae, f.", english: "fame; rumor; reputation" },
+  { id: 104, category: "Nouns: Abstract & General", latin: "causa, causae, f.", english: "cause; reason; case; sake" },
+  { id: 105, category: "Nouns: Abstract & General", latin: "rēs, reī, f.", english: "thing; matter; affair; fact" },
+  { id: 106, category: "Nouns: Abstract & General", latin: "pars, partis, f.", english: "part; direction; role; side" },
+  { id: 107, category: "Nouns: Abstract & General", latin: "iter, itineris, n.", english: "journey; route; march" },
+  { id: 108, category: "Nouns: Abstract & General", latin: "fīnis, fīnis, m.", english: "end; boundary; (pl.) territory" },
+  { id: 109, category: "Nouns: Abstract & General", latin: "tempus, temporis, n.", english: "time; season; occasion" },
+  { id: 110, category: "Verbs: Core Irregular", latin: "sum, esse, fuī, futūrus", english: "to be; to exist" },
+  { id: 111, category: "Verbs: Core Irregular", latin: "possum, posse, potuī", english: "to be able; can" },
+  { id: 112, category: "Verbs: Core Irregular", latin: "eō, īre, iī/īvī, ītum", english: "to go" },
+  { id: 113, category: "Verbs: Core Irregular", latin: "ferō, ferre, tulī, lātum", english: "to carry; to bear; to endure" },
+  { id: 114, category: "Verbs: Core Irregular", latin: "volō, velle, voluī", english: "to wish, want, be willing" },
+  { id: 115, category: "Verbs: Core Irregular", latin: "nōlō, nōlle, nōluī", english: "to be unwilling; not wish" },
+  { id: 116, category: "Verbs: Core Irregular", latin: "mālō, mālle, māluī", english: "to prefer; to wish more" },
+  { id: 117, category: "Verbs: Core Irregular", latin: "fiō, fierī, factus sum", english: "to become; to be made; to happen" },
+  { id: 118, category: "Verbs: Common Action", latin: "faciō, facere, fēcī, factum", english: "to make; do; accomplish" },
+  { id: 119, category: "Verbs: Common Action", latin: "dīcō, dīcere, dīxī, dictum", english: "to say, tell, speak; call, name" },
+  { id: 120, category: "Verbs: Common Action", latin: "videō, vidēre, vīdī, vīsum", english: "to see; (pass.) to seem" },
+  { id: 121, category: "Verbs: Common Action", latin: "veniō, venīre, vēnī, ventum", english: "to come" },
+  { id: 122, category: "Verbs: Common Action", latin: "pōnō, pōnere, posuī, positum", english: "to put, place, set; lay aside" },
+  { id: 123, category: "Verbs: Common Action", latin: "capiō, capere, cēpī, captum", english: "to take, seize, capture" },
+  { id: 124, category: "Verbs: Common Action", latin: "dūcō, dūcere, dūxī, ductum", english: "to lead; consider; draw" },
+  { id: 125, category: "Verbs: Common Action", latin: "mittō, mittere, mīsī, missum", english: "to send; let go; throw" },
+  { id: 126, category: "Verbs: Common Action", latin: "agō, agere, ēgī, āctum", english: "to drive; do; conduct; discuss" },
+  { id: 127, category: "Verbs: Common Action", latin: "dō, dare, dedī, datum", english: "to give; grant; put" },
+  { id: 128, category: "Verbs: Common Action", latin: "scrībō, scrībere, scrīpsī, scrīptum", english: "to write" },
+  { id: 129, category: "Verbs: Common Action", latin: "tenēō, tenēre, tenuī, tentum", english: "to hold; keep; maintain; reach" },
+  { id: 130, category: "Verbs: Common Action", latin: "petō, petere, petīvī, petītum", english: "to seek; attack; ask; aim at" },
+  { id: 131, category: "Verbs: Common Action", latin: "quaerō, quaerere, quaesīvī, quaesītum", english: "to seek; ask; inquire; obtain" },
+  { id: 132, category: "Verbs: Common Action", latin: "accipiō, accipere, accēpī, acceptum", english: "to receive; accept; hear" },
+  { id: 133, category: "Verbs: Common Action", latin: "relinquō, relinquere, relīquī, relictum", english: "to leave behind; abandon; forsake" },
+  { id: 134, category: "Verbs: Common Action", latin: "moveō, movēre, mōvī, mōtum", english: "to move; stir; influence" },
+  { id: 135, category: "Verbs: Common Action", latin: "iubeō, iubēre, iussī, iussum", english: "to order, command, bid" },
+  { id: 136, category: "Verbs: Common Action", latin: "cōgō, cōgere, coēgī, coāctum", english: "to force; compel; collect" },
+  { id: 137, category: "Verbs: Mental & Emotional", latin: "amō, amāre, amāvī, amātum", english: "to love; like" },
+  { id: 138, category: "Verbs: Mental & Emotional", latin: "timeō, timēre, timuī", english: "to fear, be afraid (of)" },
+  { id: 139, category: "Verbs: Mental & Emotional", latin: "sciō, scīre, scīvī, scītum", english: "to know (a fact)" },
+  { id: 140, category: "Verbs: Mental & Emotional", latin: "nesciō, nescīre, nescīvī", english: "not to know; to be ignorant of" },
+  { id: 141, category: "Verbs: Mental & Emotional", latin: "putō, putāre, putāvī, putātum", english: "to think, consider, suppose" },
+  { id: 142, category: "Verbs: Mental & Emotional", latin: "crēdō, crēdere, crēdidī, crēditum", english: "to believe, trust; entrust" },
+  { id: 143, category: "Verbs: Mental & Emotional", latin: "spērō, spērāre, spērāvī, spērātum", english: "to hope; expect" },
+  { id: 144, category: "Verbs: Mental & Emotional", latin: "memōrō, memōrāre, memōrāvī", english: "to recall; recount; mention" },
+  { id: 145, category: "Verbs: Mental & Emotional", latin: "oblīvīscor, oblīvīscī, oblītus sum", english: "to forget" },
+  { id: 146, category: "Verbs: Military & Movement", latin: "vincō, vincere, vīcī, victum", english: "to conquer, win, overcome" },
+  { id: 147, category: "Verbs: Military & Movement", latin: "fugiō, fugere, fūgī, fugitum", english: "to flee, escape; avoid" },
+  { id: 148, category: "Verbs: Military & Movement", latin: "oppugnō, oppugnāre, oppugnāvī, oppugnātum", english: "to attack, besiege, assault" },
+  { id: 149, category: "Verbs: Military & Movement", latin: "occīdō, occīdere, occīdī, occīsum", english: "to kill, cut down, slay" },
+  { id: 150, category: "Verbs: Military & Movement", latin: "dēfendō, dēfendere, dēfendī, dēfēnsum", english: "to defend, ward off" },
+  { id: 151, category: "Verbs: Military & Movement", latin: "resistō, resistere, restitī", english: "to resist, withstand; stop" },
+  { id: 152, category: "Verbs: Military & Movement", latin: "contendō, contendere, contendī, contentum", english: "to strive; hasten; contend; fight" },
+  { id: 153, category: "Verbs: Military & Movement", latin: "proficīscor, proficīscī, profectus sum", english: "to set out, depart" },
+  { id: 154, category: "Verbs: Military & Movement", latin: "perveniō, pervenīre, pervēnī, perventum", english: "to arrive (at), reach" },
+  { id: 155, category: "Verbs: Speech & Sense", latin: "loquor, loquī, locūtus sum", english: "to speak, talk, say" },
+  { id: 156, category: "Verbs: Speech & Sense", latin: "appellō, appellāre, appellāvī, appellātum", english: "to call, name; address; appeal to" },
+  { id: 157, category: "Verbs: Speech & Sense", latin: "respondeō, respondēre, respondī, respōnsum", english: "to reply, answer" },
+  { id: 158, category: "Verbs: Speech & Sense", latin: "nārrō, nārrāre, nārrāvī, nārrātum", english: "to tell, narrate, relate" },
+  { id: 159, category: "Verbs: Speech & Sense", latin: "audiō, audīre, audīvī, audītum", english: "to hear; listen to" },
+  { id: 160, category: "Verbs: Speech & Sense", latin: "ostendō, ostendere, ostendī, ostentum", english: "to show, display; reveal" },
+  { id: 161, category: "Adjectives: Size & Quantity", latin: "magnus, -a, -um", english: "great, large; important" },
+  { id: 162, category: "Adjectives: Size & Quantity", latin: "parvus, -a, -um", english: "small, little" },
+  { id: 163, category: "Adjectives: Size & Quantity", latin: "multus, -a, -um", english: "much; (pl.) many" },
+  { id: 164, category: "Adjectives: Size & Quantity", latin: "omnis, omne", english: "all, every; the whole" },
+  { id: 165, category: "Adjectives: Size & Quantity", latin: "tantus, -a, -um", english: "so great, so large, so much" },
+  { id: 166, category: "Adjectives: Size & Quantity", latin: "quantus, -a, -um", english: "how great? how much?" },
+  { id: 167, category: "Adjectives: Size & Quantity", latin: "ingēns, ingentis", english: "vast, huge, enormous" },
+  { id: 168, category: "Adjectives: Size & Quantity", latin: "tōtus, -a, -um", english: "the whole (of), all, entire" },
+  { id: 169, category: "Adjectives: Quality & Value", latin: "bonus, -a, -um", english: "good" },
+  { id: 170, category: "Adjectives: Quality & Value", latin: "malus, -a, -um", english: "bad, evil; harmful" },
+  { id: 171, category: "Adjectives: Quality & Value", latin: "pulcher, pulchra, pulchrum", english: "beautiful, handsome, fine" },
+  { id: 172, category: "Adjectives: Quality & Value", latin: "clārus, -a, -um", english: "clear; famous; bright; distinguished" },
+  { id: 173, category: "Adjectives: Quality & Value", latin: "altus, -a, -um", english: "high; deep; lofty" },
+  { id: 174, category: "Adjectives: Quality & Value", latin: "lātus, -a, -um", english: "wide, broad" },
+  { id: 175, category: "Adjectives: Quality & Value", latin: "longus, -a, -um", english: "long" },
+  { id: 176, category: "Adjectives: Quality & Value", latin: "novus, -a, -um", english: "new; strange; young" },
+  { id: 177, category: "Adjectives: Quality & Value", latin: "antiquus, -a, -um", english: "ancient, old; former" },
+  { id: 178, category: "Adjectives: Quality & Value", latin: "sacer, sacra, sacrum", english: "sacred, holy; (rarely) accursed" },
+  { id: 179, category: "Adjectives: Position & Number", latin: "prīmus, -a, -um", english: "first; foremost; leading" },
+  { id: 180, category: "Adjectives: Position & Number", latin: "summus, -a, -um", english: "highest; greatest; top of" },
+  { id: 181, category: "Adjectives: Position & Number", latin: "medius, -a, -um", english: "middle (of); midst" },
+  { id: 182, category: "Adjectives: Position & Number", latin: "ultimus, -a, -um", english: "farthest; last; final" },
+  { id: 183, category: "Adjectives: Position & Number", latin: "ūnus, -a, -um", english: "one; alone; only" },
+  { id: 184, category: "Adjectives: Position & Number", latin: "sōlus, -a, -um", english: "alone; only; sole" },
+  { id: 185, category: "Adjectives: Position & Number", latin: "nullus, -a, -um", english: "no, none, not any" },
+  { id: 186, category: "Adjectives: Position & Number", latin: "alius, -a, -ud", english: "other (of more than two); different" },
+  { id: 187, category: "Adjectives: Position & Number", latin: "alter, altera, alterum", english: "the other (of two); the second" },
+  { id: 188, category: "Adjectives: Character", latin: "fortis, forte", english: "brave, strong, powerful" },
+  { id: 189, category: "Adjectives: Character", latin: "fēlīx, fēlīcis", english: "happy, lucky, fortunate; fertile" },
+  { id: 190, category: "Adjectives: Character", latin: "miser, misera, miserum", english: "wretched, unhappy, poor" },
+  { id: 191, category: "Adjectives: Character", latin: "grātus, -a, -um", english: "pleasing, agreeable; grateful" },
+  { id: 192, category: "Adjectives: Character", latin: "lībertus → līber, lībera, līberum", english: "free; (as noun) free person" },
+  { id: 193, category: "Adjectives: Character", latin: "superbus, -a, -um", english: "proud, arrogant, haughty" },
+  { id: 194, category: "Adjectives: Character", latin: "dīgnus, -a, -um (+ abl.)", english: "worthy (of); fitting, proper" },
+  { id: 195, category: "Adverbs & Conjunctions", latin: "ita / sīc", english: "thus, so, in this way" },
+  { id: 196, category: "Adverbs & Conjunctions", latin: "tam", english: "so (much), to such a degree (with adj./adv.)" },
+  { id: 197, category: "Adverbs & Conjunctions", latin: "tum / tunc", english: "then; at that time" },
+  { id: 198, category: "Adverbs & Conjunctions", latin: "nunc", english: "now; at this time" },
+  { id: 199, category: "Adverbs & Conjunctions", latin: "deinde", english: "then; next; thereafter" },
+  { id: 200, category: "Adverbs & Conjunctions", latin: "interim / intereā", english: "meanwhile; in the meantime" },
+  { id: 201, category: "Adverbs & Conjunctions", latin: "iam", english: "now; already; soon (future)" },
+  { id: 202, category: "Adverbs & Conjunctions", latin: "tamen", english: "nevertheless; however; yet" },
+  { id: 203, category: "Adverbs & Conjunctions", latin: "autem", english: "but; however; on the other hand (postpositive)" },
+  { id: 204, category: "Adverbs & Conjunctions", latin: "enim", english: "for; indeed; in fact (postpositive)" },
+  { id: 205, category: "Adverbs & Conjunctions", latin: "igitur", english: "therefore; and so; consequently (postpositive)" },
+  { id: 206, category: "Adverbs & Conjunctions", latin: "sed", english: "but; however; yet" },
+  { id: 207, category: "Adverbs & Conjunctions", latin: "nec / neque", english: "and not; nor; neither" },
+  { id: 208, category: "Adverbs & Conjunctions", latin: "quoque", english: "also, too (postpositive)" },
+  { id: 209, category: "Adverbs & Conjunctions", latin: "numquam", english: "never" },
+  { id: 210, category: "Adverbs & Conjunctions", latin: "statim", english: "immediately, at once" },
+  { id: 211, category: "Adverbs & Conjunctions", latin: "subitō", english: "suddenly, unexpectedly" },
+  { id: 212, category: "Prepositions", latin: "ab / ā (+ abl.)", english: "from; away from; by (agent)" },
+  { id: 213, category: "Prepositions", latin: "ad (+ acc.)", english: "to, toward; at; for the purpose of" },
+  { id: 214, category: "Prepositions", latin: "ante (+ acc.)", english: "before (time/place); in front of" },
+  { id: 215, category: "Prepositions", latin: "circum (+ acc.)", english: "around, about" },
+  { id: 216, category: "Prepositions", latin: "contrā (+ acc.)", english: "against; opposite; on the contrary" },
+  { id: 217, category: "Prepositions", latin: "cum (+ abl.)", english: "with; together with" },
+  { id: 218, category: "Prepositions", latin: "dē (+ abl.)", english: "from; down from; about, concerning" },
+  { id: 219, category: "Prepositions", latin: "ex / ē (+ abl.)", english: "out of, from; following; made of" },
+  { id: 220, category: "Prepositions", latin: "in (+ acc.)", english: "into; onto; against; toward" },
+  { id: 221, category: "Prepositions", latin: "in (+ abl.)", english: "in, on; among; in the case of" },
+  { id: 222, category: "Prepositions", latin: "inter (+ acc.)", english: "between; among; during" },
+  { id: 223, category: "Prepositions", latin: "ob (+ acc.)", english: "on account of; because of; in return for" },
+  { id: 224, category: "Prepositions", latin: "per (+ acc.)", english: "through; throughout; by means of" },
+  { id: 225, category: "Prepositions", latin: "post (+ acc.)", english: "after; behind" },
+  { id: 226, category: "Prepositions", latin: "prō (+ abl.)", english: "before; in front of; on behalf of; instead of" },
+  { id: 227, category: "Prepositions", latin: "propter (+ acc.)", english: "because of; on account of; near" },
+  { id: 228, category: "Prepositions", latin: "sine (+ abl.)", english: "without" },
+  { id: 229, category: "Prepositions", latin: "sub (+ acc./abl.)", english: "under; beneath; up to; at the foot of" },
+  { id: 230, category: "Prepositions", latin: "super (+ acc./abl.)", english: "over; above; about; beyond" },
+  { id: 231, category: "Prepositions", latin: "trāns (+ acc.)", english: "across; beyond" },
+];
+
+// ═══════════════════════════════════════════════
+//  DECK 2 — GRAMMAR & CULTURE (80 cards)
+//  Format: { id, category, front, back }
+// ═══════════════════════════════════════════════
+const grammarCards = [
+  { id: 301, category: "Grammar: Subjunctive Uses", front: "Purpose Clause", back: "Expresses the goal of the main action. Introduced by ut (positive) or nē (negative) + subjunctive.\n\nSequence: primary main verb → present subj.; secondary → imperfect subj.\n\nEx: Vēnit ut tē vidēret. — He came in order to see you." },
+  { id: 302, category: "Grammar: Subjunctive Uses", front: "Result Clause", back: "Expresses what actually happens as a consequence. Introduced by ut + subjunctive (negative: ut nōn).\n\nSignal words in main clause: ita, tam, tantus, tālis, tot, adeō.\n\nEx: Tam fortis erat ut nēmō vinceret. — He was so brave that no one conquered him." },
+  { id: 303, category: "Grammar: Subjunctive Uses", front: "Indirect Command", back: "Reports an order or request in indirect speech. Introduced by ut/nē + subjunctive after verbs of ordering, urging, begging, persuading.\n\nKey verbs: imperō, hortor, rogō, ōrō, persuādeō, moneō.\n\nEx: Imperāvit ut mīlitēs fūgerent. — He ordered the soldiers to flee.\n\n⚠ Note: iubeō takes accusative + infinitive instead." },
+  { id: 304, category: "Grammar: Subjunctive Uses", front: "Fear Clause", back: "Expresses what one fears will happen. Introduced by timeō/vereor + nē (fearing it WILL happen) or ut (fearing it will NOT happen).\n\nEx: Timeō nē hostēs veniant. — I fear that the enemies are coming.\nTimet ut frāter veniat. — He fears his brother won't come.\n\nMemory trick: nē after fear = normal 'that'; ut after fear = 'that...not'." },
+  { id: 305, category: "Grammar: Subjunctive Uses", front: "Cum Clauses (3 types)", back: "1. Cum temporal + indicative: 'when' (a specific time)\n   Cum Rōmam vēnit, amīcōs vīdit.\n\n2. Cum circumstantial + subjunctive (impf/plupf): 'when/as' (circumstances)\n   Cum hostēs adessent, fūgimus.\n\n3. Cum causal/concessive + subjunctive: 'since' / 'although'\n   Cum fortis esset, tamen timēbat.\n\n⚠ cum + indicative = specific time; cum + subjunctive = circumstance/cause/concession." },
+  { id: 306, category: "Grammar: Subjunctive Uses", front: "Indirect Question", back: "Reports a question in indirect speech. Introduced by an interrogative word (quis, quid, quōmodo, cūr, ubi, num, etc.) + subjunctive.\n\nEx: Nesciō ubi sit. — I don't know where he is.\nRogāvit quid fēcissēmus. — He asked what we had done.\n\n⚠ The verb in the indirect question follows sequence of tenses." },
+  { id: 307, category: "Grammar: Subjunctive Uses", front: "Hortatory / Jussive Subjunctive", back: "Main clause subjunctive (no conjunction) expressing an exhortation or mild command.\n\nHortatory (1st person plural): Let us...\nEx: Eāmus! — Let us go!\n\nJussive (3rd person): Let him/her/them...\nEx: Dīcat. — Let him speak.\n\nNegative: nē + subjunctive.\nEx: Nē timeāmus. — Let us not fear." },
+  { id: 308, category: "Grammar: Subjunctive Uses", front: "Relative Clause of Characteristic", back: "A relative clause with subjunctive describing the type or kind of person/thing (not identifying a specific individual).\n\nIntroduced by quī/quae/quod + subjunctive.\n\nEx: Est quī hoc dīcat. — He is the kind of person who would say this.\nNēmō est quī Latīnam amet. — There is no one who loves Latin.\n\n⚠ Signal: indefinite/general antecedents — is, nēmō, nūllus, ūnus." },
+  { id: 309, category: "Grammar: Subjunctive Uses", front: "Conditions — 5 Types", back: "1. Simple (fact): sī + indicative / indicative\n2. Future More Vivid: sī + future(perf.) / future\n3. Future Less Vivid: sī + present subj. / present subj.\n   If he should come, I would see him.\n4. Present Contrary to Fact: sī + imperfect subj. / imperfect subj.\n   If he were coming (he's not), I would see him.\n5. Past Contrary to Fact: sī + pluperfect subj. / pluperfect subj.\n   If he had come (he didn't), I would have seen him." },
+  { id: 310, category: "Grammar: Key Constructions", front: "Ablative Absolute", back: "A noun/pronoun + participle (or noun + noun/adj) in the ablative, grammatically independent of the main clause. Expresses time, cause, or circumstance.\n\nEx: Caesare duce, mīlitēs fortiter pugnāvērunt.\nWith Caesar as leader, the soldiers fought bravely.\n\nEx: Oppidō captō, cīvēs fūgērunt.\nWith the town captured, the citizens fled.\n\n⚠ The noun in the ablative absolute must NOT be the subject or object of the main clause." },
+  { id: 311, category: "Grammar: Key Constructions", front: "Indirect Statement (Acc. + Inf.)", back: "Reports a statement indirectly. The subject of the infinitive goes into the accusative; the verb becomes an infinitive.\n\nIntroduced by: dīcō, putō, crēdō, sciō, sentiō, videō, audiō.\n\nEx: Dīcit Caesarem venīre. — He says that Caesar is coming.\nCrēdēbam tē esse fortem. — I believed that you were brave.\n\nInfinitive tenses:\n• Present = same time as main verb\n• Perfect = before main verb\n• Future = after main verb" },
+  { id: 312, category: "Grammar: Key Constructions", front: "Infinitive Tenses in Indirect Statement", back: "Present infinitive (active: -āre/-ēre/-ere/-īre; passive: -ārī/-ērī/-ī):\n→ Action simultaneous with main verb\nDīcit eum venīre. He says he IS coming.\n\nPerfect infinitive (active: perf. stem + -isse; passive: PPP + esse):\n→ Action before main verb\nDīcit eum vēnisse. He says he HAS COME.\n\nFuture infinitive (active: fut. participle + esse):\n→ Action after main verb\nDīcit eum ventūrum esse. He says he WILL come." },
+  { id: 313, category: "Grammar: Key Constructions", front: "Sequence of Tenses", back: "The tense of a subjunctive in a subordinate clause depends on the main verb's tense.\n\nPRIMARY (main: present, future, future perfect):\n→ Present subj. (same/ongoing) or Perfect subj. (completed)\n\nSECONDARY (main: imperfect, perfect, pluperfect):\n→ Imperfect subj. (same/ongoing) or Pluperfect subj. (completed)\n\nEx: Rogat cūr veniat. (primary)\nRogāvit cūr venīret. (secondary)" },
+  { id: 314, category: "Grammar: Key Constructions", front: "Gerund", back: "A verbal noun (the '-ing' form used as a noun). Declines like 2nd decl. neuter; no nominative (use infinitive instead).\n\nForms (amō): Gen: amandī, Dat: amandō, Acc: amandum, Abl: amandō\n\nEx: Ars scrībendī — the art of writing (gen.)\nAd pūgnandum — for the purpose of fighting (ad + acc.)\nDiscendō proficimus — we advance by learning (abl. of means)" },
+  { id: 315, category: "Grammar: Key Constructions", front: "Gerundive & Passive Periphrastic", back: "The gerundive is a verbal adjective ('to be ___-ed'). Agrees with noun in gender, number, case.\n\nForms: amandus, -a, -um / monendus / legendus / audiendus\n\nPASSIVE PERIPHRASTIC: gerundive + sum = 'must be done' (obligation). Agent in dative (dative of agent).\n\nEx: Hoc mihi faciendum est.\n= This must be done by me.\n\nEx: Caesar Gallia vincenda erat.\n= Gaul had to be conquered by Caesar." },
+  { id: 316, category: "Grammar: Key Constructions", front: "Ablative — 8 Key Uses", back: "1. Means/Instrument: gladiō pugnāvit (no prep.)\n2. Manner: magnā cum cūrā\n3. Accompaniment: cum amīcō\n4. Separation: abstinuit mē malō\n5. Agent: ā mīlite victus (ā/ab + abl.)\n6. Comparison: fortior mē (no quam)\n7. Degree of Difference: multō maior\n8. Ablative Absolute\n\nAlso: time when/within, place from which, description." },
+  { id: 317, category: "Grammar: Key Constructions", front: "Participles — 4 Forms & Meanings", back: "Latin has exactly 4 participles:\n\n1. PRESENT ACTIVE (-ns/-ntis): amāns — loving (same time, active)\n2. PERFECT PASSIVE (PPP): amātus — having been loved (before, passive)\n3. FUTURE ACTIVE (-ūrus): amātūrus — about to love\n4. FUTURE PASSIVE (gerundive): amandus — to be loved\n\n⚠ Latin has NO present passive participle, NO perfect active participle.\n\nParticiples agree with nouns in gender, number, case." },
+  { id: 318, category: "Grammar: Key Constructions", front: "Dative — 6 Key Uses", back: "1. Indirect Object: Tibi librum dedit\n2. Reference/Advantage: Mihi placet (it pleases me)\n3. Agent (w/ passive periphrastic): Mihi faciendum est\n4. Possession: Est mihi liber (I have a book)\n5. Purpose: Auxilio vēnit (he came as/for aid)\n6. With compound verbs: praeesse, prōdesse, nocēre, imperāre, cōnfīdere\n\nEx: Caesar exercituī praefuit." },
+  { id: 319, category: "Grammar: Key Constructions", front: "Accusative — Special Uses", back: "Beyond direct object:\n\n1. Subject of infinitive in indirect statement: Dīcit Caesarem venīre.\n\n2. Place to which (cities/small islands, domus, rūs — no preposition):\n   Rōmam it — he goes to Rome.\n   But: in Italiam it (preposition required for countries).\n\n3. Duration of time: multōs annōs — for many years\n\n4. Extent of space: mīlle passūs — for a mile\n\n5. Exclamation: Ō mē miserum!" },
+  { id: 320, category: "Grammar: Key Constructions", front: "Locative Case", back: "Expresses location 'at/in' — used only for:\n• Cities/towns: Rōmae — at Rome; Carthāgine — at Carthage\n• Small islands: Rhodī — at Rhodes\n• domus → domī — at home\n• rūs → rūrī — in the country\n• humus → humī — on the ground\n\nForms:\n• 1st/2nd decl. singular = genitive: Rōmae, Corinthī\n• 3rd decl. = ablative: Carthāgine\n\n⚠ Never use in + ablative for these words." },
+  { id: 321, category: "Deponent Verbs", front: "loquor, loquī, locūtus sum", back: "to speak, talk, say\n\nPassive forms, active meaning — conjugates like a 3rd conjugation passive.\n\nEx: Dē bellō loquēbātur. — He was speaking about the war.\n\n⚠ Also in vocab deck — this card covers grammar usage in depth.\n⚠ Key deponents: loquor, sequor, ūtor, patior, hortor, proficīscor, morior, cōnor, vereor, nāscor." },
+  { id: 322, category: "Deponent Verbs", front: "proficīscor, proficīscī, profectus sum", back: "to set out, depart, march\n\nExtremely common in Caesar. Always passive forms, active meaning.\n\nEx: Rōmā profectus est. — He set out from Rome.\nExercitus māne proficīscēbātur. — The army was setting out at dawn.\n\nRelated: profectiō, -ōnis, f. — a departure, a setting out\n⚠ Also in vocab deck — this card covers usage in depth." },
+  { id: 323, category: "Deponent Verbs", front: "sequor, sequī, secūtus sum", back: "to follow, pursue, attend\n\nEx: Mīlitēs ducem secūtī sunt. — The soldiers followed the leader.\n\nCompounds:\ncōnsequor — to catch up, attain\nprōsequor — to follow forth, accompany\nsubsequor — to follow behind\n\nNote: perfect participle secūtus/a/um has active meaning despite passive form." },
+  { id: 324, category: "Deponent Verbs", front: "ūtor, ūtī, ūsus sum (+ ablative!)", back: "to use, employ, enjoy, practice\n\n⚠ Always takes the ABLATIVE case.\n\nEx: Gladiō ūtitur. — He uses a sword.\nHāc viā ūsī sumus. — We used this road.\n\nOther verbs taking ablative:\nFruor (enjoy), Ūtor (use), Potior (possess/gain),\nVescor (feed on), Fungor (perform/finish)\n\nMemory: F-U-P-V-F (Fruor, Utor, Potior, Vescor, Fungor)" },
+  { id: 325, category: "Deponent Verbs", front: "patior, patī, passus sum", back: "to suffer, endure, allow, permit\n\nEx: Multa passī sumus. — We have suffered many things.\nId fierī nōn patiētur. — He will not allow that to happen.\n\nRelated: patientia, -ae, f. — patience, endurance\n\nNote: passus sum looks like a passive perfect but is active in meaning. 'I suffered,' not 'I was suffered.'" },
+  { id: 326, category: "Deponent Verbs", front: "hortor, hortārī, hortātus sum", back: "to urge, encourage, exhort\n\nTakes ut + subjunctive for what one urges someone to do.\n\nEx: Mīlitēs hortātus est ut fortiter pūgnārent.\nHe encouraged the soldiers to fight bravely.\n\nRelated: cohortātiō, -ōnis, f. — an exhortation\ncohortor — to encourage strongly (Caesar uses this before battles)" },
+  { id: 327, category: "Deponent Verbs", front: "cōnor, cōnārī, cōnātus sum", back: "to try, attempt\n\nTakes infinitive for what one attempts to do.\n\nEx: Hostēs vallum trānsīre cōnātī sunt.\nThe enemies tried to cross the rampart.\n\nRelated: cōnātus, -ūs, m. — an attempt, effort\n\nCommon Caesar pattern: cōnātī sunt...sed frustrā.\n(They tried...but in vain.)" },
+  { id: 328, category: "Deponent Verbs", front: "vereor, verērī, veritus sum", back: "to fear, respect, stand in awe of\n\nEx: Vereor nē hostēs redeant. — I fear the enemies may return.\n\nDifference from timeō:\n• timeō = fear of physical danger/threat\n• vereor = reverential fear; awe of gods, elders, superiors\n\nRelated: reverentia, -ae, f. — reverence, respect" },
+  { id: 329, category: "Deponent Verbs", front: "morior, morī, mortuus sum", back: "to die\n\nIrregular future participle: moritūrus (about to die)\n\nEx: Prō patriā moritūrus erat. — He was about to die for his homeland.\n\nRelated: mors, mortis, f. — death\nmortālis, -e — mortal; immortālis, -e — immortal\n\nNote: mortuus, -a, -um used as adjective meaning 'dead.'" },
+  { id: 330, category: "Deponent Verbs", front: "nāscor, nāscī, nātus sum", back: "to be born, arise, originate\n\nEx: Rōmulus Rōmae nātus est. — Romulus was born at Rome.\nBellum ē discordiā nātum est. — War arose from discord.\n\nRelated:\nnātūra, -ae, f. — nature\nnātiō, -ōnis, f. — nation, tribe\nnātālis, -e — of birth; diēs nātālis — birthday" },
+  { id: 331, category: "Deponent Verbs", front: "arbitror, arbitrārī, arbitrātus sum", back: "to think, judge, consider, believe\n\nTakes indirect statement (acc. + inf.) like putō and crēdō.\n\nEx: Hoc vērum esse arbitror. — I think this is true.\n\nRelated: arbiter, -trī, m. — a judge, umpire, witness\n(English: arbitrary, arbitration)\n\nDistinguish from: cēnseō (to assess, vote) and putō (to reckon)." },
+  { id: 332, category: "Deponent Verbs", front: "ingredior, ingredī, ingressus sum", back: "to enter, go into, begin\n\nEx: Urbem ingressī sunt. — They entered the city.\n\nA compound of in + gradior (to step). Key compounds:\nēgredior — to go out, disembark\nprōgredior — to advance, proceed\naggredior — to approach, attack\nregrēdior — to go back, retreat" },
+  { id: 333, category: "Caesar Vocabulary", front: "oppidum, -ī, n.", back: "fortified town, stronghold\n\nThe standard word in Caesar for a Gallic/German fortified settlement.\n\nDistinguish:\n• oppidum = fortified town\n• vīcus, -ī, m. = village, hamlet\n• urbs, urbis, f. = major city (esp. Rome)\n• castra, -ōrum, n. pl. = military camp" },
+  { id: 334, category: "Caesar Vocabulary", front: "vallum, -ī, n. / fossa, -ae, f.", back: "vallum = rampart, palisade wall (earth and stakes)\nfossa = ditch, trench (dug in front of the vallum)\n\nTogether they form the standard Roman field fortification:\nfossa (ditch) → agger (mound) → vallum (palisade)\n\nEx: Mīlitēs vallum et fossam fēcērunt.\nThe soldiers built a rampart and ditch." },
+  { id: 335, category: "Caesar Vocabulary", front: "obsidēs, obsidium, m. pl.", back: "hostages\n\nA key political/military tool in Caesar. Defeated peoples surrendered hostages as guarantee of compliance.\n\nEx: Obsidēs centum imperāvit.\nHe demanded 100 hostages.\n\nCommon phrases:\nobsidēs dare — to give hostages\nobsidēs accipere — to receive hostages\nobsidēs deposcere — to demand hostages" },
+  { id: 336, category: "Caesar Vocabulary", front: "hiberna, -ōrum, n. pl.", back: "winter quarters (permanent camp for winter)\n\nThe Roman army stopped active campaigning in winter and withdrew to hiberna.\n\nEx: Legiōnēs in hiberna dēduxit.\nHe led the legions into winter quarters.\n\nRelated: hiems, hiemis, f. — winter\nhībernus, -a, -um — wintry, of winter\nContrast: aestīva, -ōrum — summer camp" },
+  { id: 337, category: "Caesar Vocabulary", front: "centuriō, -ōnis, m.", back: "centurion — professional officer commanding a century (~80 men)\n\nThe backbone of the Roman army. 60 centurions per legion; most senior = prīmus pīlus.\n\nRank ladder:\nmīles → centuriō → tribūnus mīlitum → lēgātus → imperātor\n\nCenturions carried a vīnea (vine staff) as badge of rank and were known for harsh discipline." },
+  { id: 338, category: "Caesar Vocabulary", front: "aquila, -ae, f.", back: "eagle; the legionary eagle standard\n\nThe silver eagle was the sacred standard of each legion. Losing it was catastrophic disgrace.\n\nAn aquilifer (eagle-bearer) carried it into battle.\n\nEx: Aquilam āmittere — to lose the eagle (= extreme military disgrace)\n\nAlso: the constellation Aquila; the bird of Jupiter." },
+  { id: 339, category: "Caesar Vocabulary", front: "impedīmenta, -ōrum, n. pl.", back: "baggage, baggage train; encumbrances\n\nHeavy equipment, supplies, and non-combat personnel accompanying a Roman army on the march.\n\nEx: Impedīmenta in castrīs relīquērunt.\nThey left the baggage in the camp.\n\nRelated: impediō (4) — to hinder, obstruct\n(lit. to entangle the feet — im + pēs)" },
+  { id: 340, category: "Caesar Vocabulary", front: "frūmentum, -ī, n. / commeātus, -ūs, m.", back: "frūmentum = grain (staple of the Roman military diet)\nfrūmentārī — to forage for grain\nrēs frūmentāria — the grain supply (logistics)\n\ncommeātus = provisions, supply convoy; also: leave of absence\n\nLogistics were Caesar's constant concern — cutting off an enemy's grain supply was standard strategy.\n\nEx: Rē frūmentāriā comparātā, iter facere coepit." },
+  { id: 341, category: "Caesar Vocabulary", front: "Key Caesar Military Phrases", back: "iter facere — to make a march\ncastra pōnere — to pitch camp\ncastra movēre — to break/move camp\nproelium committere — to join/begin battle\nsigna ferre — to advance (carry the standards)\nimpetum facere in (+ acc.) — to make an attack on\nin fugam dare — to put to flight\ndēditiōnem facere — to surrender\ncopias comparāre — to gather forces\nsubsidiō mittere — to send as reinforcement" },
+  { id: 342, category: "Caesar Vocabulary", front: "lēgātus, -ī, m.", back: "lieutenant (military); envoy, ambassador (diplomatic)\n\nMilitary: Caesar's second-in-command officers, each commanding a legion or detachment. Labienus was his most trusted lēgātus.\n\nDiplomatic: an official representative sent to negotiate.\n\nEx: Lēgātōs ad Caesarem mīsērunt.\nThey sent envoys to Caesar.\n\nRelated: lēgātiō, -ōnis, f. — an embassy" },
+  { id: 343, category: "Caesar Vocabulary", front: "tribūnus mīlitum / tribūnus plēbis", back: "tribūnus mīlitum = military tribune\n— officer rank below legate; 6 per legion; often young aristocrats gaining military experience\n\ntribūnus plēbis = tribune of the plebs\n— elected magistrate with power of veto (intercessiō) and personal inviolability; protected plebeians from patrician magistrates\n\n⚠ These are entirely different offices — military vs. political." },
+  { id: 344, category: "Caesar Vocabulary", front: "dēdō, dēdere, dēdidī, dēditum", back: "to surrender, give up, hand over\ndēditiō, -ōnis, f. = a surrender\n\nEx: Sē dēdidērunt — They surrendered themselves.\nIn dēditiōnem accipere — to accept a surrender\n\nDistinguish:\n• dēdō — surrender to an enemy\n• trādō — hand over in general\n• permittō — entrust, allow\n\nFrequent in Caesar after sieges." },
+  { id: 345, category: "Roman History: The Republic", front: "Founding of Rome & the Seven Kings (753–509 BC)", back: "Traditional founding: 753 BC by Romulus (son of Mars, twin of Remus).\n\nThe Seven Kings:\n1. Romulus\n2. Numa Pompilius — religious institutions\n3. Tullus Hostilius — warfare\n4. Ancus Marcius\n5. Tarquinius Priscus\n6. Servius Tullius — census, tribal reform\n7. Tarquinius Superbus ('the Proud') — expelled 509 BC\n\nRepublic began when Sextus Tarquinius raped Lucretia; Brutus led the revolt that expelled the kings." },
+  { id: 346, category: "Roman History: The Republic", front: "Cursus Honōrum", back: "The 'path of honors' — the required sequence of magistracies.\n\nOrder (lowest to highest):\n1. Quaestor (28+) — financial officer\n2. Aedile — public works, games (optional step)\n3. Praetor (39+) — judicial, military command\n4. Consul (42+) — two per year, highest regular office\n5. Censor — conducted census, enrolled Senate (every 5 years)\n\nExtraordinary:\n• Dictator — emergency 6-month absolute power\n\nLex Villia Annalis (180 BC) codified age requirements." },
+  { id: 347, category: "Roman History: The Republic", front: "The Senate & Roman Assemblies", back: "SENATE: Advisory body of ~300 (later 600) ex-magistrates. Controlled foreign policy, finances, provinces. Enormous practical power even without formal legislative authority.\n\nASSEMBLIES:\n• Comitia centuriata — elected consuls/praetors; voted on war/peace; weighted toward wealthy\n• Comitia tributa — elected lower magistrates; passed laws\n• Concilium plebis — plebeians only; elected tribunes; passed plebiscites (binding on all after 287 BC)" },
+  { id: 348, category: "Roman History: The Republic", front: "Conflict of the Orders (494–287 BC)", back: "PATRICIANS: Hereditary aristocracy claiming descent from original senators. Monopolized magistracies and priesthoods.\n\nPLEBEIANS: Everyone else.\n\nPlebeians gradually won equality through:\n• Tribūnī plēbis (494 BC) — sacred persons with veto power\n• Twelve Tables (450 BC) — published law\n• Licinian-Sextian Laws (367 BC) — one consul must be plebeian\n• Lex Hortensia (287 BC) — plebiscites binding on all Romans" },
+  { id: 349, category: "Roman History: The Republic", front: "The Twelve Tables (450 BC)", back: "Rome's first written law code, inscribed on twelve bronze tablets and displayed in the Forum.\n\nSignificance:\n• Previously, patrician judges applied unwritten customary law (mōs maiōrum) arbitrarily\n• Publication forced equal application of law\n• Schoolchildren memorized them for centuries\n\nContents: property, inheritance, debt, family law, tort, procedure\n\nRepresent the beginning of Roman jurisprudence and the principle that law should be accessible to all citizens." },
+  { id: 350, category: "Roman History: The Republic", front: "The Punic Wars (264–146 BC)", back: "Three wars between Rome and Carthage for Mediterranean dominance:\n\nFIRST (264–241 BC): Sicily; Rome won, gained its first provinces.\n\nSECOND (218–201 BC): Hannibal crossed the Alps with elephants; won Trebia, Lake Trasimene, Cannae. Rome survived via Fabian strategy. Scipio Africanus defeated Hannibal at Zama (202 BC).\n\nTHIRD (149–146 BC): Rome destroyed Carthage. Cato's motto: Carthago dēlenda est.\n\nResult: Rome became the dominant Mediterranean power." },
+  { id: 351, category: "Roman History: The Republic", front: "The Gracchi & the Late Republic (133–79 BC)", back: "TIBERIUS GRACCHUS (133 BC): Tribune who proposed redistributing public land to the poor; murdered by senators.\n\nGAIUS GRACCHUS (123–121 BC): Broader reform program; also killed.\n\nBeginning of populārēs (appeal to the people) vs. optimātēs (Senate conservatives).\n\nGAIUS MARIUS (107–86 BC): Consul 7 times; created the professional volunteer army loyal to its general — not the state.\n\nSULLA (88–79 BC): First general to march on Rome; became dictator." },
+  { id: 352, category: "Roman History: The Republic", front: "First Triumvirate & Caesar's Rise (60–49 BC)", back: "60 BC: Informal alliance between:\n• Julius Caesar — charisma, popular support\n• Gnaeus Pompey — military glory, veterans\n• Marcus Crassus — vast wealth\n\nCaesar used this to secure the consulship (59 BC) then the governorship of Gaul.\n\nGALLIC WARS (58–50 BC): Caesar conquered all of Gaul, gaining wealth, loyal troops, and enormous prestige.\n\nDeath of Crassus (53 BC, Battle of Carrhae) left Caesar and Pompey as rivals." },
+  { id: 353, category: "Roman History: The Republic", front: "Crossing the Rubicon & the Civil War (49–44 BC)", back: "The Rubicon river was the legal boundary of Caesar's province. Crossing it with an army = treason.\n\nJanuary 49 BC: Senate ordered Caesar to disband his army. Caesar said 'ālea iacta est' ('the die is cast') and crossed the Rubicon — civil war began.\n\nPharsalus (48 BC): Caesar defeated Pompey in Greece. Pompey fled to Egypt and was murdered.\n\nCaesar became Dictātor perpetuō — then was assassinated on the Ides of March (March 15), 44 BC." },
+  { id: 354, category: "Roman History: The Republic", front: "Assassination of Caesar & the Second Triumvirate", back: "IDES OF MARCH, 44 BC: Caesar stabbed 23 times by ~60 conspirators (Brutus, Cassius) who wanted to restore the Republic.\n\nResult: renewed civil war, not restoration.\n\nSECOND TRIUMVIRATE (43 BC — official):\n• Octavian (Caesar's heir)\n• Mark Antony (Caesar's lieutenant)\n• Lepidus\n\nProscriptions killed thousands (including Cicero).\n\nOctavian vs. Antony & Cleopatra → Battle of Actium (31 BC) → Octavian won → became Augustus (27 BC)." },
+  { id: 355, category: "Roman History: Key Figures", front: "Julius Caesar (100–44 BC)", back: "Born to an impoverished patrician family; allied with Marius.\n\nKey career:\n• Consul 59 BC\n• Proconsul of Gaul 58–50 BC (Gallic Wars)\n• Author: Dē Bellō Gallicō, Dē Bellō Cīvīlī\n• Crossed Rubicon 49 BC\n• Dictātor perpetuō 44 BC\n• Assassinated Ides of March 44 BC\n\nReforms: Julian calendar, citizenship grants, Senate expansion.\n\nHis adopted heir Octavian became Rome's first emperor." },
+  { id: 356, category: "Roman History: Key Figures", front: "Cicero (106–43 BC)", back: "Rome's greatest orator and prolific writer. A 'new man' (homō novus) without noble ancestry.\n\nConsul 63 BC: Crushed the Catilinarian conspiracy.\n\nMajor works: Catilīnārian Orations, Prō Archiā, Dē Amīcitiā, Dē Senectūte, Dē Officiīs\n\nPhilosophically: introduced Greek philosophy (Stoicism, Skepticism) to Roman audiences in Latin.\n\nKilled in Antony's proscriptions, 43 BC. His head and hands were displayed on the Rostra." },
+  { id: 357, category: "Roman History: Key Figures", front: "Augustus / Octavian (63 BC–AD 14)", back: "Born Gaius Octavius; adopted by Julius Caesar → became Gaius Julius Caesar Octavianus.\n\nAfter Actium (31 BC), sole ruler. In 27 BC, staged careful return of power to the Senate, who gave him the title 'Augustus' (the revered one).\n\nHeld power through:\n• Tribūnīcia potestās (tribunician power)\n• Imperium prōcōnsulāre (military command)\n• Prīnceps (first citizen)\n\nPax Rōmāna begins. Patron of Vergil, Horace, Livy." },
+  { id: 358, category: "Roman History: Key Figures", front: "Vergil (70–19 BC) & the Aeneid", back: "Publius Vergilius Maro — Rome's greatest epic poet.\n\nMajor works:\n• Eclogues — pastoral poetry\n• Georgics — agricultural poetry\n• Aeneid (12 books) — the Roman national epic\n\nTHE AENEID: Follows Aeneas from Troy's fall to his victory in Italy, founding the line that leads to Rome.\nBooks 1–6: wanderings (Odyssey-like)\nBooks 7–12: war in Italy (Iliad-like)\n\nKey theme: pietās — duty to gods, family, and Rome above personal happiness." },
+  { id: 359, category: "Roman Culture & Daily Life", front: "The Roman Family & Paterfamilias", back: "FAMILIA: all under the paterfamilias's authority — wife, children, slaves.\n\nPATERFAMILIAS: eldest male head held:\n• Life-and-death power (pater potestās) over children\n• Control over all family property\n• Power to arrange marriages, divorces, adoptions\n\nWomen: under guardianship (tūtēla) but could own property and conduct business.\n\nAdoption was common among elites to ensure heirs (Caesar adopted Octavian)." },
+  { id: 360, category: "Roman Culture & Daily Life", front: "Roman Names: Tria Nōmina", back: "Roman male citizens typically had three names:\n\n1. PRAENŌMEN: Personal name (only ~18 common ones)\n   Marcus (M.), Gaius (C.), Lucius (L.), Publius (P.), Quintus (Q.)\n\n2. NŌMEN: Clan/gens name\n   Julius, Cornelius, Claudius, Tullius\n\n3. COGNŌMEN: Branch of family / personal nickname\n   Caesar, Cicero (chickpea), Brutus (dull), Scipio\n\nEx: Marcus Tullius Cicero\n\nWomen used feminine form of the nōmen: Julia, Cornelia." },
+  { id: 361, category: "Roman Culture & Daily Life", front: "Roman Calendar: Kalends, Nones, Ides", back: "Romans counted days BACKWARDS from three fixed monthly points:\n\nKALENDS (Kal.) = 1st of every month\nNONES (Non.) = 7th in March, May, July, October; 5th in other months\nIDES (Id.) = 15th in March, May, July, October; 13th in other months\n\nCounting backwards: the fixed day itself = day 1.\nEx: prīdiē Idūs = the day before the Ides\nante diem III Idūs = 3 days before the Ides\n\nIDES OF MARCH = March 15 — sacred to Mars; date of Caesar's assassination." },
+  { id: 362, category: "Roman Culture & Daily Life", front: "Roman Education — Three Stages", back: "1. LŪDUS (ages 7–11): basic literacy and numeracy; taught by a lūdī magister (often a freedman)\n\n2. GRAMMATICUS (ages 12–15): Latin and Greek literature, grammar; reading and interpreting poetry — the stage most tested on the NLE\n\n3. RHETOR (ages 16+): advanced rhetoric, oratory, philosophy\n\nRich families: private tutors (paedagōgus — Greek slave who accompanied the child)\n\nSchool started at dawn; wax tablets for writing; harsh physical discipline was common." },
+  { id: 363, category: "Roman Culture & Daily Life", front: "Roman Religion: Key Concepts", back: "Roman religion was polytheistic, civic, and contractual: dō ut dēs ('I give so that you may give').\n\nARUSPICY: Reading omens in sacrificed animals' entrails (especially liver).\n\nAUGURY: Interpreting signs from birds' flight. Augurs were official priests.\n\nVESTAL VIRGINS: 6 priestesses of Vesta who tended Rome's sacred fire for 30 years (beginning age 6–10). Great privilege; if the fire went out or a Vestal broke her vow, severe punishment.\n\nPAX DEŌRUM — 'peace of the gods': ritual correctness mattered most." },
+  { id: 364, category: "Roman Culture & Daily Life", front: "The Roman Forum & Public Life", back: "FORUM RŌMĀNUM: The civic heart of Rome.\n\nKey structures:\n• Rostra — speaker's platform (decorated with ships' prows)\n• Curia — Senate house\n• Temple of Saturn — public treasury\n• Via Sacra — Sacred Way through the Forum\n\nEntertainment:\n• Colosseum — gladiatorial games (up to 50,000 spectators)\n• Circus Maximus — chariot racing (up to 250,000)\n• Thermae — public baths; major social gathering places\n\nLūdī (games) were funded by magistrates seeking popular support." },
+  { id: 365, category: "Roman Culture & Daily Life", front: "Roman Army Structure", back: "LEGIŌ (~5,000 men): the basic Roman military unit.\n\nOrganization (largest → smallest):\nLegiō → Cohors (10 per legion, ~480) → Manipulus (3 per cohort) → Centuria (~80 men)\n\nOfficers:\n• Imperātor / Lēgātus — general / legion commander\n• Tribūnus mīlitum — 6 per legion (staff officers)\n• Centuriō — century commander (professional backbone)\n\nEquipment: pilum (heavy javelin), gladius (short sword), scūtum (large shield), lōrīca (body armor)\n\nMarian reforms (107 BC): professional army loyal to its general, not the state." },
+  { id: 366, category: "Roman Culture & Daily Life", front: "Roman Roads & Engineering", back: "FAMOUS ROADS:\n• Via Appia — 'Queen of Roads'; Rome to Brundisium; begun 312 BC\n• Via Flaminia — Rome to Rimini (NE Italy)\n• Via Egnatia — across Greece to Byzantium\n\nCONSTRUCTION: Layers of sand → gravel → paved flat stones (silicēs); cambered for drainage; milestones (mīliāria) every mīlle passuum (~1,480m).\n\nOther engineering:\n• Aqueducts (aquaeductus)\n• Concrete (opus incertum)\n• Arches and domes (Pantheon)\n\nTotal road network eventually ~400,000 km." },
+  { id: 367, category: "Roman Mythology", front: "The Olympian Gods — Greek/Roman Names", back: "Roman → Greek — Domain\n\nJupiter → Zeus — king, sky, thunder\nJūnō → Hera — queen, marriage, women\nNeptūnus → Poseidon — sea\nPlūtō/Dīs → Hades — underworld\nMercurius → Hermes — messenger, commerce\nMārs → Ares — war\nVenus → Aphrodite — love, beauty\nMinerva → Athena — wisdom, crafts, war strategy\nDiāna → Artemis — hunting, moon, chastity\nApollo → Apollo — sun, music, poetry, prophecy\nVulcānus → Hephaestus — fire, forge\nCerēs → Demeter — grain, agriculture\nBacchus → Dionysus — wine, revelry\nVesta → Hestia — hearth, home" },
+  { id: 368, category: "Roman Mythology", front: "The Capitoline Triad & Rome's Divine Ancestors", back: "CAPITOLINE TRIAD: The three chief gods worshipped in the Temple of Jupiter on the Capitoline Hill:\n• Jupiter Optimus Maximus ('Best and Greatest')\n• Juno\n• Minerva\n\nROME'S DIVINE ANCESTRY:\n• Venus → Anchises → Aeneas → Iulus → gens Julia\n  (Caesar and Augustus claimed descent from Venus)\n\n• Mars → Romulus (founder of Rome)\n\nThis divine lineage was politically important — Rome's ruling families were literally descendants of gods." },
+  { id: 369, category: "Roman Mythology", front: "Aeneas & the Founding Myth", back: "The Roman national founding myth (told fully in Vergil's Aeneid):\n\n1. Troy falls — Aeneas escapes carrying his father Anchises, leading son Iulus, carrying the Penates (household gods)\n2. Years of wandering — visits Carthage; Dido falls in love with him; he abandons her (duty over love); she kills herself\n3. Italy — must fight Turnus for the hand of Lavinia\n4. Aeneas wins → founds Lavinium → son Iulus founds Alba Longa → descendants found Rome\n\nCentral theme: PIETĀS — duty to gods, family, Rome above personal happiness." },
+  { id: 370, category: "Roman Mythology", front: "The Underworld (Inferī)", back: "Described most fully in Aeneid Book 6:\n\nGeography:\n• Styx — river surrounding the underworld; Charon ferries the dead (requires a coin on the tongue)\n• Lethe — river of forgetfulness\n• Elysium — paradise for the virtuous/heroic\n• Tartarus — punishment for the wicked\n\nKey figures:\n• Plūtō/Dīs — king; Prōserpina — queen (kidnapped)\n• Charon — ferryman\n• Cerberus — three-headed guard dog\n• Mīnōs, Rhadamanthus — judges of the dead" },
+  { id: 371, category: "Roman Mythology", front: "Key Myths for the NLE", back: "ORPHEUS & EURYDICE: Orpheus descends to retrieve his dead wife; fails because he looks back.\n\nROMULUS & REMUS: Twin sons of Mars; nursed by a she-wolf (lupa); Romulus kills Remus, founds Rome.\n\nPROSERPINA: Ceres's daughter kidnapped by Pluto; spends half the year underground → explains seasons.\n\nCUPID & PSYCHE: God of love and mortal woman; love tested by labors.\n\nPHAETHON: Son of the sun god tried to drive the solar chariot — lost control; Zeus/Jupiter struck him down.\n\nMIDAS: Wish that everything he touch turn to gold — immediately regretted." },
+  { id: 372, category: "Roman Mythology", front: "Dīdō, Queen of Carthage", back: "Phoenician princess who fled her murderous brother Pygmalion and founded Carthage.\n\nIn the Aeneid (Books 1–4):\n• Juno and Venus conspire to make Dido fall in love with Aeneas\n• They have an affair; Dido considers them married\n• Jupiter sends Mercury to remind Aeneas of his duty to Italy\n• Aeneas leaves; Dido kills herself on a pyre, cursing Aeneas and prophesying eternal enmity between Carthage and Rome (= the Punic Wars)\n\nKey line: Dux fēmina factī — 'A woman was the leader of the deed' (Aen. 1.364)" },
+  { id: 373, category: "Roman Mythology", front: "Pietās & Core Roman Values", back: "pietās, -ātis, f.: duty, devotion, loyalty — to gods, family, and Rome\n\nNOT simply modern 'piety' — pietās encompasses all obligations.\nAeneas's epithet: pius Aeneas.\n\nCore Roman values:\n• pietās — duty to gods, family, state\n• virtūs — excellence, courage, valor\n• fidēs — trustworthiness, loyalty\n• gravitas — serious dignity, weight\n• frūgālitās — frugality, simplicity\n• clēmentia — mercy, gentleness\n• mōs maiōrum — the custom/way of the ancestors\n\nThese values were constantly invoked in Roman literature, oratory, and politics." },
+  { id: 374, category: "Numbers & Time", front: "Cardinal Numbers 1–10 & Key Higher Numbers", back: "1 ūnus, -a, -um\n2 duo, duae, duo\n3 trēs, tria\n4 quattuor\n5 quīnque\n6 sex\n7 septem\n8 octō\n9 novem\n10 decem\n20 vīgintī\n100 centum\n1,000 mīlle (pl: mīlia, -ium, n.)\n\nNOTE: ūnus, duo, trēs decline; 4–100 are indeclinable.\n\nmīlle passuum = one mile (1,000 double paces)\nmīlia passuum = miles (mīlia takes genitive)" },
+  { id: 375, category: "Numbers & Time", front: "Ordinal Numbers (1st–10th)", back: "1st prīmus, -a, -um\n2nd secundus / alter\n3rd tertius\n4th quārtus\n5th quīntus\n6th sextus\n7th septimus\n8th octāvus\n9th nōnus\n10th decimus\n\nOrdinals decline like regular 1st/2nd declension adjectives.\n\nCommon in Roman names: Quintus (5th child), Sextus (6th), Decimus (10th)\n\nIn dates: prīdiē = the day before; postrīdiē = the day after" },
+  { id: 376, category: "Numbers & Time", front: "Time Constructions: When / How Long / Within", back: "TIME WHEN (ablative, no preposition):\nEā nocte — on that night\nPrimā lūce — at first light\nHōrā tertiā — at the third hour\n\nTIME HOW LONG (accusative, no preposition):\nMultōs annōs — for many years\nTrēs hōrās — for three hours\n\nTIME WITHIN WHICH (ablative, no preposition):\nPaucīs diēbus — within a few days\nŪnō annō — within one year\n\nMemory: HOW LONG → accusative\n         WHEN / WITHIN → ablative" },
+  { id: 377, category: "Adverbs & Particles", front: "Essential Adverbs for NLE 3", back: "ita / sīc — thus, so, in this way\ntam — so (with adj./adv.)\ntum / tunc — then, at that time\nnunc — now\ndeinde — then, next\ninterea / interim — meanwhile\niam — now; already; soon\ntamen — nevertheless\nverō — truly, indeed; but (postpositive)\nquidem — indeed, at least\nne...quidem — not even\nquoque — also, too (postpositive)\nmagis — more\nmaxime — most, especially\nvix — scarcely, barely\nstatim — immediately\nsubitō — suddenly\nnumquam — never\nsaepe — often\ndiū — for a long time" },
+  { id: 378, category: "Adverbs & Particles", front: "Correlative Pairs", back: "Master these paired constructions:\n\net...et — both...and\naut...aut — either...or (exclusive)\nvel...vel — either...or (inclusive/indifferent)\nnec/neque...nec/neque — neither...nor\nnōn sōlum...sed etiam — not only...but also\ncum...tum — both...and (esp. the latter)\nquō...eō — the more...the more\ntantus...quantus — as great as\ntōt...quot — as many as\ntālis...quālis — such...as\nutrum...an — whether...or (in questions)" },
+];
+
+// ═══════════════════════════════════════════════
+//  CATEGORY COLORS
+// ═══════════════════════════════════════════════
+const VOCAB_COLORS = {
+  "Nouns: Gods & Religion": "#c87a3a",
+  "Nouns: Nature": "#5a8a5a",
+  "Nouns: People & Family": "#7a6a3a",
+  "Nouns: Body & Mind": "#7a4a6a",
+  "Nouns: Emotions & Virtues": "#8a4a4a",
+  "Nouns: Military & War": "#7a3a3a",
+  "Nouns: Government & Law": "#3a5a8a",
+  "Nouns: Abstract & General": "#5a5a7a",
+  "Verbs: Core Irregular": "#8a6a2a",
+  "Verbs: Common Action": "#7a6a4a",
+  "Verbs: Mental & Emotional": "#6a4a7a",
+  "Verbs: Military & Movement": "#6a3a3a",
+  "Verbs: Speech & Sense": "#3a6a7a",
+  "Adjectives: Size & Quantity": "#5a7a4a",
+  "Adjectives: Quality & Value": "#6a7a3a",
+  "Adjectives: Position & Number": "#4a6a5a",
+  "Adjectives: Character": "#7a5a3a",
+  "Adverbs & Conjunctions": "#5a5a6a",
+  "Prepositions": "#6a5a4a",
+};
+
+const GRAM_COLORS = {
+  "Grammar: Subjunctive Uses": "#7a6aaa",
+  "Grammar: Key Constructions": "#5a7aaa",
+  "Deponent Verbs": "#6a8a6a",
+  "Caesar Vocabulary": "#aa7a3a",
+  "Roman History: The Republic": "#8a4a4a",
+  "Roman History: Key Figures": "#7a5a3a",
+  "Roman Culture & Daily Life": "#4a7a7a",
+  "Roman Mythology": "#6a4a8a",
+  "Numbers & Time": "#5a7a5a",
+  "Adverbs & Particles": "#7a7a4a",
+};
+
+const getVColor = (cat) => VOCAB_COLORS[cat] || "#7a6040";
+const getGColor = (cat) => GRAM_COLORS[cat] || "#6a5a7a";
+
+// ═══════════════════════════════════════════════
+//  SHARED UTILITIES
+// ═══════════════════════════════════════════════
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ═══════════════════════════════════════════════
+//  VOCABULARY DECK COMPONENT
+// ═══════════════════════════════════════════════
+function VocabDeck() {
+  const [selCat, setSelCat] = useState("All");
+  const [deck, setDeck] = useState([]);
+  const [idx, setIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [dir, setDir] = useState("latin");
+  const [progress, setProgress] = useState({});
+  const [doShuffle, setDoShuffle] = useState(true);
+
+  const vocabCats = ["All", ...Array.from(new Set(vocabCards.map(c => c.category)))];
+
+  const buildDeck = useCallback(() => {
+    let cards = selCat === "All" ? [...vocabCards] : vocabCards.filter(c => c.category === selCat);
+    if (doShuffle) cards = shuffle(cards);
+    setDeck(cards); setIdx(0); setFlipped(false);
+  }, [selCat, doShuffle]);
+
+  useEffect(() => { buildDeck(); }, [buildDeck]);
+
+  const current = deck[idx];
+  const accent = current ? getVColor(current.category) : "#8a6030";
+
+  const nav = (d) => { setFlipped(false); setTimeout(() => setIdx(i => d === "next" ? Math.min(i+1, deck.length-1) : Math.max(i-1, 0)), 80); };
+  const mark = (s) => { if (current) setProgress(p => ({...p, [current.id]: s})); };
+
+  useEffect(() => {
+    const h = (e) => {
+      if (e.key===" "||e.key==="Enter"){e.preventDefault();setFlipped(f=>!f);}
+      if (e.key==="ArrowRight") nav("next");
+      if (e.key==="ArrowLeft") nav("prev");
+      if (e.key==="1") mark("known");
+      if (e.key==="2") mark("learning");
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [deck, idx]);
+
+  const known = Object.values(progress).filter(v=>v==="known").length;
+  const pct = Math.round((known/vocabCards.length)*100);
+
+  const frontText = current ? (dir==="latin" ? current.latin : current.english) : "";
+  const backText  = current ? (dir==="latin" ? current.english : current.latin) : "";
+  const frontLarge = dir==="latin";
+
+  const catGroups = [
+    { label: "Nouns", prefix: "Nouns:" },
+    { label: "Verbs", prefix: "Verbs:" },
+    { label: "Adjectives", prefix: "Adjectives:" },
+    { label: "Other", prefix: null },
+  ];
+
+  return (
+    <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+      {/* SIDEBAR */}
+      <div style={{width:200,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.05)",background:"rgba(0,0,0,0.25)",overflowY:"auto",padding:"10px 6px 16px"}}>
+        <div style={{margin:"2px 4px 10px",padding:"9px 11px",background:"rgba(255,255,255,0.03)",borderRadius:7,border:"1px solid rgba(255,255,255,0.05)"}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+            <span style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,color:"#4a3a28",letterSpacing:"0.1em",textTransform:"uppercase"}}>Mastery</span>
+            <span style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:16,fontWeight:600,color:"#d4a84a"}}>{pct}%</span>
+          </div>
+          <div style={{background:"rgba(255,255,255,0.05)",borderRadius:3,height:3,overflow:"hidden",marginBottom:5}}>
+            <div style={{height:"100%",borderRadius:3,width:`${pct}%`,background:"linear-gradient(90deg,#7a5818,#d4a848)",transition:"width 0.4s ease"}}/>
+          </div>
+          <div style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:11,color:"#3a3028",display:"flex",gap:10}}>
+            <span style={{color:"#5a8a5a"}}>✓ {known}</span>
+            <span>/ {vocabCards.length}</span>
+          </div>
+        </div>
+        <button className="sb" style={{background:selCat==="All"?"rgba(255,255,255,0.07)":"transparent",color:selCat==="All"?"#e8d090":"#6a5a48"}} onClick={()=>setSelCat("All")}>
+          <span>All Vocabulary</span><span style={{fontSize:10,opacity:0.4}}>{vocabCards.length}</span>
+        </button>
+        {catGroups.map(group => {
+          const cats = group.prefix
+            ? vocabCats.filter(c=>c!=="All"&&c.startsWith(group.prefix))
+            : vocabCats.filter(c=>c!=="All"&&!c.startsWith("Nouns:")&&!c.startsWith("Verbs:")&&!c.startsWith("Adjectives:"));
+          if (!cats.length) return null;
+          return (
+            <div key={group.label}>
+              <div style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,color:"#3a3028",letterSpacing:"0.12em",textTransform:"uppercase",padding:"9px 10px 3px"}}>{group.label}</div>
+              {cats.map(cat => (
+                <button key={cat} className="sb" style={{background:selCat===cat?"rgba(255,255,255,0.07)":"transparent",color:selCat===cat?"#e8d090":"#6a5a48"}} onClick={()=>setSelCat(cat)}>
+                  <span style={{display:"flex",alignItems:"center",gap:5,overflow:"hidden"}}>
+                    <span style={{width:6,height:6,borderRadius:2,background:getVColor(cat),flexShrink:0}}/>
+                    <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cat.replace(/^[^:]+:\s*/,"")}</span>
+                  </span>
+                  <span style={{fontSize:10,opacity:0.4,flexShrink:0}}>{vocabCards.filter(c=>c.category===cat).length}</span>
+                </button>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* MAIN */}
+      <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"16px 48px",gap:16,overflow:"hidden"}}>
+        {/* controls row */}
+        <div style={{display:"flex",alignItems:"center",gap:16,width:"100%",maxWidth:660}}>
+          <label className="rlabel"><input type="radio" name="vdir" value="latin" checked={dir==="latin"} onChange={()=>setDir("latin")} style={{accentColor:"#c8a050"}}/>Latin → English</label>
+          <label className="rlabel"><input type="radio" name="vdir" value="english" checked={dir==="english"} onChange={()=>setDir("english")} style={{accentColor:"#c8a050"}}/>English → Latin</label>
+          <label className="rlabel"><input type="checkbox" checked={doShuffle} onChange={e=>setDoShuffle(e.target.checked)} style={{accentColor:"#c8a050"}}/>Shuffle</label>
+          <button className="ghost-btn" onClick={buildDeck}>↺ Restart</button>
+        </div>
+
+        {current ? (
+          <>
+            {/* progress bar */}
+            <div style={{display:"flex",alignItems:"center",gap:12,width:"100%",maxWidth:660}}>
+              <span style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:13,color:"#3a3028"}}>
+                <span style={{color:"#c8a050"}}>{idx+1}</span> / {deck.length}
+              </span>
+              <div style={{flex:1,background:"rgba(255,255,255,0.05)",borderRadius:3,height:3,overflow:"hidden"}}>
+                <div style={{height:"100%",borderRadius:3,width:`${((idx+1)/deck.length)*100}%`,background:`linear-gradient(90deg,${accent}80,${accent})`,transition:"width 0.4s"}}/>
+              </div>
+              {progress[current.id] && (
+                <span style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:11,padding:"2px 10px",borderRadius:100,
+                  background:progress[current.id]==="known"?"rgba(60,120,60,0.15)":"rgba(160,100,20,0.15)",
+                  color:progress[current.id]==="known"?"#6ab86a":"#c89030",
+                  border:`1px solid ${progress[current.id]==="known"?"rgba(60,120,60,0.3)":"rgba(160,100,20,0.3)"}`}}>
+                  {progress[current.id]==="known"?"✓ Known":"⟳ Learning"}
+                </span>
+              )}
+            </div>
+
+            {/* CARD */}
+            <div style={{perspective:"1400px",width:"100%",maxWidth:660}} onClick={()=>setFlipped(f=>!f)}>
+              <div style={{width:"100%",height:280,transformStyle:"preserve-3d",transition:"transform 0.5s cubic-bezier(0.4,0,0.2,1)",cursor:"pointer",position:"relative",transform:flipped?"rotateY(180deg)":"none"}}>
+                {/* front */}
+                <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",borderRadius:12,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"28px 36px",textAlign:"center",border:`1px solid rgba(255,255,255,0.06)`,borderTop:`3px solid ${accent}55`,background:"linear-gradient(150deg,#18141f,#120e18)",boxShadow:"0 20px 70px rgba(0,0,0,0.65)"}}>
+                  <span style={{display:"inline-block",padding:"2px 10px",borderRadius:4,background:`${accent}1a`,color:accent,border:`1px solid ${accent}35`,fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:16}}>
+                    {current.category.replace(/^[^:]+:\s*/,"")}
+                  </span>
+                  <div style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:frontLarge?32:18,fontWeight:frontLarge?600:400,fontStyle:frontLarge?"italic":"normal",color:"#f0e4c0",lineHeight:1.3,maxWidth:540}}>
+                    {frontText}
+                  </div>
+                  <div style={{marginTop:18,fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,color:"#2e2820",letterSpacing:"0.1em",textTransform:"uppercase"}}>click · space · enter to reveal</div>
+                </div>
+                {/* back */}
+                <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:12,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"28px 36px",textAlign:"center",border:`1px solid rgba(255,255,255,0.06)`,borderTop:`3px solid ${accent}35`,background:"linear-gradient(150deg,#0e1812,#0c1410)",boxShadow:"0 20px 70px rgba(0,0,0,0.7)"}}>
+                  <div style={{fontFamily:frontLarge?"'Crimson Text',Georgia,serif":"'Cormorant Garamond',Georgia,serif",fontSize:frontLarge?20:32,fontWeight:frontLarge?400:600,fontStyle:frontLarge?"normal":"italic",color:frontLarge?"#a8c8a0":"#f0e4c0",lineHeight:1.4,maxWidth:540}}>
+                    {backText}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* nav + mark */}
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <button className="nav-btn" onClick={()=>nav("prev")} disabled={idx===0}>‹</button>
+              <button className="mark-btn" onClick={()=>mark("learning")} style={{background:"rgba(160,100,20,0.12)",border:"1px solid rgba(160,100,20,0.28)",color:"#c89030"}}>⟳ Still Learning</button>
+              <button className="mark-btn" onClick={()=>mark("known")} style={{background:"rgba(60,120,60,0.12)",border:"1px solid rgba(60,120,60,0.28)",color:"#6ab870"}}>✓ Got It</button>
+              <button className="nav-btn" onClick={()=>nav("next")} disabled={idx===deck.length-1}>›</button>
+            </div>
+            <div style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,color:"#2a2420",letterSpacing:"0.07em",textTransform:"uppercase"}}>← → navigate · 1 = known · 2 = learning</div>
+          </>
+        ) : <div style={{color:"#4a4030"}}>No cards found.</div>}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+//  GRAMMAR & CULTURE DECK COMPONENT
+// ═══════════════════════════════════════════════
+function GrammarDeck() {
+  const [selCat, setSelCat] = useState("All");
+  const [deck, setDeck] = useState([]);
+  const [idx, setIdx] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [progress, setProgress] = useState({});
+  const [doShuffle, setDoShuffle] = useState(false);
+
+  const gramCats = ["All", ...Array.from(new Set(grammarCards.map(c => c.category)))];
+
+  const buildDeck = useCallback(() => {
+    let cards = selCat === "All" ? [...grammarCards] : grammarCards.filter(c => c.category === selCat);
+    if (doShuffle) cards = shuffle(cards);
+    setDeck(cards); setIdx(0); setFlipped(false);
+  }, [selCat, doShuffle]);
+
+  useEffect(() => { buildDeck(); }, [buildDeck]);
+
+  const current = deck[idx];
+  const accent = current ? getGColor(current.category) : "#7a6aaa";
+
+  const nav = (d) => { setFlipped(false); setTimeout(() => setIdx(i => d==="next"?Math.min(i+1,deck.length-1):Math.max(i-1,0)), 80); };
+  const mark = (s) => { if (current) setProgress(p => ({...p,[current.id]:s})); };
+
+  useEffect(() => {
+    const h = (e) => {
+      if (e.key===" "||e.key==="Enter"){e.preventDefault();setFlipped(f=>!f);}
+      if (e.key==="ArrowRight") nav("next");
+      if (e.key==="ArrowLeft") nav("prev");
+      if (e.key==="1") mark("known");
+      if (e.key==="2") mark("learning");
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [deck, idx]);
+
+  const known = Object.values(progress).filter(v=>v==="known").length;
+  const pct = Math.round((known/grammarCards.length)*100);
+
+  const catGroups = [
+    { label: "Grammar", cats: gramCats.filter(c=>c!=="All"&&c.startsWith("Grammar:")) },
+    { label: "Vocabulary", cats: gramCats.filter(c=>c!=="All"&&(c==="Deponent Verbs"||c==="Caesar Vocabulary"||c==="Adverbs & Particles"||c==="Numbers & Time")) },
+    { label: "History & Culture", cats: gramCats.filter(c=>c!=="All"&&(c.startsWith("Roman"))) },
+  ];
+
+  return (
+    <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+      {/* SIDEBAR */}
+      <div style={{width:210,flexShrink:0,borderRight:"1px solid rgba(255,255,255,0.05)",background:"rgba(0,0,0,0.25)",overflowY:"auto",padding:"10px 6px 16px"}}>
+        <div style={{margin:"2px 4px 10px",padding:"9px 11px",background:"rgba(255,255,255,0.03)",borderRadius:7,border:"1px solid rgba(255,255,255,0.05)"}}>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+            <span style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,color:"#4a3a28",letterSpacing:"0.1em",textTransform:"uppercase"}}>Mastery</span>
+            <span style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:16,fontWeight:600,color:"#a090d0"}}>{pct}%</span>
+          </div>
+          <div style={{background:"rgba(255,255,255,0.05)",borderRadius:3,height:3,overflow:"hidden",marginBottom:5}}>
+            <div style={{height:"100%",borderRadius:3,width:`${pct}%`,background:"linear-gradient(90deg,#5a4a8a,#a090d0)",transition:"width 0.4s"}}/>
+          </div>
+          <div style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:11,color:"#3a3028",display:"flex",gap:10}}>
+            <span style={{color:"#5a8a5a"}}>✓ {known}</span><span>/ {grammarCards.length}</span>
+          </div>
+        </div>
+        <button className="sb" style={{background:selCat==="All"?"rgba(255,255,255,0.07)":"transparent",color:selCat==="All"?"#e8d0f0":"#6a5a68"}} onClick={()=>setSelCat("All")}>
+          <span>All Categories</span><span style={{fontSize:10,opacity:0.4}}>{grammarCards.length}</span>
+        </button>
+        {catGroups.map(group => (
+          <div key={group.label}>
+            <div style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,color:"#3a3028",letterSpacing:"0.12em",textTransform:"uppercase",padding:"9px 10px 3px"}}>{group.label}</div>
+            {group.cats.map(cat => (
+              <button key={cat} className="sb" style={{background:selCat===cat?"rgba(255,255,255,0.07)":"transparent",color:selCat===cat?"#e8d0f0":"#6a5a68"}} onClick={()=>setSelCat(cat)}>
+                <span style={{display:"flex",alignItems:"center",gap:5,overflow:"hidden"}}>
+                  <span style={{width:6,height:6,borderRadius:2,background:getGColor(cat),flexShrink:0}}/>
+                  <span style={{overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cat.replace(/^[^:]+:\s*/,"")}</span>
+                </span>
+                <span style={{fontSize:10,opacity:0.4,flexShrink:0}}>{grammarCards.filter(c=>c.category===cat).length}</span>
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+
+      {/* MAIN */}
+      <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"16px 40px",gap:16,overflow:"hidden"}}>
+        <div style={{display:"flex",alignItems:"center",gap:14,width:"100%",maxWidth:700}}>
+          <label className="rlabel"><input type="checkbox" checked={doShuffle} onChange={e=>setDoShuffle(e.target.checked)} style={{accentColor:"#a080d0"}}/>Shuffle</label>
+          <button className="ghost-btn" onClick={buildDeck}>↺ Restart</button>
+          <div style={{marginLeft:"auto",fontFamily:"'Crimson Text',Georgia,serif",fontSize:11,color:"#3a3028",fontStyle:"italic"}}>These cards show detailed notes — scroll the back if needed</div>
+        </div>
+
+        {current ? (
+          <>
+            <div style={{display:"flex",alignItems:"center",gap:12,width:"100%",maxWidth:700}}>
+              <span style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:13,color:"#3a3028"}}>
+                <span style={{color:"#a080d0"}}>{idx+1}</span> / {deck.length}
+              </span>
+              <div style={{flex:1,background:"rgba(255,255,255,0.05)",borderRadius:3,height:3,overflow:"hidden"}}>
+                <div style={{height:"100%",borderRadius:3,width:`${((idx+1)/deck.length)*100}%`,background:`linear-gradient(90deg,${accent}80,${accent})`,transition:"width 0.4s"}}/>
+              </div>
+              {progress[current.id] && (
+                <span style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:11,padding:"2px 10px",borderRadius:100,
+                  background:progress[current.id]==="known"?"rgba(60,120,60,0.15)":"rgba(160,100,20,0.15)",
+                  color:progress[current.id]==="known"?"#6ab86a":"#c89030",
+                  border:`1px solid ${progress[current.id]==="known"?"rgba(60,120,60,0.3)":"rgba(160,100,20,0.3)"}`}}>
+                  {progress[current.id]==="known"?"✓ Known":"⟳ Learning"}
+                </span>
+              )}
+            </div>
+
+            {/* CARD */}
+            <div style={{perspective:"1400px",width:"100%",maxWidth:700}} onClick={()=>setFlipped(f=>!f)}>
+              <div style={{width:"100%",height:330,transformStyle:"preserve-3d",transition:"transform 0.5s cubic-bezier(0.4,0,0.2,1)",cursor:"pointer",position:"relative",transform:flipped?"rotateY(180deg)":"none"}}>
+                {/* front */}
+                <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",borderRadius:12,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:"28px 36px",textAlign:"center",border:`1px solid rgba(255,255,255,0.06)`,borderTop:`3px solid ${accent}55`,background:"linear-gradient(150deg,#18141f,#120e18)",boxShadow:"0 20px 70px rgba(0,0,0,0.65)"}}>
+                  <span style={{display:"inline-block",padding:"2px 10px",borderRadius:4,background:`${accent}1a`,color:accent,border:`1px solid ${accent}35`,fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,letterSpacing:"0.08em",textTransform:"uppercase",marginBottom:18}}>
+                    {current.category.replace(/^[^:]+:\s*/,"")}
+                  </span>
+                  <div style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:30,fontWeight:600,fontStyle:"italic",color:"#f0e4c0",lineHeight:1.3,maxWidth:580}}>
+                    {current.front}
+                  </div>
+                  <div style={{marginTop:20,fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,color:"#2e2820",letterSpacing:"0.1em",textTransform:"uppercase"}}>click · space · enter to reveal</div>
+                </div>
+                {/* back */}
+                <div style={{position:"absolute",inset:0,backfaceVisibility:"hidden",WebkitBackfaceVisibility:"hidden",transform:"rotateY(180deg)",borderRadius:12,display:"flex",flexDirection:"column",alignItems:"flex-start",justifyContent:"center",padding:"20px 28px",border:`1px solid rgba(255,255,255,0.06)`,borderTop:`3px solid ${accent}35`,background:"linear-gradient(150deg,#0e1812,#0c1410)",boxShadow:"0 20px 70px rgba(0,0,0,0.7)"}}>
+                  <div style={{fontFamily:"'DM Mono','Courier New',monospace",fontSize:11.5,lineHeight:1.75,color:"#a0c8a0",whiteSpace:"pre-wrap",maxHeight:280,overflowY:"auto",width:"100%"}}>
+                    {current.back}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style={{display:"flex",alignItems:"center",gap:10}}>
+              <button className="nav-btn" onClick={()=>nav("prev")} disabled={idx===0}>‹</button>
+              <button className="mark-btn" onClick={()=>mark("learning")} style={{background:"rgba(160,100,20,0.12)",border:"1px solid rgba(160,100,20,0.28)",color:"#c89030"}}>⟳ Still Learning</button>
+              <button className="mark-btn" onClick={()=>mark("known")} style={{background:"rgba(60,120,60,0.12)",border:"1px solid rgba(60,120,60,0.28)",color:"#6ab870"}}>✓ Got It</button>
+              <button className="nav-btn" onClick={()=>nav("next")} disabled={idx===deck.length-1}>›</button>
+            </div>
+            <div style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:10,color:"#2a2420",letterSpacing:"0.07em",textTransform:"uppercase"}}>← → navigate · 1 = known · 2 = learning</div>
+          </>
+        ) : <div style={{color:"#4a4030"}}>No cards found.</div>}
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════
+//  ROOT APP
+// ═══════════════════════════════════════════════
+function NLEApp() {
+  const [mode, setMode] = useState("vocab");
+
+  return (
+    <div style={{minHeight:"100vh",maxHeight:"100vh",overflow:"hidden",background:"radial-gradient(ellipse at 25% 30%, #1a0e05 0%, #0d0902 55%, #050304 100%)",fontFamily:"'Crimson Text',Georgia,serif",color:"#e0d4c0",display:"flex",flexDirection:"column"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,500;0,700;1,400;1,600&family=DM+Mono:wght@400;500&display=swap');
+        *{box-sizing:border-box;margin:0;padding:0;}
+        .sb{all:unset;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 10px;border-radius:5px;font-family:'Crimson Text',Georgia,serif;font-size:12.5px;transition:all 0.15s;width:100%;box-sizing:border-box;}
+        .sb:hover{background:rgba(255,255,255,0.04);}
+        .nav-btn{all:unset;cursor:pointer;padding:8px 22px;border-radius:8px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);color:#7a6848;font-size:20px;line-height:1;transition:all 0.15s;}
+        .nav-btn:hover{background:rgba(255,255,255,0.08);color:#c0a060;}
+        .nav-btn:disabled{opacity:0.2;cursor:default;}
+        .mark-btn{all:unset;cursor:pointer;padding:7px 18px;border-radius:8px;font-family:'Crimson Text',Georgia,serif;font-size:14px;transition:all 0.15s;}
+        .rlabel{display:flex;align-items:center;gap:5px;font-family:'Crimson Text',Georgia,serif;font-size:13px;color:#7a6a50;cursor:pointer;}
+        .ghost-btn{all:unset;cursor:pointer;padding:4px 14px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);font-family:'Crimson Text',Georgia,serif;font-size:13px;color:#7a6848;}
+        ::-webkit-scrollbar{width:3px;}
+        ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:3px;}
+      `}</style>
+
+      {/* TOP BAR */}
+      <div style={{height:54,flexShrink:0,borderBottom:"1px solid rgba(255,255,255,0.06)",display:"flex",alignItems:"center",padding:"0 24px",gap:16,background:"rgba(0,0,0,0.35)"}}>
+        <div style={{fontFamily:"'Cormorant Garamond',Georgia,serif",fontSize:20,fontWeight:700,fontStyle:"italic",color:"#d4a84a",letterSpacing:"0.02em"}}>
+          National Latin Exam · Level III
+        </div>
+        <div style={{width:1,height:18,background:"rgba(255,255,255,0.08)"}}/>
+        <div style={{fontFamily:"'Crimson Text',Georgia,serif",fontSize:12,color:"#4a4030"}}>
+          {vocabCards.length + grammarCards.length} total cards
+        </div>
+
+        {/* MODE TABS */}
+        <div style={{marginLeft:"auto",display:"flex",gap:3,background:"rgba(255,255,255,0.04)",borderRadius:9,padding:3}}>
+          {[
+            ["vocab", `📜 Vocabulary (${vocabCards.length})`],
+            ["grammar", `🏛 Grammar & Culture (${grammarCards.length})`],
+          ].map(([m, label]) => (
+            <button key={m} onClick={()=>setMode(m)} style={{all:"unset",cursor:"pointer",padding:"6px 18px",borderRadius:7,fontFamily:"'Crimson Text',Georgia,serif",fontSize:13,fontWeight:600,transition:"all 0.2s",
+              background:mode===m?(m==="vocab"?"rgba(200,160,60,0.15)":"rgba(140,110,200,0.15)"):"transparent",
+              color:mode===m?(m==="vocab"?"#e8c060":"#c0a8f0"):"#5a4a38",
+              border:mode===m?`1px solid ${m==="vocab"?"rgba(200,160,60,0.3)":"rgba(140,110,200,0.3)"}`:"1px solid transparent"}}>
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* CONTENT */}
+      {mode === "vocab" ? <VocabDeck /> : <GrammarDeck />}
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(NLEApp));
+
+  </script>
+</body>
+</html>
