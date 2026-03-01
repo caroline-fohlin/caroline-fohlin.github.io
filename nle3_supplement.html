@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NLE Level III Supplement — Grammar, Caesar, Roman History & Mythology</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; overflow: hidden; }
+    body { background: #080508; }
+    #root { height: 100vh; display: flex; flex-direction: column; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel" data-presets="react">
+const { useState, useEffect, useCallback } = React;
+
+const allCards = [
+
+  // ── GRAMMAR: SUBJUNCTIVE USES ──
+  { id: 1, category: "Grammar: Subjunctive Uses", front: "Purpose Clause", back: "Expresses the goal of the main action. Introduced by ut (positive) or nē (negative) + subjunctive.\n\nSequence: primary main verb → present subj.; secondary → imperfect subj.\n\nEx: Vēnit ut tē vidēret. — He came in order to see you." },
+  { id: 2, category: "Grammar: Subjunctive Uses", front: "Result Clause", back: "Expresses what actually happens as a consequence. Introduced by ut + subjunctive (negative: ut nōn).\n\nSignal words in main clause: ita, tam, tantus, tālis, tot, adeō.\n\nEx: Tam fortis erat ut nēmō vinceret. — He was so brave that no one conquered him." },
+  { id: 3, category: "Grammar: Subjunctive Uses", front: "Indirect Command", back: "Reports an order or request in indirect speech. Introduced by ut/nē + subjunctive after verbs of ordering, urging, begging, persuading.\n\nKey verbs: imperō, hortor, rogō, ōrō, persuādeō, moneō.\n\nEx: Imperāvit ut mīlitēs fūgerent. — He ordered the soldiers to flee.\n\n⚠ Note: iubeō takes accusative + infinitive instead." },
+  { id: 4, category: "Grammar: Subjunctive Uses", front: "Fear Clause", back: "Expresses what one fears will happen. Introduced by timeō/vereor + nē (fearing it WILL happen) or ut (fearing it will NOT happen).\n\nEx: Timeō nē hostēs veniant. — I fear that the enemies are coming.\nTimet ut frāter veniat. — He fears his brother won't come.\n\nMemory trick: nē after fear = normal 'that'; ut after fear = 'that...not'." },
+  { id: 5, category: "Grammar: Subjunctive Uses", front: "Cum Clauses (3 types)", back: "1. Cum temporal + indicative: 'when' (a specific time)\n   Cum Rōmam vēnit, amīcōs vīdit.\n\n2. Cum circumstantial + subjunctive (impf/plupf): 'when' (describing circumstances)\n   Cum hostēs adessent, fūgimus.\n\n3. Cum causal/concessive + subjunctive: 'since' / 'although'\n   Cum fortis esset, tamen timēbat.\n\n⚠ Key rule: cum + indicative = specific time; cum + subjunctive = circumstance/cause/concession." },
+  { id: 6, category: "Grammar: Subjunctive Uses", front: "Indirect Question", back: "Reports a question in indirect speech. Introduced by an interrogative word (quis, quid, quōmodo, cūr, ubi, num, etc.) + subjunctive.\n\nEx: Nescio ubi sit. — I don't know where he is.\nRogāvit quid fēcissemus. — He asked what we had done.\n\n⚠ The verb in the indirect question follows sequence of tenses." },
+  { id: 7, category: "Grammar: Subjunctive Uses", front: "Hortatory / Jussive Subjunctive", back: "Main clause subjunctive (no conjunction) expressing an exhortation or mild command.\n\nHortatory (1st person plural): Let us...\nEx: Eāmus! — Let us go!\n\nJussive (3rd person): Let him/her/them...\nEx: Dīcat. — Let him speak.\n\nNegative: nē + subjunctive.\nEx: Nē timeāmus. — Let us not fear." },
+  { id: 8, category: "Grammar: Subjunctive Uses", front: "Relative Clause of Characteristic", back: "A relative clause with subjunctive describing the type or kind of person/thing (rather than identifying a specific individual).\n\nIntroduced by quī/quae/quod + subjunctive.\n\nEx: Est quī hoc dīcat. — He is the kind of person who would say this.\nNēmō est quī Latīnam amet. — There is no one who loves Latin.\n\n⚠ Signal: indefinite/general antecedents like is, ēius, nēmō, nūllus, ūnus." },
+  { id: 9, category: "Grammar: Subjunctive Uses", front: "Conditions — 5 Types", back: "1. Simple (fact): sī + indicative / indicative\n   If he comes, I see him.\n\n2. Future More Vivid: sī + future/fut. perf. / future\n   If he comes, I will see him.\n\n3. Future Less Vivid (should/would): sī + present subj. / present subj.\n   If he should come, I would see him.\n\n4. Present Contrary to Fact: sī + imperfect subj. / imperfect subj.\n   If he were coming (he's not), I would see him.\n\n5. Past Contrary to Fact: sī + pluperfect subj. / pluperfect subj.\n   If he had come (he didn't), I would have seen him." },
+
+  // ── GRAMMAR: KEY CONSTRUCTIONS ──
+  { id: 10, category: "Grammar: Key Constructions", front: "Ablative Absolute", back: "A noun/pronoun + participle (or noun + noun/adj) in the ablative case, grammatically independent of the main clause. Expresses time, cause, or circumstance.\n\nEx: Caesare duce, mīlitēs fortiter pugnāvērunt.\nWith Caesar as leader, the soldiers fought bravely.\n\nEx: Oppidō captō, cīvēs fūgērunt.\nWith the town having been captured, the citizens fled.\n\n⚠ The noun in the ablative absolute must NOT be the subject or object of the main clause." },
+  { id: 11, category: "Grammar: Key Constructions", front: "Indirect Statement (Acc. + Inf.)", back: "Reports a statement indirectly. The subject of the infinitive goes into the accusative; the verb becomes an infinitive.\n\nIntroduced by verbs of saying, thinking, knowing, perceiving: dīcō, putō, crēdō, sciō, sentiō, videō, audiō.\n\nEx: Dīcit Caesarem venīre. — He says that Caesar is coming.\nCrēdēbam tē esse fortem. — I believed that you were brave.\n\nInfinitive tenses:\n• Present inf. = same time as main verb\n• Perfect inf. = before main verb\n• Future inf. = after main verb" },
+  { id: 12, category: "Grammar: Key Constructions", front: "Infinitive Tenses in Indirect Statement", back: "Present infinitive (active: -āre/-ēre/-ere/-īre; passive: -ārī/-ērī/-ī):\n→ Action simultaneous with main verb\nDīcit eum venīre. He says he IS coming.\n\nPerfect infinitive (active: perf. stem + -isse; passive: PPP + esse):\n→ Action before main verb\nDīcit eum vēnisse. He says he HAS COME / came.\n\nFuture infinitive (active: fut. participle + esse; passive: īrī + supine):\n→ Action after main verb\nDīcit eum ventūrum esse. He says he WILL come." },
+  { id: 13, category: "Grammar: Key Constructions", front: "Sequence of Tenses", back: "The tense of a subjunctive verb in a subordinate clause is determined by the tense of the main verb.\n\nPRIMARY sequence (main verb: present, future, future perfect):\n→ Present subj. (same/ongoing) or Perfect subj. (completed)\n\nSECONDARY sequence (main verb: imperfect, perfect, pluperfect):\n→ Imperfect subj. (same/ongoing) or Pluperfect subj. (completed)\n\nEx: Rogat cūr veniat. (primary) — He asks why he is coming.\nRogāvit cūr venīret. (secondary) — He asked why he was coming." },
+  { id: 14, category: "Grammar: Key Constructions", front: "Gerund", back: "A verbal noun (the '-ing' form used as a noun). Declines like a 2nd declension neuter noun, but has no nominative (use infinitive instead).\n\nForms: amāre → Gen: amandī, Dat: amandō, Acc: amandum, Abl: amandō\n\nEx: Ars scribendī — the art of writing (gen.)\nAd pūgnandum — for the purpose of fighting (acc. w/ ad)\nDiscendō proficimus — we advance by learning (abl. means)\n\n⚠ The gerund takes the same objects as its verb." },
+  { id: 15, category: "Grammar: Key Constructions", front: "Gerundive (& Passive Periphrastic)", back: "The gerundive is a verbal adjective (the 'to be ___-ed' form). Agrees with a noun in gender, number, case.\n\nForms: amandus, -a, -um / monendus / legendus / audiendus\n\nPASSIVE PERIPHRASTIC: gerundive + sum = obligation/necessity ('must be done'). Agent goes in dative (dative of agent).\n\nEx: Hoc mihi faciendum est. — This must be done by me. (lit: This is to-be-done to/for me.)\n\nEx: Caesar Gallia vincenda erat. — Gaul had to be conquered by Caesar.\n\n⚠ Distinguish from gerund (noun) vs. gerundive (adjective)." },
+  { id: 16, category: "Grammar: Key Constructions", front: "Ablative — 8 Key Uses", back: "1. Means/Instrument: gladiō pugnāvit — fought with a sword (no prep.)\n2. Manner: magnā cum cūrā — with great care\n3. Accompaniment: cum amīcō — with a friend\n4. Separation: mē abstinuit malō — he kept me from evil\n5. Agent: ā mīlite victus — conquered by the soldier (ā/ab + abl.)\n6. Comparison: fortior mē — braver than me (no quam)\n7. Degree of Difference: multō maior — much greater\n8. Ablative Absolute: (see separate card)\n\nAlso: time when/within, place from which, description." },
+  { id: 17, category: "Grammar: Key Constructions", front: "Participles — 4 Forms & Meanings", back: "Latin has 4 participles:\n\n1. PRESENT ACTIVE (-ns/-ntis): amāns — loving (same time, active)\n2. PERFECT PASSIVE (PPP): amātus — having been loved (before, passive)\n3. FUTURE ACTIVE (-ūrus): amātūrus — about to love / intending to love\n4. FUTURE PASSIVE (gerundive): amandus — to be loved / needing to be loved\n\n⚠ Latin has NO present passive participle and NO perfect active participle.\n\nParticiples agree with nouns in gender, number, case." },
+  { id: 18, category: "Grammar: Key Constructions", front: "Dative — 6 Key Uses", back: "1. Indirect Object: Tibi librum dedit — gave the book to you\n2. Reference/Advantage: Mihi placet — it pleases me\n3. Agent (w/ passive periphrastic): Mihi faciendum est — must be done by me\n4. Possession: Est mihi liber — I have a book (lit: There is a book to me)\n5. Purpose: Auxilio vēnit — he came for help / as an aid\n6. Compound verbs: many compound verbs take dative (praeesse, prōdesse, nocēre, imperāre, cōnfīdere)\n\nEx: Caesar exercituī praefuit — Caesar was in charge of the army." },
+  { id: 19, category: "Grammar: Key Constructions", front: "Accusative — Special Uses", back: "Beyond direct object:\n\n1. Subject of infinitive (in indirect statement):\n   Dīcit Caesarem venīre.\n\n2. Place to which (cities/small islands, domus, rūs — no preposition):\n   Rōmam it — he goes to Rome.\n   But: in Italiam it — he goes to Italy (prep. required).\n\n3. Duration of time: multōs annōs — for many years\n\n4. Extent of space: mīlle passūs — for a mile\n\n5. Exclamation: Ō mē miserum! — O wretched me!" },
+  { id: 20, category: "Grammar: Key Constructions", front: "Locative Case", back: "A vestigial case expressing location 'at/in' — used only for:\n• Cities and towns: Rōmae — at Rome; Carthāgine — at Carthage\n• Small islands: Rhodī — at Rhodes\n• domus → domī — at home\n• rūs → rūrī — in the country\n• humus → humī — on the ground\n\nForms:\n• 1st/2nd decl. singular = same as genitive: Rōmae, Corinthī\n• 3rd decl. = same as ablative: Carthāgine\n\n⚠ Do NOT use in + ablative for these words." },
+
+  // ── DEPONENT VERBS ──
+  { id: 21, category: "Deponent Verbs", front: "loquor, loquī, locūtus sum", back: "to speak, talk, say\n\nPassive forms, active meaning — conjugates like a 3rd conjugation passive.\n\nEx: Dē bellō loquēbātur. — He was speaking about the war.\n\n⚠ Common deponents to know:\nloquor (speak), sequor (follow), ūtor (use), patior (suffer), hortor (urge), proficīscor (set out), morior (die)" },
+  { id: 22, category: "Deponent Verbs", front: "proficīscor, proficīscī, profectus sum", back: "to set out, depart, march\n\nExtremely common in Caesar. Always has passive forms but active meaning.\n\nEx: Rōmā profectus est. — He set out from Rome.\nExercitus māne proficīscēbātur. — The army was setting out at dawn.\n\nRelated: profectio, -ōnis, f. — a departure, a setting out" },
+  { id: 23, category: "Deponent Verbs", front: "sequor, sequī, secūtus sum", back: "to follow, pursue, attend\n\nEx: Mīlitēs ducem secūtī sunt. — The soldiers followed the leader.\n\nRelated words:\ncōnsequor — to follow up, attain, catch\nprose-quor — to follow forth, accompany\nsubsequor — to follow behind\n\nNote: perfect participle secūtus/a/um has active meaning despite passive form." },
+  { id: 24, category: "Deponent Verbs", front: "ūtor, ūtī, ūsus sum (+ ablative)", back: "to use, employ, enjoy, practice\n\n⚠ Always takes the ABLATIVE — one of the key verbs requiring the ablative case.\n\nEx: Gladiō ūtitur. — He uses a sword.\nHāc viā ūsī sumus. — We used this road.\n\nMemory aid: 'FUPID' verbs take ablative:\nFruor (enjoy), Ūtor (use), Potior (possess), Īndulgeō, Dēfungor (finish)" },
+  { id: 25, category: "Deponent Verbs", front: "patior, patī, passus sum", back: "to suffer, endure, allow, permit\n\nEx: Multa passī sumus. — We have suffered many things.\nId fierī nōn patiētur. — He will not allow that to happen.\n\nRelated: patientia, -ae, f. — patience, endurance\n\nNote: passus sum looks like a passive perfect but it is active in meaning — 'I suffered' not 'I was suffered.'" },
+  { id: 26, category: "Deponent Verbs", front: "hortor, hortārī, hortātus sum", back: "to urge, encourage, exhort\n\nTakes ut + subjunctive to express what one urges someone to do.\n\nEx: Mīlitēs hortātus est ut fortiter pūgnārent.\nHe encouraged the soldiers to fight bravely.\n\nRelated: cohortātio, -ōnis, f. — an exhortation (Caesar uses this often before battles)" },
+  { id: 27, category: "Deponent Verbs", front: "cōnor, cōnārī, cōnātus sum", back: "to try, attempt\n\nTakes infinitive to express what one attempts to do.\n\nEx: Hostēs vallum trānsīre cōnātī sunt.\nThe enemies tried to cross the rampart.\n\nRelated: cōnātus, -ūs, m. — an attempt, effort\n\nCommon pattern in Caesar: attempt + fail (frustrā cōnātī sunt...)" },
+  { id: 28, category: "Deponent Verbs", front: "vereor, verērī, veritus sum", back: "to fear, respect, stand in awe of\n\nEx: Vereor nē hostēs redeant. — I fear the enemies may return.\n\nDifference from timeō:\n• timeō = fear of physical danger\n• vereor = fear + reverential respect, often used with gods, elders, or social superiors\n\nRelated: reverentia, -ae, f. — reverence, respect" },
+  { id: 29, category: "Deponent Verbs", front: "morior, morī, mortuus sum", back: "to die\n\nIrregular future participle: moritūrus (about to die)\n\nEx: Prō patriā moritūrus erat. — He was about to die for his homeland.\n\nRelated: mors, mortis, f. — death; mortālis, -e — mortal; immortālis, -e — immortal\n\nNote: mortuus, -a, -um functions as an adjective meaning 'dead'" },
+  { id: 30, category: "Deponent Verbs", front: "nāscor, nāscī, nātus sum", back: "to be born, arise, originate\n\nEx: Rōmulus Rōmae nātus est. — Romulus was born at Rome.\nBellum ē discordiā nātum est. — War arose from discord.\n\nRelated:\nnātūra, -ae, f. — nature (lit. 'what is born')\nnātiō, -ōnis, f. — nation, tribe\nnātālis, -e — of birth; diēs nātālis — birthday" },
+  { id: 31, category: "Deponent Verbs", front: "arbitror, arbitrārī, arbitrātus sum", back: "to think, judge, consider, believe\n\nTakes indirect statement (acc. + inf.) like putō and crēdō.\n\nEx: Hoc vērum esse arbitror. — I think this is true.\n\nRelated: arbiter, -trī, m. — a judge, umpire, witness\n(English: arbitrary, arbitration)\n\nDistinguish from: cēnseō (to assess, vote, think) and putō (to think, reckon)" },
+  { id: 32, category: "Deponent Verbs", front: "revertor, revertī, reversus sum", back: "to return, turn back\n\nEx: Post proelium mīlitēs revertērunt.\nAfter the battle the soldiers returned.\n\nNote: can also be redeō, redīre, rediī (to go back) — both very common in Caesar.\n\nDistinguish:\n• revertor = turn back (change direction)\n• redeō = go back (return to a place)\n• remittō = send back" },
+  { id: 33, category: "Deponent Verbs", front: "ingredior, ingredī, ingressus sum", back: "to enter, go into, begin\n\nEx: Urbem ingressī sunt. — They entered the city.\nIngressus est ōrātiōnem. — He began his speech.\n\nA compound of in + gradior (to step). Other compounds:\nēgredior — to go out, disembark\nprōgredior — to advance, proceed\naggredior — to approach, attack\nregrēdior — to go back, retreat" },
+
+  // ── CAESAR VOCABULARY & PHRASES ──
+  { id: 34, category: "Caesar Vocabulary", front: "oppidum, -ī, n.", back: "fortified town, stronghold\n\nThe standard word in Caesar for a Gallic or German fortified settlement (not as grand as a Roman urbs).\n\nEx: Oppidum Alesia — the town of Alesia\n\nDistinguish:\n• oppidum = fortified town\n• vīcus, -ī, m. = village, hamlet\n• urbs, urbis, f. = major city (esp. Rome)\n• castra, -ōrum, n.pl. = military camp" },
+  { id: 35, category: "Caesar Vocabulary", front: "vallum, -ī, n. / fossa, -ae, f.", back: "vallum = rampart, palisade wall (constructed of earth and stakes)\n\nfossa = ditch, trench (dug in front of the vallum)\n\nTogether they form the standard Roman field fortification:\nfossa (ditch) → agger (mound) → vallum (palisade on top)\n\nEx: Mīlitēs vallum et fossam fēcērunt.\nThe soldiers built a rampart and ditch.\n\nAlso: mūrus, -ī, m. = permanent stone wall" },
+  { id: 36, category: "Caesar Vocabulary", front: "obsidēs, obsidium, m. pl. (sg: obses, obsidis)", back: "hostages\n\nA key political/military tool in Caesar: defeated peoples surrendered hostages as guarantee of good behavior. Taking hostages (obsidēs dare/accipere) appears constantly.\n\nEx: Obsidēs centum imperāvit. — He demanded 100 hostages.\n\nRelated: ob + sideō (to sit before) — one who sits as a pledge\n\nDistinguish from hospes (guest-friend) and hostis (enemy)" },
+  { id: 37, category: "Caesar Vocabulary", front: "hiberna, -ōrum, n. pl.", back: "winter quarters (permanent camp used during winter months)\n\nThe Roman army did not campaign in winter — they withdrew to hiberna (established fortified camps). Caesar constantly references establishing, defending, or abandoning winter quarters.\n\nEx: Legiones in hiberna dēduxit. — He led the legions into winter quarters.\n\nRelated: hiems, hiemis, f. — winter; hībernus, -a, -um — wintry, of winter\n\nContrast: aestīva, -ōrum — summer camp" },
+  { id: 38, category: "Caesar Vocabulary", front: "centuriō, -ōnis, m.", back: "centurion — the professional officer commanding a century (80 men)\n\nThe backbone of the Roman army. There were 60 centurions per legion; the most senior was the prīmus pīlus.\n\nEx: Centuriōnēs suōs quemque suae cohortī praefēcit.\n\nRank structure: mīles → centuriō → tribūnus mīlitum → lēgātus → imperator\n\nCenturions carried a vīnea (vine staff) as their badge of rank." },
+  { id: 39, category: "Caesar Vocabulary", front: "aquila, -ae, f.", back: "eagle; the legionary eagle standard\n\nThe silver eagle on a pole was the sacred standard of each legion — losing it was a catastrophic disgrace. An aquilifer (eagle-bearer) carried it into battle.\n\nEx: Aquilam āmittere — to lose the eagle (= extreme military disgrace)\n\nAlso: the constellation Aquila; the real bird of Jupiter\n\nRelated: aquilifer, -ferī, m. — the eagle-bearer (standard-bearer)" },
+  { id: 40, category: "Caesar Vocabulary", front: "impedīmenta, -ōrum, n. pl.", back: "baggage, baggage train; encumbrances\n\nThe heavy equipment, supplies, tents, and non-combat personnel that accompanied a Roman army on the march. Protecting the impedimenta was a key tactical concern.\n\nEx: Impedīmenta in castrīs relīquērunt.\nThey left the baggage in the camp.\n\nRelated: impediō (4) — to hinder, obstruct (lit. to entangle the feet)\nimpedīmentum, -ī — an obstacle, hindrance" },
+  { id: 41, category: "Caesar Vocabulary", front: "frūmentum, -ī, n. / commeātus, -ūs, m.", back: "frūmentum = grain (the staple of the Roman military diet)\n\nfrūmentārī — to forage for grain\nrēs frūmentāria — the grain supply (logistics)\n\ncommeātus = provisions, supply, leave of absence\n\nLogistics were Caesar's constant concern — cutting off an enemy's grain supply or commeātus was standard strategy.\n\nEx: Rē frūmentāriā comparātā, iter facere coepit.\nWith the grain supply secured, he began to march." },
+  { id: 42, category: "Caesar Vocabulary", front: "Key Caesar Military Phrases", back: "iter facere — to make a march, to march\ncastra pōnere — to pitch camp\ncastra movēre — to break camp, move camp\nproelium committere — to join battle, engage in battle\nsigna ferre — to advance (lit. carry the standards)\nsigna cōnferre — to engage in close combat\nin fugam dare — to put to flight\ndē mūrō dēicere — to throw down from the wall\nimpetum facere in (+ acc.) — to make an attack on\ndēditiōnem facere — to surrender (lit. make a surrender)" },
+  { id: 43, category: "Caesar Vocabulary", front: "lēgātus, -ī, m.", back: "lieutenant; envoy, ambassador\n\nIn military context: Caesar's second-in-command officers, each commanding a legion or detachment. Caesar had several lēgātī (Labienus was his most trusted).\n\nIn diplomatic context: an official representative or ambassador.\n\nEx: Lēgātōs ad Caesarem mīsērunt — They sent envoys to Caesar.\nLabiēnum lēgātum relīquit — He left Labienus as his lieutenant.\n\nRelated: lēgātiō, -ōnis, f. — an embassy, a legation" },
+  { id: 44, category: "Caesar Vocabulary", front: "tribūnus mīlitum / plēbis", back: "tribūnus mīlitum = military tribune — officer rank below legate, above centurion; 6 per legion; often young aristocrats gaining military experience\n\ntribūnus plēbis = tribune of the plebs — elected magistrate with power of veto (intercessiō) and inviolability (sacrosanctity); protected plebeians from arbitrary patrician magistrates\n\n⚠ These are entirely different offices — military vs. political." },
+  { id: 45, category: "Caesar Vocabulary", front: "dēdō, dēdere, dēdidī, dēditum / dēditiō", back: "dēdō = to surrender, give up, hand over\ndēditiō, -ōnis, f. = a surrender\n\nEx: Sē dēdidērunt — They surrendered (themselves).\nIn dēditiōnem accipere — to accept someone's surrender\n\nDistinguish:\n• dēdō (surrender to enemy)\n• trādō (hand over in general)\n• permittō (entrust, allow)\n\nFrequent in Caesar after sieges and battles." },
+
+  // ── ROMAN HISTORY: THE REPUBLIC ──
+  { id: 46, category: "Roman History: The Republic", front: "Founding of Rome & the Kings (753–509 BC)", back: "Traditional founding: 753 BC by Romulus (son of Mars, twin of Remus).\n\nThe Seven Kings:\n1. Romulus\n2. Numa Pompilius (religious institutions)\n3. Tullus Hostilius (warfare)\n4. Ancus Marcius\n5. Tarquinius Priscus\n6. Servius Tullius (census, tribal reform)\n7. Tarquinius Superbus (the Proud) — expelled 509 BC\n\nThe Republic began when Tarquinius Superbus was expelled after his son Sextus raped Lucretia, who killed herself. Brutus led the revolt." },
+  { id: 47, category: "Roman History: The Republic", front: "Cursus Honōrum", back: "The 'path of honors' — the sequence of elected offices a Roman aristocrat had to follow.\n\nOrder (lowest to highest):\n1. Quaestor (28+) — financial officer\n2. Aedile — public works, games (optional)\n3. Praetor (39+) — judicial, military command\n4. Consul (42+) — two per year, highest regular office\n5. Censor — conducted census, enrolled Senate (every 5 years)\n\nExtra-ordinary:\n• Dictator — emergency 6-month absolute power\n• Interrex — temporary ruler between consuls\n\nThe Lex Villia Annalis (180 BC) codified age requirements." },
+  { id: 48, category: "Roman History: The Republic", front: "The Senate & Roman Assemblies", back: "SENATE (senātus): Advisory body of ~300 (later 600) ex-magistrates. Controlled foreign policy, finances, provinces. Not technically a legislative body but enormously powerful in practice.\n\nMAJOR ASSEMBLIES:\n• Comitia curiata — oldest; largely ceremonial by Republic\n• Comitia centuriata — elected consuls/praetors; voted on war/peace; weighted toward wealthy\n• Comitia tributa — elected lower magistrates; passed laws\n• Concilium plebis — plebeians only; elected tribunes; passed plebiscites (binding after 287 BC)" },
+  { id: 49, category: "Roman History: The Republic", front: "Patricians vs. Plebeians / Conflict of the Orders", back: "PATRICIANS: Hereditary aristocracy claiming descent from original senators (patrēs). Originally monopolized magistracies, priesthoods, and Senate.\n\nPLEBEIANS: Everyone else — from wealthy non-aristocrats to poor farmers.\n\nCONFLICT OF THE ORDERS (494–287 BC):\nPlebeians gradually won equality through:\n• Tribūnī plēbis (494 BC) — sacred, with veto power\n• Twelve Tables (450 BC) — published law\n• Licinian-Sextian Laws (367 BC) — one consul must be plebeian\n• Lex Hortensia (287 BC) — plebiscites binding on all Romans" },
+  { id: 50, category: "Roman History: The Republic", front: "The Twelve Tables (450 BC)", back: "Rome's first written law code, inscribed on twelve bronze tablets and displayed in the Forum.\n\nSignificance:\n• Previously, patrician judges applied unwritten customary law (mōs maiōrum) arbitrarily\n• Publication forced equal application of law\n• Became the foundation of Roman legal tradition\n• Schoolchildren memorized them for centuries\n\nContents: property, inheritance, debt, family law, tort, procedure\n\nThe Twelve Tables represent the beginning of Roman jurisprudence and the principle that law should be accessible to all citizens." },
+  { id: 51, category: "Roman History: The Republic", front: "The Punic Wars (264–146 BC)", back: "Three wars between Rome and Carthage (N. Africa) for Mediterranean dominance:\n\nFIRST (264–241 BC): Rome vs. Carthage over Sicily. Rome won, gained first provinces.\n\nSECOND (218–201 BC): Hannibal Barca crossed the Alps with elephants; won Trebia, Lake Trasimene, Cannae. Rome survived through Fabian strategy (avoiding battle). Scipio Africanus defeated Hannibal at Zama (202 BC).\n\nTHIRD (149–146 BC): Rome destroyed Carthage completely — Carthago dēlenda est (Cato's motto).\n\nResult: Rome became the dominant Mediterranean power." },
+  { id: 52, category: "Roman History: The Republic", front: "The Gracchi & the Late Republic (133–79 BC)", back: "TIBERIUS GRACCHUS (133 BC): Tribune who proposed redistributing public land to poor; murdered by senators.\n\nGAIUS GRACCHUS (123–121 BC): Broader reform program; also killed.\n\nThey represent the beginning of the populārēs (politicians who appealed to the people) vs. optimātēs (conservative Senate faction) conflict.\n\nGAIUS MARIUS (107–86 BC): Consul 7 times; reformed army into professional volunteer force loyal to their general — not the state. Created the client army problem.\n\nLUCIUS CORNELIUS SULLA (88–79 BC): First general to march on Rome; became dictator; restored Senate power." },
+  { id: 53, category: "Roman History: The Republic", front: "First Triumvirate & Caesar's Rise (60–49 BC)", back: "60 BC: Informal political alliance between:\n• Julius Caesar (charisma, popular support)\n• Gnaeus Pompey (military glory, veterans)\n• Marcus Crassus (vast wealth)\n\nCaesar used this to get the consulship (59 BC) and then the governorship of Gaul.\n\nGALLIC WARS (58–50 BC): Caesar conquered all of Gaul in a series of brilliant campaigns, gaining wealth, troops loyal to him personally, and enormous prestige.\n\nDeath of Crassus (53 BC, Carrhae) ended the Triumvirate and left Caesar and Pompey as rivals." },
+  { id: 54, category: "Roman History: The Republic", front: "Crossing the Rubicon & Civil War (49–44 BC)", back: "The Rubicon river was the legal boundary of Caesar's province. Roman law forbade a general from bringing his army across it — doing so was treason.\n\nJanuary 49 BC: Senate ordered Caesar to disband his army. Caesar famously said 'ālea iacta est' ('the die is cast') and crossed the Rubicon, beginning civil war.\n\nPharsalus (48 BC): Caesar defeated Pompey in Greece. Pompey fled to Egypt and was murdered.\n\nCaesar became Dictātor perpetuō (dictator in perpetuity) — breaking with the 6-month limit. Celebrated four triumphs.\n\nAssassinated: Ides of March (March 15), 44 BC." },
+  { id: 55, category: "Roman History: The Republic", front: "Assassination of Caesar & the Second Triumvirate", back: "IDES OF MARCH, 44 BC: Caesar stabbed 23 times in the Senate by ~60 conspirators led by Brutus and Cassius, who wanted to restore the Republic.\n\nResult: Not restoration of Republic but renewed civil war.\n\nSECOND TRIUMVIRATE (43 BC — official, unlike the first):\n• Octavian (Caesar's heir, 19 years old)\n• Mark Antony (Caesar's lieutenant)\n• Lepidus (cavalry commander)\n\nProscriptions killed thousands including Cicero.\n\nOctavian vs. Antony & Cleopatra → Battle of Actium (31 BC) → Octavian won → became Augustus, first emperor (27 BC)." },
+
+  // ── ROMAN HISTORY: KEY FIGURES ──
+  { id: 56, category: "Roman History: Key Figures", front: "Julius Caesar (100–44 BC)", back: "Born to a patrician but impoverished family; allied with Marius.\n\nCareer highlights:\n• Consul 59 BC\n• Proconsul of Gaul 58–50 BC (Gallic Wars)\n• Author of Dē Bellō Gallicō and Dē Bellō Cīvīlī\n• Crossed Rubicon 49 BC\n• Dictātor perpetuō 44 BC\n• Assassinated Ides of March 44 BC\n\nReforms: Julian calendar, citizenship grants, grain distributions, Senate expansion.\n\nHis adopted heir Octavius (Augustus) became the first emperor. The title 'Caesar' became a title for emperors." },
+  { id: 57, category: "Roman History: Key Figures", front: "Cicero (106–43 BC)", back: "Rome's greatest orator and prolific writer. Born to an equestrian family — a 'new man' (homō novus) who rose without noble ancestry.\n\nConsul 63 BC: Crushed the Catilinarian conspiracy; executed conspirators without trial (controversial).\n\nMajor works: Catilīnārian Orations, Pro Archiā, Dē Amīcitiā, Dē Senectūte, Dē Officiīs\n\nPhilosophically: introduced Greek philosophy (Stoicism, Skepticism) to Roman audiences in Latin.\n\nKilled in Antony's proscriptions, 43 BC. His head and hands were displayed on the rostra." },
+  { id: 58, category: "Roman History: Key Figures", front: "Augustus / Octavian (63 BC–AD 14)", back: "Born Gaius Octavius; adopted by Julius Caesar in his will, becoming Gaius Julius Caesar Octavianus.\n\nAfter Actium (31 BC), became sole ruler. In 27 BC, staged a careful return of power to the Senate — who gave him the title 'Augustus' (the revered one).\n\nPrincipate: maintained the forms of the Republic while holding actual power through:\n• Tribunīcia potestās (tribunician power)\n• Imperium proconsulāre (military command)\n• Prīnceps (first citizen)\n\nPax Romana: 200+ years of relative peace begins.\nPatron of Vergil, Horace, Livy." },
+  { id: 59, category: "Roman History: Key Figures", front: "Vergil (70–19 BC) & the Aeneid", back: "Publius Vergilius Maro — Rome's greatest epic poet, patronized by Maecenas and Augustus.\n\nMajor works:\n• Eclogues (pastoral poetry)\n• Georgics (agricultural poetry)\n• Aeneid (epic, 12 books) — the Roman national epic\n\nTHE AENEID: Follows Aeneas from Troy's fall to his victory in Italy, founding the line that leads to Romulus and Rome. Books 1–6: wanderings (Odyssey-like); Books 7–12: war in Italy (Iliad-like).\n\nKey characters: Aeneas, Dido (queen of Carthage), Turnus, Anchises, Lavinia\n\nTheme: duty (pietās) to gods, family, and Rome — at personal cost." },
+
+  // ── ROMAN CULTURE & DAILY LIFE ──
+  { id: 60, category: "Roman Culture & Daily Life", front: "The Roman Family (familia) & Paterfamilias", back: "FAMILIA included not just blood relatives but all under the paterfamilias's authority (potestās): wife, children, slaves.\n\nPATERFAMILIAS: The eldest male head of the family held:\n• Life-and-death power (pater potestās) over children\n• Control over all property\n• Power to arrange marriages, divorces, adoptions\n\nWomen: under guardianship (tūtēla) but could own property and conduct business with guardian's approval. Wealthy women had significant social influence.\n\nAdoption was common among elites to ensure heirs (Caesar adopted Octavian)." },
+  { id: 61, category: "Roman Culture & Daily Life", front: "Roman Names: Tria Nōmina", back: "Roman male citizens typically had three names:\n\n1. PRAENŌMEN: Personal name (very limited set — only ~18 common ones)\n   Common: Marcus (M.), Gaius (C.), Lucius (L.), Publius (P.), Quintus (Q.)\n\n2. NŌMEN: Clan/gens name (identifies family)\n   Ex: Julius, Cornelius, Claudius, Tullius\n\n3. COGNŌMEN: Branch of family / personal nickname\n   Ex: Caesar, Cicero (chickpea), Brutus (dull), Scipio\n\nEx: Marcus Tullius Cicero\n\nWomen used the feminine form of the nōmen: Julia, Cornelia, Claudia" },
+  { id: 62, category: "Roman Culture & Daily Life", front: "Roman Calendar: Kalends, Nones, Ides", back: "Romans counted days BACKWARDS from three fixed points in each month:\n\nKALENDS (Kal.) = 1st of every month\nNONES (Non.) = 7th in March, May, July, October; 5th in other months\nIDES (Id.) = 15th in March, May, July, October; 13th in other months\n\nCounting: the fixed day itself = day 1, count backward.\nEx: 'pridie Idūs' = the day before the Ides\n'ante diem III Idūs' = 3 days before the Ides\n\nIDES OF MARCH = March 15 — sacred to Mars; date of Caesar's assassination." },
+  { id: 63, category: "Roman Culture & Daily Life", front: "Roman Education", back: "Three stages:\n\n1. LŪDUS (ages 7–11): basic literacy and numeracy; taught by a lūdī magister (often a slave or freedman)\n\n2. GRAMMATICUS (ages 12–15): literature, grammar, Greek; reading/interpreting Latin and Greek poetry (Vergil, Homer); the stage tested on NLE\n\n3. RHETOR (ages 16+): advanced rhetoric, oratory, philosophy\n\nRich families: private tutors (paedagogus — Greek slave who accompanied the child everywhere)\n\nSchool day started at dawn; harsh physical discipline; slates and wax tablets for writing. Boys and girls both educated at primary level; girls less likely to continue." },
+  { id: 64, category: "Roman Culture & Daily Life", front: "Roman Religion: Gods, Augury & Vestal Virgins", back: "Roman religion was polytheistic, civic, and contractual (dō ut dēs — I give so that you may give).\n\nARUSPICY: Examining entrails (especially liver) of sacrificed animals to read omens.\n\nAUGURY: Interpreting signs from birds' flight and behavior. Augurs were official priests.\n\nVESTAL VIRGINS: 6 priestesses of Vesta (goddess of hearth) who tended Rome's sacred fire. Served 30 years, beginning age 6–10. Great honor and privilege; if the fire went out or a Vestal broke her vow of chastity — terrible punishment.\n\nROMAN RELIGION had no fixed creed — ritual correctness (pax deōrum — peace of the gods) mattered most." },
+  { id: 65, category: "Roman Culture & Daily Life", front: "The Roman Forum & Public Spaces", back: "FORUM RŌMĀNUM: The civic heart of Rome — marketplace, law courts, political speeches (from the Rostra), temples, and monuments.\n\nKey structures in/near the Forum:\n• Rostra — the speaker's platform (decorated with bronze ships' prows)\n• Curia — the Senate house\n• Temple of Saturn — public treasury\n• Via Sacra — the Sacred Way through the Forum\n• Colosseum (Amphitheatrum Flavium) — gladiatorial games\n• Circus Maximus — chariot racing (holds 250,000)\n• Thermae — public baths; social gathering places\n\nLūdī (games) were public spectacles funded by magistrates seeking popularity." },
+  { id: 66, category: "Roman Culture & Daily Life", front: "Roman Army Structure", back: "LEGION (legiō): ~5,000 men; the basic Roman military unit.\n\nStructure (largest to smallest):\nLegiō (~5,000) → Cohors/10 (~480) → Manipulus/3 (~160) → Century/2 (~80)\n\nOfficers:\n• Imperator/Lēgātus — general/legion commander\n• Tribūnus mīlitum — 6 per legion (staff officers)\n• Centuriō — century commander (professional backbone)\n\nMarian reforms (107 BC): Army became professional (paid, volunteer), equipped uniformly by state, loyal to general not state → created conditions for civil wars.\n\nEquipment: pilum (heavy javelin), gladius (short sword), scūtum (large shield), lōrica (body armor)" },
+  { id: 67, category: "Roman Culture & Daily Life", front: "Roman Roads & Engineering", back: "Via: road — the Roman road network eventually covered ~400,000 km.\n\nFAMOUS ROADS:\n• Via Appia — 'Queen of Roads'; Rome to Brundisium (SE Italy); begun 312 BC\n• Via Flaminia — Rome to Ariminum (NE Italy)\n• Via Egnatia — across Greece to Byzantium\n\nROAD CONSTRUCTION: Layers of sand, gravel, stones → paved with flat stones (silicēs); cambered for drainage; milestones (mīliāria) every mīlle passuum (1,000 double paces = ~1,480m).\n\nOther engineering: aqueducts (aquaeductus), concrete (opus incertum/reticulatum), arches, domes (Pantheon)." },
+
+  // ── ROMAN MYTHOLOGY ──
+  { id: 68, category: "Roman Mythology", front: "The Olympian Gods — Greek/Roman Names", back: "Roman name → Greek name — Domain\n\nJupiter → Zeus — king of gods, sky, thunder\nJūnō → Hera — queen, marriage, women\nNeptūnus → Poseidon — sea\nPlūtō / Dīs → Hades — underworld\nMercurius → Hermes — messenger, commerce, thieves\nMārs → Ares — war\nVenus → Aphrodite — love, beauty\nMinerva → Athena — wisdom, crafts, war strategy\nDiāna → Artemis — hunting, moon, chastity\nApollo → Apollo — sun, music, poetry, prophecy\nVulcānus → Hephaestus — fire, forge, crafts\nCerēs → Demeter — grain, agriculture\nBacchus/Liber → Dionysus — wine, revelry\nVesta → Hestia — hearth, home" },
+  { id: 69, category: "Roman Mythology", front: "The Capitoline Triad & Rome's Divine Ancestors", back: "CAPITOLINE TRIAD: The three chief gods worshipped in the Temple of Jupiter on the Capitoline Hill:\n• Jupiter Optimus Maximus (Best and Greatest)\n• Juno\n• Minerva\n\nROME'S DIVINE ANCESTRY:\n• Venus → Anchises → Aeneas → Iulus (Ascanius) → gens Julia\n  (Julius Caesar and Augustus claimed descent from Venus)\n\n• Mars → Romulus (founder of Rome)\n\nThis divine lineage was politically important — it made Rome's ruling families literally descendants of gods." },
+  { id: 70, category: "Roman Mythology", front: "Aeneas & the Founding Myth", back: "The Roman national founding myth, told fully in Vergil's Aeneid:\n\n1. Troy falls — Aeneas escapes carrying his father Anchises on his back, leading his son Iulus, carrying the Penates (household gods)\n2. Years of wandering — Aeneas visits Carthage, where Dido falls in love with him; he abandons her (duty over love); she kills herself\n3. Italy — Aeneas must fight Turnus (Italian king) for the hand of Lavinia\n4. Aeneas wins, founds Lavinium → son Iulus founds Alba Longa → descendants found Rome\n\nKey theme: PIETĀS — duty to gods, family, and future Rome, always above personal happiness." },
+  { id: 71, category: "Roman Mythology", front: "The Underworld (Inferī / Tartarus)", back: "The Roman underworld, described most famously in Aeneid Book 6:\n\nGeography:\n• Styx — river surrounding the underworld; Charon ferries the dead\n• Lethe — river of forgetfulness; souls drink before reincarnation\n• Elysium (Elysian Fields) — paradise for the virtuous/heroic\n• Tartarus — place of punishment for the wicked\n• Asphodel Meadows — for ordinary souls\n\nKey figures:\n• Pluto/Dis — king of the underworld\n• Proserpina/Persephone — queen (kidnapped by Pluto)\n• Charon — the ferryman (requires a coin — obolus — placed on the dead person's tongue)\n• Cerberus — three-headed dog guarding the entrance" },
+  { id: 72, category: "Roman Mythology", front: "Key Myths You Should Know", back: "ORPHEUS & EURYDICE: Orpheus descends to the underworld to retrieve his dead wife Eurydice; fails because he looks back.\n\nROMULUS & REMUS: Twin sons of Mars and Rhea Silvia; nursed by a she-wolf (lupa); Romulus kills Remus and founds Rome.\n\nPROSERPINA: Ceres's daughter kidnapped by Pluto; compromise allows her to spend half the year above ground → explains seasons.\n\nCUPID & PSYCHE: God of love and a mortal woman; tale of love tested by jealousy and labors.\n\nMIDAS: King granted wish that everything he touch turn to gold — soon regrets it.\n\nPHAETHON: Son of the sun god who tried to drive the solar chariot — lost control; Zeus struck him down to save the earth." },
+  { id: 73, category: "Roman Mythology", front: "Dīdō, Queen of Carthage", back: "Phoenician princess who fled her murderous brother Pygmalion and founded Carthage in North Africa.\n\nIn the Aeneid (Books 1–4):\n• Juno and Venus conspire to make Dido fall in love with Aeneas\n• They have an affair; Dido considers them married\n• Jupiter sends Mercury to remind Aeneas of his duty to Italy\n• Aeneas leaves; Dido kills herself on a pyre, cursing Aeneas and prophesying eternal enmity between Carthage and Rome (the Punic Wars)\n\nKey quote: Dux femina factī — 'A woman was the leader of the deed' (Aeneid 1.364)" },
+  { id: 74, category: "Roman Mythology", front: "Pietās — the Central Roman Value", back: "pietās, -ātis, f.: duty, devotion, loyalty (to gods, family, and Rome)\n\nNOT simply 'piety' in the modern English religious sense — pietās encompasses all obligations:\n• To the gods: proper worship, ritual\n• To parents and family: care, respect, honor\n• To Rome/the state: service, sacrifice\n\nAeneas's epithet in the Aeneid is pius Aeneas — 'dutiful Aeneas.' He suffers constantly but always chooses duty over personal desire.\n\nOther key Roman values:\n• gravitas — serious dignity\n• virtūs — excellence, valor\n• fidēs — trustworthiness\n• frūgālitās — frugality, simplicity\n• mōs maiōrum — the custom of the ancestors" },
+
+  // ── NUMBERS & TIME EXPRESSIONS ──
+  { id: 75, category: "Numbers & Time Expressions", front: "Cardinal Numbers 1–10 & Key Higher Numbers", back: "1 ūnus, -a, -um\n2 duo, duae, duo\n3 trēs, tria\n4 quattuor\n5 quīnque\n6 sex\n7 septem\n8 octō\n9 novem\n10 decem\n\n20 vīgintī\n100 centum\n1,000 mīlle (pl: mīlia, -ium, n.)\n\nNOTE: ūnus, duo, trēs decline; quattuor through centum are indeclinable.\n\nMīlle passuum = one mile (lit. 1,000 double paces)\nMīlia passuum = miles (mīlia takes genitive)" },
+  { id: 76, category: "Numbers & Time Expressions", front: "Ordinal Numbers (1st–10th)", back: "1st prīmus, -a, -um\n2nd secundus / alter\n3rd tertius\n4th quārtus\n5th quīntus\n6th sextus\n7th septimus\n8th octāvus\n9th nōnus\n10th decimus\n\nOrdinals decline like regular 1st/2nd declension adjectives.\n\nCommon in names: Quintus (5th child), Sextus (6th), Decimus (10th)\n\nIn dates: prīdiē = the day before; postrīdiē = the day after" },
+  { id: 77, category: "Numbers & Time Expressions", front: "Time Constructions: When / How Long / Within", back: "TIME WHEN (ablative — no preposition):\nEā nocte — on that night\nPrimā lūce — at first light\nHōrā tertiā — at the third hour\n\nTIME HOW LONG (accusative — no preposition):\nMultōs annōs — for many years\nTrēs hōrās — for three hours\n\nTIME WITHIN WHICH (ablative — no preposition):\nPaucīs diēbus — within a few days\nUnnō annō — within one year\n\nMemory trick:\nHOW LONG → accusative (think: how far → accusative of extent)\nWHEN / WITHIN → ablative" },
+  { id: 78, category: "Numbers & Time Expressions", front: "ante / post + accusative vs. ablative of time", back: "ANTE and POST as prepositions take ACCUSATIVE:\nante bellum — before the war\npost mortem — after death\n\nANTE and POST as adverbs appear in time expressions:\npaullo ante — a little before\nnōn multō post — not much after\n\nDIES compounds:\nprīdiē (+ acc.) — the day before: prīdiē Idūs\npostrīdiē (+ acc.) — the day after: postrīdiē eius diēī\n\nNUDIUS TERTIUS: 'It is now the third day' (from nunc + diēs + tertius) — the day before yesterday\n\nDiū — for a long time (adverb; duration)" },
+
+  // ── HIGH-FREQUENCY ADVERBS & PARTICLES ──
+  { id: 79, category: "Adverbs & Particles", front: "Essential Adverbs for NLE 3", back: "ita / sīc — thus, so, in this way\ntam — so (with adjectives/adverbs)\ntum / tunc — then, at that time\nnunc — now\ndeinde — then, next, thereafter\ninterea / interim — meanwhile\niam — now, already, soon\ntamen — nevertheless, however\nverō — truly, indeed; but (postpositive)\nquidem — indeed, at least, to be sure\nne...quidem — not even\nquoque — also, too (postpositive)\nmagis — more\nmaxime — most, especially\npaulum — a little\nmultum — much\nvix — scarcely, barely\nstatim — immediately\nsubitō — suddenly\nsaepe — often\nnumquam — never" },
+  { id: 80, category: "Adverbs & Particles", front: "Correlative Pairs", back: "Master these paired constructions:\n\net...et — both...and\naut...aut — either...or (exclusive)\nvel...vel — either...or (inclusive)\nnec/neque...nec/neque — neither...nor\nnōn sōlum...sed etiam — not only...but also\ncum...tum — both...and (esp. the latter); when...then\nquō...eō — the more...the more\ntantus...quantus — as great as\ntōt...quot — as many as\ntālis...quālis — such...as\nutrum...an — whether...or (in questions)" },
+];
+
+const CATEGORIES = ["All", ...Array.from(new Set(allCards.map(c => c.category)))];
+
+const CAT_COLORS = {
+  "Grammar: Subjunctive Uses": "#7a6aaa",
+  "Grammar: Key Constructions": "#5a7aaa",
+  "Deponent Verbs": "#6a8a6a",
+  "Caesar Vocabulary": "#aa7a3a",
+  "Roman History: The Republic": "#8a4a4a",
+  "Roman History: Key Figures": "#7a5a3a",
+  "Roman Culture & Daily Life": "#4a7a7a",
+  "Roman Mythology": "#6a4a8a",
+  "Numbers & Time Expressions": "#5a7a5a",
+  "Adverbs & Particles": "#7a7a4a",
+};
+const getColor = (cat) => CAT_COLORS[cat] || "#7a6040";
+
+function NLESupplementDeck() {
+  const [selectedCategory, setSelectedCategory] = useState("All");
+  const [deck, setDeck] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [flipped, setFlipped] = useState(false);
+  const [showFront, setShowFront] = useState(true); // true = latin/term side first
+  const [progress, setProgress] = useState({});
+  const [shuffled, setShuffled] = useState(true);
+
+  const buildDeck = useCallback(() => {
+    let cards = selectedCategory === "All"
+      ? [...allCards]
+      : allCards.filter(c => c.category === selectedCategory);
+    if (shuffled) for (let i = cards.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cards[i], cards[j]] = [cards[j], cards[i]];
+    }
+    setDeck(cards); setCurrentIndex(0); setFlipped(false);
+  }, [selectedCategory, shuffled]);
+
+  useEffect(() => { buildDeck(); }, [buildDeck]);
+
+  const current = deck[currentIndex];
+  const accent = current ? getColor(current.category) : "#7a6040";
+
+  const navigate = (dir) => {
+    setFlipped(false);
+    setTimeout(() => {
+      if (dir === "next") setCurrentIndex(i => Math.min(i + 1, deck.length - 1));
+      else setCurrentIndex(i => Math.max(i - 1, 0));
+    }, 90);
+  };
+
+  const markCard = (status) => {
+    if (current) setProgress(p => ({ ...p, [current.id]: status }));
+  };
+
+  useEffect(() => {
+    const h = (e) => {
+      if (e.key === " " || e.key === "Enter") { e.preventDefault(); setFlipped(f => !f); }
+      if (e.key === "ArrowRight") navigate("next");
+      if (e.key === "ArrowLeft") navigate("prev");
+      if (e.key === "1") markCard("known");
+      if (e.key === "2") markCard("learning");
+    };
+    window.addEventListener("keydown", h);
+    return () => window.removeEventListener("keydown", h);
+  }, [deck, currentIndex]);
+
+  const known = Object.values(progress).filter(v => v === "known").length;
+  const learning = Object.values(progress).filter(v => v === "learning").length;
+  const pct = Math.round((known / allCards.length) * 100);
+
+  const catGroups = [
+    { label: "Grammar", cats: ["Grammar: Subjunctive Uses", "Grammar: Key Constructions"] },
+    { label: "Vocabulary", cats: ["Deponent Verbs", "Caesar Vocabulary", "Adverbs & Particles", "Numbers & Time Expressions"] },
+    { label: "History & Culture", cats: ["Roman History: The Republic", "Roman History: Key Figures", "Roman Culture & Daily Life", "Roman Mythology"] },
+  ];
+
+  return (
+    <div style={{
+      minHeight: "100vh", maxHeight: "100vh", overflow: "hidden",
+      background: "radial-gradient(ellipse at 30% 20%, #100c18 0%, #0a0608 60%, #050304 100%)",
+      fontFamily: "'Crimson Text', Georgia, serif",
+      color: "#e0d4c0",
+      display: "flex", flexDirection: "column",
+    }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,500;0,700;1,300;1,600&family=DM+Mono:wght@400;500&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        .card-scene { perspective: 1400px; width: 100%; max-width: 680px; }
+        .card-body { width: 100%; height: 360px; transform-style: preserve-3d; transition: transform 0.5s cubic-bezier(0.4,0,0.2,1); cursor: pointer; position: relative; }
+        .card-body.flipped { transform: rotateY(180deg); }
+        .card-face {
+          position: absolute; inset: 0;
+          backface-visibility: hidden; -webkit-backface-visibility: hidden;
+          border-radius: 14px;
+          display: flex; flex-direction: column;
+          align-items: center; justify-content: center;
+          padding: 28px 36px; text-align: center;
+          border: 1px solid rgba(255,255,255,0.06);
+        }
+        .face-front {
+          background: linear-gradient(150deg, #18141f 0%, #120e18 100%);
+          box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+        }
+        .face-back {
+          background: linear-gradient(150deg, #0e1812 0%, #0c1410 100%);
+          box-shadow: 0 24px 80px rgba(0,0,0,0.7);
+          transform: rotateY(180deg);
+        }
+        .back-text {
+          font-family: 'DM Mono', 'Courier New', monospace;
+          font-size: 12px; line-height: 1.75;
+          color: #a0c8a0; text-align: left;
+          max-width: 580px; white-space: pre-wrap;
+          max-height: 300px; overflow-y: auto;
+        }
+        .back-text::-webkit-scrollbar { width: 3px; }
+        .back-text::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
+        .cat-tag {
+          display: inline-flex; align-items: center; gap: 5px;
+          padding: 3px 11px; border-radius: 4px;
+          font-family: 'Crimson Text', Georgia, serif;
+          font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase;
+        }
+        .sb-btn {
+          all: unset; cursor: pointer;
+          display: flex; align-items: center; justify-content: space-between;
+          gap: 6px; padding: 6px 10px; border-radius: 5px;
+          font-family: 'Crimson Text', Georgia, serif; font-size: 12.5px;
+          color: #6a5a48; transition: all 0.15s; width: 100%; box-sizing: border-box;
+        }
+        .sb-btn:hover { background: rgba(255,255,255,0.04); color: #c0a878; }
+        .sb-btn.active { background: rgba(255,255,255,0.07); color: #e8d090; }
+        .sb-group { font-family: 'Crimson Text', Georgia, serif; font-size: 10px; color: #3a3028; letter-spacing: 0.12em; text-transform: uppercase; padding: 10px 10px 3px; }
+        .nav-btn { all: unset; cursor: pointer; padding: 8px 22px; border-radius: 8px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); color: #7a6848; font-size: 20px; line-height: 1; transition: all 0.15s; }
+        .nav-btn:hover { background: rgba(255,255,255,0.08); color: #c0a060; }
+        .nav-btn:disabled { opacity: 0.2; cursor: default; }
+        .mark-btn { all: unset; cursor: pointer; padding: 7px 18px; border-radius: 8px; font-family: 'Crimson Text', Georgia, serif; font-size: 14px; transition: all 0.15s; letter-spacing: 0.03em; }
+        .ptrack { background: rgba(255,255,255,0.05); border-radius: 3px; height: 3px; overflow: hidden; }
+        .pfill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
+        ::-webkit-scrollbar { width: 3px; }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 3px; }
+      `}</style>
+
+      {/* TOP BAR */}
+      <div style={{ height: 52, flexShrink: 0, borderBottom: "1px solid rgba(255,255,255,0.05)", display: "flex", alignItems: "center", padding: "0 24px", gap: 14, background: "rgba(0,0,0,0.3)" }}>
+        <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 18, fontWeight: 600, color: "#d4a84a", letterSpacing: "0.04em" }}>
+          NLE · Level III Supplement
+        </div>
+        <div style={{ width: 1, height: 18, background: "rgba(255,255,255,0.08)" }} />
+        <div style={{ fontFamily: "'Crimson Text', Georgia, serif", fontSize: 12, color: "#4a4030" }}>
+          {allCards.length} cards · Grammar · Caesar · Roman History & Mythology
+        </div>
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 14 }}>
+          <label style={{ display: "flex", alignItems: "center", gap: 5, fontFamily: "'Crimson Text', Georgia, serif", fontSize: 13, color: "#6a5a40", cursor: "pointer" }}>
+            <input type="checkbox" checked={shuffled} onChange={e => setShuffled(e.target.checked)} style={{ accentColor: "#c8a050" }} /> Shuffle
+          </label>
+          <button onClick={buildDeck} style={{ all: "unset", cursor: "pointer", padding: "4px 14px", borderRadius: 6, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", fontFamily: "'Crimson Text', Georgia, serif", fontSize: 13, color: "#7a6848" }}>↺ Restart</button>
+        </div>
+      </div>
+
+      {/* BODY */}
+      <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+
+        {/* SIDEBAR */}
+        <div style={{ width: 210, flexShrink: 0, borderRight: "1px solid rgba(255,255,255,0.04)", background: "rgba(0,0,0,0.2)", display: "flex", flexDirection: "column", overflowY: "auto", padding: "10px 6px 16px" }}>
+          {/* mastery */}
+          <div style={{ margin: "4px 4px 10px", padding: "10px 12px", background: "rgba(255,255,255,0.03)", borderRadius: 7, border: "1px solid rgba(255,255,255,0.05)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 5 }}>
+              <span style={{ fontFamily: "'Crimson Text', Georgia, serif", fontSize: 11, color: "#4a3a28", letterSpacing: "0.08em", textTransform: "uppercase" }}>Mastery</span>
+              <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 17, fontWeight: 600, color: "#d4a84a" }}>{pct}%</span>
+            </div>
+            <div className="ptrack" style={{ marginBottom: 6 }}>
+              <div className="pfill" style={{ width: `${pct}%`, background: "linear-gradient(90deg, #7a5818, #d4a848)" }} />
+            </div>
+            <div style={{ display: "flex", gap: 10, fontFamily: "'Crimson Text', Georgia, serif", fontSize: 11, color: "#3a3028" }}>
+              <span style={{ color: "#5a8a5a" }}>✓ {known}</span>
+              <span style={{ color: "#8a6028" }}>⟳ {learning}</span>
+              <span>/ {allCards.length}</span>
+            </div>
+          </div>
+
+          <button className={`sb-btn ${selectedCategory === "All" ? "active" : ""}`} onClick={() => setSelectedCategory("All")}>
+            <span>All Categories</span><span style={{ fontSize: 10, opacity: 0.4 }}>{allCards.length}</span>
+          </button>
+
+          {catGroups.map(group => (
+            <div key={group.label}>
+              <div className="sb-group">{group.label}</div>
+              {group.cats.map(cat => (
+                <button key={cat} className={`sb-btn ${selectedCategory === cat ? "active" : ""}`} onClick={() => setSelectedCategory(cat)}>
+                  <span style={{ display: "flex", alignItems: "center", gap: 5, overflow: "hidden" }}>
+                    <span style={{ width: 7, height: 7, borderRadius: 2, background: getColor(cat), flexShrink: 0 }} />
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{cat.replace(/^[^:]+:\s*/, "")}</span>
+                  </span>
+                  <span style={{ fontSize: 10, opacity: 0.4, flexShrink: 0 }}>{allCards.filter(c => c.category === cat).length}</span>
+                </button>
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* MAIN */}
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "20px 48px", gap: 18, overflow: "hidden" }}>
+          {current ? (
+            <>
+              {/* counter + progress */}
+              <div style={{ display: "flex", alignItems: "center", gap: 12, width: "100%", maxWidth: 680 }}>
+                <span style={{ fontFamily: "'Crimson Text', Georgia, serif", fontSize: 13, color: "#3a3028" }}>
+                  <span style={{ color: "#c8a050" }}>{currentIndex + 1}</span> / {deck.length}
+                </span>
+                <div style={{ flex: 1 }}>
+                  <div className="ptrack">
+                    <div className="pfill" style={{ width: `${((currentIndex + 1) / deck.length) * 100}%`, background: `linear-gradient(90deg, ${accent}80, ${accent})` }} />
+                  </div>
+                </div>
+                {progress[current.id] && (
+                  <span style={{ fontFamily: "'Crimson Text', Georgia, serif", fontSize: 12, padding: "2px 10px", borderRadius: 100, background: progress[current.id] === "known" ? "rgba(60,120,60,0.15)" : "rgba(160,100,20,0.15)", color: progress[current.id] === "known" ? "#6ab86a" : "#c89030", border: `1px solid ${progress[current.id] === "known" ? "rgba(60,120,60,0.3)" : "rgba(160,100,20,0.3)"}` }}>
+                    {progress[current.id] === "known" ? "✓ Known" : "⟳ Learning"}
+                  </span>
+                )}
+              </div>
+
+              {/* CARD */}
+              <div className="card-scene" onClick={() => setFlipped(f => !f)}>
+                <div className={`card-body ${flipped ? "flipped" : ""}`}>
+
+                  {/* FRONT */}
+                  <div className="card-face face-front" style={{ borderTop: `3px solid ${accent}55` }}>
+                    <span className="cat-tag" style={{ background: `${accent}1a`, color: accent, border: `1px solid ${accent}35`, marginBottom: 18 }}>
+                      {current.category.replace(/^[^:]+:\s*/, "")}
+                    </span>
+                    <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: 34, fontWeight: 600, fontStyle: "italic", color: "#f0e4c0", lineHeight: 1.25, letterSpacing: "-0.01em", maxWidth: 540 }}>
+                      {current.front}
+                    </div>
+                    <div style={{ marginTop: 20, fontFamily: "'Crimson Text', Georgia, serif", fontSize: 10, color: "#2e2820", letterSpacing: "0.1em", textTransform: "uppercase" }}>
+                      click · space · enter to reveal
+                    </div>
+                  </div>
+
+                  {/* BACK */}
+                  <div className="card-face face-back" style={{ borderTop: `3px solid ${accent}35`, alignItems: "flex-start", justifyContent: "center" }}>
+                    <div className="back-text">{current.back}</div>
+                  </div>
+
+                </div>
+              </div>
+
+              {/* CONTROLS */}
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <button className="nav-btn" onClick={() => navigate("prev")} disabled={currentIndex === 0}>‹</button>
+                <button className="mark-btn" onClick={() => markCard("learning")} style={{ background: "rgba(160,100,20,0.12)", border: "1px solid rgba(160,100,20,0.28)", color: "#c89030" }}>⟳ Still Learning</button>
+                <button className="mark-btn" onClick={() => markCard("known")} style={{ background: "rgba(60,120,60,0.12)", border: "1px solid rgba(60,120,60,0.28)", color: "#6ab870" }}>✓ Got It</button>
+                <button className="nav-btn" onClick={() => navigate("next")} disabled={currentIndex === deck.length - 1}>›</button>
+              </div>
+
+              <div style={{ fontFamily: "'Crimson Text', Georgia, serif", fontSize: 11, color: "#2a2420", letterSpacing: "0.07em", textTransform: "uppercase" }}>
+                ← → navigate · 1 = known · 2 = learning
+              </div>
+            </>
+          ) : (
+            <div style={{ color: "#4a4030" }}>No cards found.</div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+ReactDOM.createRoot(document.getElementById("root")).render(React.createElement(NLESupplementDeck));
+  </script>
+</body>
+</html>
